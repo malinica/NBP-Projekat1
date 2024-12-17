@@ -5,3 +5,7 @@ global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Text.Json.Serialization;
 global using backend.Models;
 global using DataLayer.Services;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Threading.Tasks;
