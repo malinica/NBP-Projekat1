@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddScoped<TestService, TestService>();
+builder.Services.AddScoped<ItemService, ItemService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
