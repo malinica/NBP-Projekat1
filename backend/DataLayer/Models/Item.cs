@@ -2,7 +2,7 @@ using DataLayer.DTOs;
 using Newtonsoft.Json;
 using System;
 
-namespace backend.Models
+namespace DataLayer.Models
 {
     public  class Item
     {
