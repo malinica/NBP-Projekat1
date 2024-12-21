@@ -1,27 +1,54 @@
 using DataLayer.DTOs;
 using ServiceStack.Redis;
-using Newtonsoft.Json;
+using DataLayer.Context;
+using DataLayer.DTOs.ItemDTOs;
+using System.Text.Json;
 
 namespace DataLayer.Services
 {
     public class ItemService
     {
-        readonly RedisClient redis = new RedisClient(Config.SingleHost);
+        private readonly ProjectContext context;
 
-        public ItemService() { }
-
-        public bool Set(string key, ItemDTO item)
+        public ItemService(ProjectContext context)
         {
-            string keyEdited="item:"+key;
-            Item i=new Item() {
-                ID=item.ID,
-                Name=item.Name!,
-                Description=item.Description!, 
-                Category=item.Category!
+            this.context = context;
+        }
+
+        public async Task<int> Create(CreateItemDTO itemDTO) {
+            var author = await context.Users.FindAsync(itemDTO.AuthorID);
+            if (author == null) 
+                throw new Exception("Ne postoji korisnik sa zadatim ID-jem.");
+            
+            var pictures = JsonSerializer.Serialize(itemDTO.Pictures);
+
+            Item item = new Item {
+                Name = itemDTO.Name,
+                Description = itemDTO.Description,
+                Category = itemDTO.Category,
+                Pictures = pictures
             };
 
-            return redis.Set(keyEdited, JsonConvert.SerializeObject(i));
+            item.Author = author;
+
+            await context.Items.AddAsync(item);
+            await context.SaveChangesAsync();
+
+            return item.ID;
         }
+        
+        // public bool Set(string key, ItemDTO item)
+        // {
+        //     string keyEdited="item:"+key;
+        //     Item i=new Item() {
+        //         ID=item.ID,
+        //         Name=item.Name!,
+        //         Description=item.Description!, 
+        //         Category=item.Category!
+        //     };
+
+        //     return redis.Set(keyEdited, JsonConvert.SerializeObject(i));
+        // }
 
         // public string Get(string key)
         // {

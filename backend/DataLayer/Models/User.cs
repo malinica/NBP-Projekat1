@@ -5,6 +5,12 @@ namespace DataLayer.Models
 {
     public class User : IdentityUser
     {
-          public Role Role { get; set; }
+        public Role Role { get; set; }
+
+        [InverseProperty("Author")]
+        public List<Item>? CreatedItems { get; set; }
+        
+        [InverseProperty("AuctionWinner")]
+        public List<Item>? WonItems { get; set; }
     }
 }

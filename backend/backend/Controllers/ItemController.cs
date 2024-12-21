@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.DTOs;
+using DataLayer.DTOs.ItemDTOs;
 
 
 namespace backend.Controllers
@@ -18,6 +19,18 @@ namespace backend.Controllers
             this.itemService = itemService;
         }
 
+        [HttpPost("create")]
+        public async Task<ActionResult<int>> Create([FromBody] CreateItemDTO itemDTO) {
+            try {
+                var itemID = await itemService.Create(itemDTO);
+
+                return Ok(itemID);
+            }
+            catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+        }
+
         // [HttpGet("item/{key}")]
         // public string Get(string key)
         // {
@@ -25,14 +38,14 @@ namespace backend.Controllers
         //     return value;
         // }
 
-        [HttpPost("item/{key}")]
-        public string Set(string key, [FromBody]ItemDTO item)
-        {
-            bool result = itemService.Set(key, item);
-            if(result)
-                return "Uspesno sacuvan podatak o Item-u.";
+        // [HttpPost("item/{key}")]
+        // public string Set(string key, [FromBody]ItemDTO item)
+        // {
+        //     bool result = itemService.Set(key, item);
+        //     if(result)
+        //         return "Uspesno sacuvan podatak o Item-u.";
 
-            return "Neuspesno cuvanje podatka o Item-u.";
-        }
+        //     return "Neuspesno cuvanje podatka o Item-u.";
+        // }
     }
 }

@@ -38,6 +38,7 @@ builder.Services.AddSwaggerGen(option =>
             new string[]{}
         }
     });
+    option.UseInlineDefinitionsForEnums();
 });
 
 builder.Services.AddProblemDetails();

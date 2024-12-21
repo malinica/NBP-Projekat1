@@ -4,6 +4,7 @@ using DataLayer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    partial class ProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20241221104902_V2")]
+    partial class V2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +50,7 @@ namespace DataLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Pictures")
+                    b.PrimitiveCollection<string>("Pictures")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -132,16 +135,16 @@ namespace DataLayer.Migrations
                         {
                             Id = "80c8b6b1-e2b6-45e8-b044-8f2178a90111",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a1c84961-3435-4645-a2d5-5675dc9818e3",
+                            ConcurrencyStamp = "16b38225-e78c-4488-8b64-140e411482f3",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHqjOUA5FOrRcdITgOAa8AoROsUKlfBSgFdpiOsIdIbjM8457Sciq8GKnTow5KLCyg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEB8CNbEgQbL+s7S7+sdXmpDNlPlI+H7wPfimEn82KqP7JqguTWqG3R9l6+EmqXe63Q==",
                             PhoneNumberConfirmed = false,
                             Role = 0,
-                            SecurityStamp = "ae690757-543b-415b-856d-037413708eb3",
+                            SecurityStamp = "f4812f94-45f6-4522-b7f9-2670d028d1c4",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
