@@ -50,6 +50,7 @@ builder.Services.AddScoped<TestService, TestService>();
 builder.Services.AddScoped<UserService, UserService>();
 builder.Services.AddScoped<ItemService, ItemService>();
 builder.Services.AddScoped<AuctionService, AuctionService>();
+builder.Services.AddScoped<OfferService, OfferService>();
 
 builder.Services.AddControllers().AddJsonOptions(opt =>
 {

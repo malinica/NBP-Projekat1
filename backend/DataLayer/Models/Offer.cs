@@ -1,3 +1,5 @@
+using DataLayer.DTOs.OfferDTOs;
+
 namespace DataLayer.Models
 {
     public class Offer
@@ -9,6 +11,25 @@ namespace DataLayer.Models
 
         // [InverseProperty("OfferList")]
         // public Auction? DuringAuction {get;set;} 
+
+        public Offer()
+        {
+
+        }
+
+        public Offer(CreateOfferDTO offer)
+        {
+            ID = offer.ID;
+            Price = offer.Price;
+            OfferedAt = offer.OfferedAt;
+        }
+
+        public Offer(int id, int price, DateTime offeredAt)
+        {
+            ID = id;
+            Price = price;
+            OfferedAt = offeredAt;
+        }
 
     }
 }
