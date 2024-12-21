@@ -25,6 +25,9 @@ namespace DataLayer.Models
         [InverseProperty("WonItems")]
         public User? AuctionWinner {get;set;}
 
+        //[InverseProperty("AuctionItem")]
+        //public Auction? OnAuction{get;set;}
+
         // public Item()
         // {
             
