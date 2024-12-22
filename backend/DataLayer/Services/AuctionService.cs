@@ -1,6 +1,8 @@
 using ServiceStack.Redis;
 using DataLayer.DTOs.AuctionDTOs;
 using Newtonsoft.Json;
+using System.Text;
+using DataLayer.Enums;
 
 namespace DataLayer.Services
 {
@@ -36,5 +38,47 @@ namespace DataLayer.Services
             }
             return null; 
         }
+
+        public List<Auction> LeaderboardMostPlacedAuctions()
+        {
+            var scanResult = redis.Keys(pattern: "auction:*");
+            List<Auction> list = new List<Auction>();
+
+            foreach (var key in scanResult)
+            {
+                string keyStringFormat = Encoding.UTF8.GetString(key);
+
+                string jsonData = redis.Get<string>(keyStringFormat);
+
+                if (!string.IsNullOrEmpty(jsonData))
+                {
+                    list.Add(JsonConvert.DeserializeObject<Auction>(jsonData));
+                }
+            }
+
+            return list;
+        }
+
+        public List<Auction> LeaderboardAuctionsBasedOnTimeExpiring()
+        {
+            var scanResult = redis.Keys(pattern: "auction:*");
+            List<Auction> list = new List<Auction>();
+
+            foreach (var key in scanResult)
+            {
+                string keyStringFormat = Encoding.UTF8.GetString(key);
+                string jsonData = redis.Get<string>(keyStringFormat);
+
+                if (!string.IsNullOrEmpty(jsonData))
+                {
+                    var auctionDeserialized=(JsonConvert.DeserializeObject<Auction>(jsonData));
+                    if (auctionDeserialized.Status==AuctionStatus.Active)
+                        list.Add(auctionDeserialized);
+                }
+            }
+
+            return list.OrderBy(a => a.DueTo).ToList();
+        }
+
     }
 }

@@ -36,5 +36,28 @@ namespace backend.Controllers
             }
             return NotFound("Auction with the specified key is not found.");
         }
+
+        [HttpGet("auction/LeaderboardMostPlacedAuctions")]
+        public IActionResult LeaderboardMostPlacedAuctions()
+        {
+            var auctions = auctionService.LeaderboardMostPlacedAuctions();
+
+            if (auctions != null && auctions.Any())
+            {
+                return Ok(auctions);
+            }
+            return NotFound("Error in loading Leaderboard for users with the highest auction");
+        }
+        [HttpGet("auction/LeaderboardAuctionsBasedOnTimeExpiring")]
+        public IActionResult LeaderboardAuctionsBasedOnTimeExpiring()
+        {
+            var auctions = auctionService.LeaderboardAuctionsBasedOnTimeExpiring();
+
+            if (auctions != null && auctions.Any())
+            {
+                return Ok(auctions);
+            }
+            return NotFound("Error in loading Leaderboard for auctions based on time expiring");
+        }
     }
 }
