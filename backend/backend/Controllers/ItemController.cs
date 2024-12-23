@@ -31,21 +31,16 @@ namespace backend.Controllers
             }
         }
 
-        // [HttpGet("item/{key}")]
-        // public string Get(string key)
-        // {
-        //     string value = itemService.Get(key);
-        //     return value;
-        // }
-
-        // [HttpPost("item/{key}")]
-        // public string Set(string key, [FromBody]ItemDTO item)
-        // {
-        //     bool result = itemService.Set(key, item);
-        //     if(result)
-        //         return "Uspesno sacuvan podatak o Item-u.";
-
-        //     return "Neuspesno cuvanje podatka o Item-u.";
-        // }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Item>> Get(int id) {
+            try {
+                var item = await itemService.GetItem(id);
+                return Ok(item);
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

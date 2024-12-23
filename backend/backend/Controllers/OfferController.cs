@@ -19,31 +19,54 @@ namespace backend.Controllers
             this.offerService = offerService;
         }
 
-        [HttpPost("offer/{key}")]
-        public string Set(string key, [FromBody]CreateOfferDTO offer)
+        [HttpPost("create")]
+        public ActionResult<string> Create([FromBody] CreateOfferDTO offer)
         {
-            bool result = offerService.Set(key, offer);
-            if(result)
+            try
             {
-                return "Uspesno dodat offer";
+                bool result = offerService.Set(offer);
+
+                if (result)
+                    return Ok("Uspešno dodata ponuda.");
+                
+                return BadRequest("Greška prilikom dodavanja ponude.");
             }
-            else
+            catch (Exception)
             {
-                return "Greska prilikom dodavanja offera";
+                return BadRequest("Greška prilikom dodavanja ponude.");
             }
         }
 
-        [HttpGet("offer/{key}")]
-        public IActionResult Get(string key)
+        [HttpGet("{auctionId}/{count}")]
+        public ActionResult<List<Offer>> Get(int auctionId, int count)
         {
-            var offer = offerService.Get(key);
-            if(offer != null)
+            try
             {
-                return Ok(offer);
+                var offers = offerService.GetOffersForAuction(auctionId, count);
+
+                return offers;
             }
-            else
+            catch (Exception)
             {
-                return NotFound("Offer sa zadatim kljucem nije pronadjen");
+                return BadRequest("Došlo je do greške prilikom učitavanja ponuda za aukciju.");
+            }
+        }
+
+        [HttpDelete("{auctionId}")]
+        public ActionResult Delete(int auctionId) {
+            try
+            {
+                bool result = offerService.DeleteOffersForAuction(auctionId);
+
+                if(result)
+                    return Ok("Uspešno brisanje svih ponuda.");
+
+                return BadRequest("Neuspešno brisanje ponuda.");
+                
+            }
+            catch (Exception)
+            {
+                return BadRequest("Došlo je do greške prilikom brisanja ponuda.");
             }
         }
     }

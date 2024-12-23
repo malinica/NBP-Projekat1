@@ -10,29 +10,38 @@ namespace DataLayer.Services
 
         public OfferService() { }
 
-        public bool Set(string key, CreateOfferDTO offer)
+        public bool Set(CreateOfferDTO offer)
         {
-            string keyEdited = "offer:" + key;
-            Offer o = new Offer(){
-                ID = offer.ID,
+            string sortedSetKey = $"auction:{offer.AuctionId}:offers";
+            Offer o = new Offer{
+                ID = Guid.NewGuid().ToString(),
                 Price = offer.Price,
-                OfferedAt = offer.OfferedAt
+                OfferedAt = offer.OfferedAt,
+                UserId = offer.UserId
             };
-            return redis.Set(keyEdited, JsonConvert.SerializeObject(o));
+            string member = JsonConvert.SerializeObject(o);
+
+            return redis.AddItemToSortedSet(sortedSetKey, member, offer.Price);
         }
 
-        public Offer? Get(string key)
+        public List<Offer> GetOffersForAuction(int auctionId, int count)
         {
-            string keyEdited = "offer:" + key;
-            string jsonData = redis.Get<string>(keyEdited);
-            if(!string.IsNullOrEmpty(jsonData))
-            {
-                return JsonConvert.DeserializeObject<Offer>(jsonData);
+            string sortedSetKey = $"auction:{auctionId}:offers";
+
+            var offersDescending = redis.GetRangeFromSortedSetDesc(sortedSetKey, 0, count-1);
+
+            List<Offer> result = new List<Offer>();
+
+            foreach (var offer in offersDescending) {
+                result.Add(JsonConvert.DeserializeObject<Offer>(offer)!);
             }
-            else
-            {
-                return null;
-            }
+
+            return result;
+        }
+
+        public bool DeleteOffersForAuction(int auctionId) {
+            string sortedSetKey = $"auction:{auctionId}:offers";
+            return redis.Remove(sortedSetKey);
         }
     }
 }

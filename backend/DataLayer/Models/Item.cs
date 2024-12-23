@@ -1,6 +1,6 @@
 using DataLayer.DTOs;
 using DataLayer.Enums;
-using Newtonsoft.Json;
+// using Newtonsoft.Json;
 using System;
 
 namespace DataLayer.Models
@@ -20,31 +20,14 @@ namespace DataLayer.Models
         public required string Pictures {get;set;}
 
         [InverseProperty("CreatedItems")]
+        [JsonIgnore]
         public User? Author {get;set;}
 
         [InverseProperty("WonItems")]
+        [JsonIgnore]
         public User? AuctionWinner {get;set;}
 
         //[InverseProperty("AuctionItem")]
         //public Auction? OnAuction{get;set;}
-
-        // public Item()
-        // {
-            
-        // }
-        // public Item(ItemDTO item)
-        // {
-        //     ID = item.ID;
-        //     Name = item.Name ?? string.Empty;  
-        //     Description = item.Description ?? string.Empty;  
-        //     Category = item.Category ?? string.Empty; 
-        // }
-        // public Item(int id, string name, string description, string category)
-        // {
-        //     ID = id;
-        //     Name = name;
-        //     Description = description;
-        //     Category = category;
-        // }
     }
 }

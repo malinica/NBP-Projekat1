@@ -7,8 +7,9 @@ namespace DataLayer.DTOs.OfferDTOs
 {
     public class CreateOfferDTO
     {
-        public int ID {get;set;}
-        public required int Price {get;set;}
-        public required DateTime OfferedAt {get;set;}
+        public required int Price { get; set; }
+        public required DateTime OfferedAt { get; set; }
+        public required string UserId { get; set; }
+        public required int AuctionId { get; set; }
     }
 }
