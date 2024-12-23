@@ -6,7 +6,7 @@ namespace DataLayer.Models
     public class Auction
     {
         [Key]
-        public int ID {get;set;}
+        public required string ID {get;set;}
         [Length(2,20)]
         public required string Title {get;set;}
         public required int StartingPrice {get;set;}
@@ -27,8 +27,7 @@ namespace DataLayer.Models
         }
 
         public Auction(CreateAuctionDTO auction)
-        {
-            ID = auction.ID;    
+        { 
             Title = auction.Title;  
             StartingPrice = auction.StartingPrice;  
             CurrentPrice = auction.CurrentPrice;    
@@ -37,9 +36,8 @@ namespace DataLayer.Models
             DueTo = auction.DueTo;      
         }
 
-        public Auction(int id, string title,  int startingPrice, int currentPrice, AuctionStatus status, DateTime postedOn, DateTime dueTo)
+        public Auction(string title,  int startingPrice, int currentPrice, AuctionStatus status, DateTime postedOn, DateTime dueTo)
         {
-            ID = id;
             Title = title;
             StartingPrice = startingPrice;
             CurrentPrice = currentPrice;

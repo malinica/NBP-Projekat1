@@ -8,7 +8,6 @@ namespace DataLayer.DTOs.AuctionDTOs
 {
     public class CreateAuctionDTO
     {
-        public int ID { get; set; }
         public required string Title {get;set;}
         public required int StartingPrice {get;set;}
         public required int CurrentPrice {get;set;}

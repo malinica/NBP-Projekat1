@@ -12,11 +12,10 @@ namespace DataLayer.Services
 
         public AuctionService() { }
 
-        public bool Set(string key, CreateAuctionDTO auction)
+        public bool Set(CreateAuctionDTO auction)
         {
-            string keyEdited="auction:"+key;
             Auction i=new Auction() {
-                ID=auction.ID,  
+                ID = Guid.NewGuid().ToString(),
                 Title=auction.Title,
                 StartingPrice=auction.StartingPrice,
                 CurrentPrice=auction.CurrentPrice,
@@ -24,6 +23,7 @@ namespace DataLayer.Services
                 PostedOnDate=auction.PostedOnDate,
                 DueTo=auction.DueTo,
             };
+            string keyEdited = $"auction:" + i.ID;
             return redis.Set(keyEdited, JsonConvert.SerializeObject(i));
         }
 
