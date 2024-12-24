@@ -23,7 +23,7 @@ const Navbar = () => {
     <>
       <nav className={`navbar navbar-expand-xl bg-cyan-blue`} id="mainNav">
         <div className={`container d-flex justify-content-between`}>
-        <Link className={`navbar-brand`} to="/">
+          <Link className={`navbar-brand`} to="/">
             <img className={`logo`} src="src/assets/logo.png" alt="logo" />
           </Link>
           <button className={`navbar-toggler`} type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive">
@@ -48,8 +48,8 @@ const Navbar = () => {
                 </li>         
                   :
                 <>
-                  <li className={`my-2 text-end`}><Link to="/StranicaPrijave" className={getLinkClass("/StranicaPrijave")}>PRIJAVA</Link></li>
-                  <li className={`my-2 text-end`}><Link to="/StranicaRegistracije" className={getLinkClass("/StranicaRegistracije")}>REGISTRACIJA</Link></li>
+                  <li className={`my-2 text-end`}><Link to="/login" className={getLinkClass("/login")}>PRIJAVA</Link></li>
+                  <li className={`my-2 text-end`}><Link to="/register" className={getLinkClass("/register")}>REGISTRACIJA</Link></li>
                 </>
               }
             </ul>

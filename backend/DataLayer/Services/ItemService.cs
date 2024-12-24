@@ -3,6 +3,7 @@ using ServiceStack.Redis;
 using DataLayer.Context;
 using DataLayer.DTOs.ItemDTOs;
 using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace DataLayer.Services
 {
@@ -20,7 +21,21 @@ namespace DataLayer.Services
             if (author == null) 
                 throw new Exception("Ne postoji korisnik sa zadatim ID-jem.");
             
-            var pictures = JsonSerializer.Serialize(itemDTO.Pictures);
+            List<string> picturesPaths = new List<string>();
+            foreach(var picture in itemDTO.Pictures) {
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(picture.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                var filePath = Path.Combine(path, fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await picture.CopyToAsync(stream);
+                }
+                picturesPaths.Add(filePath);
+            }
+
+
+            var pictures = JsonConvert.SerializeObject(picturesPaths);
 
             Item item = new Item {
                 Name = itemDTO.Name,
@@ -37,13 +52,24 @@ namespace DataLayer.Services
             return item.ID;
         }
         
-        public async Task<Item> GetItem(int id) 
+        public async Task<ItemResultDTO> GetItem(int id) 
         {
             var item = await context.Items.FindAsync(id);
+
             if (item == null)
                 throw new Exception("Nije pronadjen željeni predmet.");
+
+            List<string> picturesPaths = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>();
+            ItemResultDTO itemResult = new ItemResultDTO {
+                ID = item.ID,
+                Name = item.Name,
+                Description = item.Description,
+                Category = item.Category,
+                Pictures = picturesPaths
+            };
             
-            return item;
+            
+            return itemResult;
         }
     }
 }

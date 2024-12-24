@@ -20,7 +20,7 @@ namespace backend.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<int>> Create([FromBody] CreateItemDTO itemDTO) {
+        public async Task<ActionResult<int>> Create([FromForm] CreateItemDTO itemDTO) {
             try {
                 var itemID = await itemService.Create(itemDTO);
 
@@ -32,7 +32,7 @@ namespace backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Item>> Get(int id) {
+        public async Task<ActionResult<ItemResultDTO>> Get(int id) {
             try {
                 var item = await itemService.GetItem(id);
                 return Ok(item);

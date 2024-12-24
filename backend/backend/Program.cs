@@ -137,7 +137,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStatusCodePages();
-
+app.UseStaticFiles();
 app.UseCors("CORS");
 app.UseAuthentication();
 app.UseAuthorization();

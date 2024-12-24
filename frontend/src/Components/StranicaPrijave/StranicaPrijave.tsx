@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from 'react';
 import { useAuth } from "../../Context/useAuth";
+import toast from "react-hot-toast";
+import { AxiosError } from "axios";
 
 const StranicaPrijave = () => {
   const [email, setEmail] = useState<string>('');
@@ -17,14 +19,14 @@ const StranicaPrijave = () => {
     try 
     {
       if (!(email.trim()) || !password) {
-        console.log("Niste uneli e-mail i lozinku.");
+        toast.error("Niste uneli e-mail i lozinku.");
         return;
       }
       await loginUser(email, password);
     } 
-    catch (error) 
+    catch (error:any) 
     {
-      console.error(error);
+      toast.error(error.response.data);
     }
   };
 

@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router";
 import React, { createContext, useEffect, useState } from "react";
 import axios from "axios";
-import { ApplicationUser } from "../interfejsi";
 import { loginAPI, registerAPI } from "../Services/AuthService";
+import { User } from "../Interfaces/User/User";
 
 type UserContextType = {
-  user: ApplicationUser | null;
+  user: User | null;
   token: string | null;
   registerUser: (email: string, username: string, password: string) => void;
   loginUser: (email: string, password: string) => void;
@@ -22,7 +22,7 @@ export const UserContext = createContext<UserContextType>({} as UserContextType)
 export const UserProvider = ({ children }: Props) => {
   const navigate = useNavigate();
   const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<ApplicationUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isReady, setIsReady] = useState<boolean>(false);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export const UserProvider = ({ children }: Props) => {
       .then((res) => {
         if (res) {
           localStorage.setItem("token", res?.data.token);
-          const userObj: ApplicationUser = {
+          const userObj: User = {
             username: res?.data.username,
             email: res?.data.email,
             role: res?.data.role
@@ -53,7 +53,7 @@ export const UserProvider = ({ children }: Props) => {
           setToken(res?.data.token);
           setUser(userObj!);
 
-          navigate("/StranicaPretrage");
+          navigate("/");
         }
       })
       .catch((e) => console.error(e));
@@ -64,7 +64,7 @@ export const UserProvider = ({ children }: Props) => {
       .then((res) => {
         if (res) {
           localStorage.setItem("token", res?.data.token);
-          const userObj: ApplicationUser = {
+          const userObj: User = {
             username: res?.data.username,
             email: res?.data.email,
             role: res?.data.role
@@ -77,7 +77,7 @@ export const UserProvider = ({ children }: Props) => {
           setUser(userObj!);
 
           
-          navigate("/StranicaPretrage");
+          navigate("/");
         }
       })
       .catch((e) => console.error(e));

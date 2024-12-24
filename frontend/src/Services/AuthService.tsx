@@ -1,25 +1,26 @@
 import axios from "axios";
-import { ApplicationUserToken } from "../interfejsi";
+import toast from "react-hot-toast";
+import { AuthResponse } from "../Interfaces/User/AuthResponse";
 
 const api = "http://localhost:5257/api/User";
 
 export const loginAPI = async (email:string, password:string) => {
     try {
-        const data = await axios.post<ApplicationUserToken>(api+"/login", {
+        const data = await axios.post<AuthResponse>(api+"/login", {
             email:email,
             password:password
         });
 
         return data;
     }
-    catch(error) {
-        console.log(error);
+    catch(error:any) {
+        toast.error(error.response.data);
     }
 }
 
 export const registerAPI = async (email:string, username:string, password:string) => {
     try {
-        const data = await axios.post<ApplicationUserToken>(api+"/register", {
+        const data = await axios.post<AuthResponse>(api+"/register", {
             email:email,
             username:username,
             password:password
@@ -27,8 +28,8 @@ export const registerAPI = async (email:string, username:string, password:string
 
         return data;
     }
-    catch(error) {
-        console.log(error);
+    catch(error:any) {
+        toast.error(error.response.data);
     }
 }
 
