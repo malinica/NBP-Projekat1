@@ -16,8 +16,8 @@ namespace DataLayer.Services
             this.context = context;
         }
 
-        public async Task<int> Create(CreateItemDTO itemDTO) {
-            var author = await context.Users.FindAsync(itemDTO.AuthorID);
+        public async Task<ItemResultDTO> Create(CreateItemDTO itemDTO, string authorId) {
+            var author = await context.Users.FindAsync(authorId);
             if (author == null) 
                 throw new Exception("Ne postoji korisnik sa zadatim ID-jem.");
             
@@ -49,7 +49,8 @@ namespace DataLayer.Services
             await context.Items.AddAsync(item);
             await context.SaveChangesAsync();
 
-            return item.ID;
+            var result = await GetItem(item.ID);
+            return result;
         }
         
         public async Task<ItemResultDTO> GetItem(int id) 

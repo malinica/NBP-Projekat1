@@ -9,6 +9,5 @@ namespace DataLayer.DTOs.ItemDTOs
         public required string Description { get; set;}
         public required ItemCategory Category {get; set;}
         public required List<IFormFile> Pictures {get;set;}
-        public required string AuthorID {get;set;}
     }
 }

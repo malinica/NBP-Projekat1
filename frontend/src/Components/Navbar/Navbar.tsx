@@ -31,6 +31,7 @@ const Navbar = () => {
           </button>
           <div className={`collapse navbar-collapse pb-4 pb-xxl-0 d-xl-flex justify-content-xl-end`} id="navbarResponsive">
             <ul className={`navbar-nav`}>
+              <li className={`my-2 text-end`}><Link to="/create-item" className={getLinkClass("/add-item")}>DODAJ PREDMET</Link></li>
               {isLoggedIn() 
                   ?
                  <li className={`ms-3 text-end`}>

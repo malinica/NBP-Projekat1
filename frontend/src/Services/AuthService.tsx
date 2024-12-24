@@ -1,6 +1,6 @@
 import axios from "axios";
 import toast from "react-hot-toast";
-import { AuthResponse } from "../Interfaces/User/AuthResponse";
+import { AuthResponse } from "../Interfaces/User/AuthResponseDTO";
 
 const api = "http://localhost:5257/api/User";
 

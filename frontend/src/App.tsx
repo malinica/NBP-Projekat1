@@ -7,6 +7,7 @@ import StranicaPrijave from "./Components/StranicaPrijave/StranicaPrijave";
 import Footer from './Components/Footer/Footer';
 import { Toaster } from 'react-hot-toast';
 import Home from "./Components/Home/Home";
+import CreateItem from "./Components/CreateItem/CreateItem";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <div className="content">
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/create-item" element={<CreateItem />} />
                 <Route path="/register" element={<StranicaRegistracije />} />
                 <Route path="/login" element={<StranicaPrijave />} />
               </Routes>
