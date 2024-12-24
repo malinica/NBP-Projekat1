@@ -66,3 +66,56 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lalezar", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.bg-steel-blue {
+  background-color: #4577b7;
+}
+.bg-pale-blue {
+  background-color: #98C1D9;
+}
+.bg-cyan-blue {
+  background-color: #E0FBFC;
+}
+.bg-coral {
+  background-color: #EE6C4D;
+}
+.bg-metal {
+  background-color: #293241;
+} 
+
+
+.text-steel-blue {
+  background-color: #4577b7;
+}
+.text-pale-blue {
+  background-color: #98C1D9;
+}
+.text-cyan-blue {
+  background-color: #E0FBFC;
+}
+.text-coral {
+  background-color: #EE6C4D;
+}
+.text-metal {
+  background-color: #293241;
+} 
+
+  
+.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

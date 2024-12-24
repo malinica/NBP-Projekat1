@@ -1,0 +1,51 @@
+.App {
+    max-height: 100vh;
+}
+
+.pocetna {
+    background-color: #F5F8FD;
+}
+
+.linija_ispod_dugmeta{
+    text-decoration: none;
+}
+
+.dugme1 {
+    background-color: #ABB0F5;
+    font-size: 1.5rem; 
+    padding: 1rem 2rem; 
+    transition: 0.4s;
+}
+
+.dugme1:hover {
+    background-color: #F58F29;
+}
+
+.dugme2 {
+    background-color: #F58F29;
+    font-size: 1.5rem; 
+    padding: 1rem 2rem;
+    white-space: nowrap;
+    transition: 0.4s;
+}
+
+.dugme2:hover {
+    background-color: #4464AD;
+}
+
+.pocetak {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    z-index: 99;
+    font-size: 18px;
+    border: none;
+    outline: none;
+    padding: 15px;
+    border-radius: 4px;
+  }
+  
+  .pocetak:hover {
+    background-color: #F58F29;
+  }
+  

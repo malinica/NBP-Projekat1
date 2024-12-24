@@ -43,7 +43,7 @@ const StranicaPrijave = () => {
   return (
     <div className={`container-fluid bg-powder d-flex justify-content-center flex-grow-1`}>
       <div className={`row container-fluid d-flex justify-content-center`}>
-        <div className={`col-xxl-4 col-xl-5 col-lg-6 col-md-7 col-sm-8 p-5 m-4 bg-light rounded d-flex flex-column`}>
+        <div className={`col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 p-5 m-4 bg-light rounded d-flex flex-column`}>
             <div className={`m-5`}></div>
             <h4 className={`text-blue text-center`}>Prijavite Se</h4>
             <h6 className={`text-powder text-center mb-3`}>Dobrodošli nazad!</h6>

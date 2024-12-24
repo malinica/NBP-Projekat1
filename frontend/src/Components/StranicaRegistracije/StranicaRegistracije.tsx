@@ -87,10 +87,10 @@ const StranicaRegistracije = (props: Props) => {
   };
 
   return (
-    <div className={`container-fluid bg-powder d-flex justify-content-center flex-grow-1`}>
-      <div className={`col-xxl-4 col-xl-5 col-lg-6 col-md-7 col-sm-8 p-5 m-4 bg-light rounded d-flex flex-column`}>
-        <h4 className={`mt-5 text-blue text-center`}>Registrujte Se</h4>
-        <h6 className={`text-powder text-center mb-3`}>Dobrodošli!</h6>
+    <div className={`container-fluid bg-pale-blue d-flex justify-content-center flex-grow-1`}>
+      <div className={`col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 p-5 m-4 bg-light rounded d-flex flex-column`}>
+        <h4 className={`mt-5 text-center`}>Registrujte Se</h4>
+        <h6 className={`text-center mb-3`}>Dobrodošli!</h6>
         <div className={`form-floating mb-2 mt-2`}>
           <input
             type="text"
