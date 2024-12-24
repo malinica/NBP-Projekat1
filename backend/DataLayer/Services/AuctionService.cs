@@ -12,7 +12,7 @@ namespace DataLayer.Services
 
         public AuctionService() { }
 
-        public bool Set(CreateAuctionDTO auction)
+        public bool Set(CreateAuctionDTO auction, string username)
         {
             Auction i=new Auction() {
                 ID = Guid.NewGuid().ToString(),
@@ -24,7 +24,16 @@ namespace DataLayer.Services
                 DueTo=auction.DueTo,
             };
             string keyEdited = $"auction:" + i.ID;
-            return redis.Set(keyEdited, JsonConvert.SerializeObject(i));
+            bool status= redis.Set(keyEdited, JsonConvert.SerializeObject(i));
+            if (status)
+            {
+            redis.IncrementValueInHash("auctionLeaderboard", username, 1);
+            double auctionEndTime = new DateTimeOffset(auction.DueTo).ToUnixTimeSeconds();
+            redis.AddItemToSortedSet("sortedAuctions", keyEdited, auctionEndTime);
+
+            }
+            return status;
+
         }
 
         public Auction? Get(string key)
@@ -39,46 +48,32 @@ namespace DataLayer.Services
             return null; 
         }
 
-        public List<Auction> LeaderboardMostPlacedAuctions()
-        {
-            var scanResult = redis.Keys(pattern: "auction:*");
-            List<Auction> list = new List<Auction>();
 
-            foreach (var key in scanResult)
-            {
-                string keyStringFormat = Encoding.UTF8.GetString(key);
 
-                string jsonData = redis.Get<string>(keyStringFormat);
-
-                if (!string.IsNullOrEmpty(jsonData))
-                {
-                    list.Add(JsonConvert.DeserializeObject<Auction>(jsonData));
-                }
-            }
-
-            return list;
-        }
-
-        public List<Auction> LeaderboardAuctionsBasedOnTimeExpiring()
-        {
-            var scanResult = redis.Keys(pattern: "auction:*");
-            List<Auction> list = new List<Auction>();
-
-            foreach (var key in scanResult)
-            {
-                string keyStringFormat = Encoding.UTF8.GetString(key);
-                string jsonData = redis.Get<string>(keyStringFormat);
-
-                if (!string.IsNullOrEmpty(jsonData))
-                {
-                    var auctionDeserialized=(JsonConvert.DeserializeObject<Auction>(jsonData));
-                    if (auctionDeserialized.Status==AuctionStatus.Active)
-                        list.Add(auctionDeserialized);
-                }
-            }
-
-            return list.OrderBy(a => a.DueTo).ToList();
-        }
-
+public List<Auction> LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition, int N)
+{
+    var sortedEntries = redis.GetRangeFromSortedSet("auctionLeaderboard", fromPosition, fromPosition + N - 1);
+    
+    List<Auction> auctions = new List<Auction>();
+    
+    foreach (var entry in sortedEntries)
+    {
+        var auction = JsonConvert.DeserializeObject<Auction>(entry);
+        auctions.Add(auction);
     }
+
+    return auctions;
+}
+
+
+
+       public Dictionary<string, string> LeaderboardMostPlacedAuctions()
+{
+      var allEntries = redis.GetAllEntriesFromHash("auctionLeaderboard");
+    return allEntries;
+}
+
+
+        
+}
 }

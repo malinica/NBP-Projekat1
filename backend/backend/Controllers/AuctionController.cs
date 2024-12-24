@@ -19,11 +19,11 @@ namespace backend.Controllers
         }
 
         [HttpPost("set")]
-        public ActionResult<string> Set([FromBody]CreateAuctionDTO auction)
+        public ActionResult<string> Set([FromBody]CreateAuctionDTO auction, string username)
         {
             try
             {
-                bool result = auctionService.Set(auction);
+                bool result = auctionService.Set(auction,username);
 
                 if(result)
                     return Ok("Auction's data has been successfully saved.");
@@ -66,10 +66,11 @@ namespace backend.Controllers
             }
             return NotFound("Error in loading Leaderboard for users with the highest auction");
         }
-        [HttpGet("auction/LeaderboardAuctionsBasedOnTimeExpiring")]
-        public IActionResult LeaderboardAuctionsBasedOnTimeExpiring()
+
+        [HttpGet("auction/LeaderboardAuctionsBasedOnTimeExpiring/{fromPosition}/{N}")]
+        public IActionResult LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition,int N)
         {
-            var auctions = auctionService.LeaderboardAuctionsBasedOnTimeExpiring();
+            var auctions = auctionService.LeaderboardAuctionsBasedOnTimeExpiring(fromPosition,N);
 
             if (auctions != null && auctions.Any())
             {
