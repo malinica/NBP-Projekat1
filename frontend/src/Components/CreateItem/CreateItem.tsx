@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { ItemCategory } from '../../Enums/ItemCategory';
 import { createItemAPI } from '../../Services/ItemService';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { Item } from '../../Interfaces/Item/Item';
 
 type Props = {}
 
@@ -10,6 +12,8 @@ const CreateItem = (props: Props) => {
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState<ItemCategory>(ItemCategory.Subject);
     const [pictures, setPictures] = useState<FileList | null>(null);
+
+    const navigate = useNavigate();
   
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setName(e.target.value);
@@ -44,11 +48,13 @@ const CreateItem = (props: Props) => {
       }
   
       try {
-        const data = await createItemAPI(formData);
+        const response = await createItemAPI(formData);
   
-        console.log(data);
-        if(data && data.status==200){
+        console.log(response);
+        if(response && response.status==200){
             toast.success("Uspešno je dodat nov predmet.");
+            const item:Item = response.data;
+            navigate(`../items/${item.id}`);
         }
       } catch (error: any) {
             console.error(error.response?.data || error.message);

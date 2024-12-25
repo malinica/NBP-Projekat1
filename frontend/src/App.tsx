@@ -9,6 +9,7 @@ import Footer from './Components/Footer/Footer';
 import { Toaster } from 'react-hot-toast';
 import Home from "./Components/Home/Home";
 import CreateItem from "./Components/CreateItem/CreateItem";
+import DisplayItem from "./Components/DisplayItem/DisplayItem";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/create-item" element={<CreateItem />} />
+                <Route path="/items/:id" element={<DisplayItem />} />
                 <Route path="/register" element={<StranicaRegistracije />} />
                 <Route path="/login" element={<StranicaPrijave />} />
                 <Route path="/auctions" element={<StranicaAukcija />} />

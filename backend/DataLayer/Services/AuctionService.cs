@@ -14,23 +14,23 @@ namespace DataLayer.Services
 
         public bool Set(CreateAuctionDTO auction, string username)
         {
-            Auction i=new Auction() {
+            Auction i = new Auction()
+            {
                 ID = Guid.NewGuid().ToString(),
-                Title=auction.Title,
-                StartingPrice=auction.StartingPrice,
-                CurrentPrice=auction.CurrentPrice,
-                Status=auction.Status,
-                PostedOnDate=auction.PostedOnDate,
-                DueTo=auction.DueTo,
+                Title = auction.Title,
+                StartingPrice = auction.StartingPrice,
+                CurrentPrice = auction.CurrentPrice,
+                Status = auction.Status,
+                PostedOnDate = auction.PostedOnDate,
+                DueTo = auction.DueTo,
             };
             string keyEdited = $"auction:" + i.ID;
-            bool status= redis.Set(keyEdited, JsonConvert.SerializeObject(i));
+            bool status = redis.Set(keyEdited, JsonConvert.SerializeObject(i));
             if (status)
             {
-            redis.IncrementValueInHash("auctionLeaderboard", username, 1);
-            double auctionEndTime = new DateTimeOffset(auction.DueTo).ToUnixTimeSeconds();
-            redis.AddItemToSortedSet("sortedAuctions", keyEdited, auctionEndTime);
-
+                redis.IncrementValueInHash("auctionLeaderboard", username, 1);
+                double auctionEndTime = new DateTimeOffset(auction.DueTo).ToUnixTimeSeconds();
+                redis.AddItemToSortedSet("sortedAuctions", keyEdited, auctionEndTime);
             }
             return status;
 
@@ -45,35 +45,32 @@ namespace DataLayer.Services
             {
                 return JsonConvert.DeserializeObject<Auction>(jsonData);
             }
-            return null; 
+            return null;
         }
 
 
 
-public List<Auction> LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition, int N)
-{
-    var sortedEntries = redis.GetRangeFromSortedSet("auctionLeaderboard", fromPosition, fromPosition + N - 1);
-    
-    List<Auction> auctions = new List<Auction>();
-    
-    foreach (var entry in sortedEntries)
-    {
-        var auction = JsonConvert.DeserializeObject<Auction>(entry);
-        auctions.Add(auction);
+        public List<Auction> LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition, int N)
+        {
+            var sortedEntries = redis.GetRangeFromSortedSet("auctionLeaderboard", fromPosition, fromPosition + N - 1);
+
+            List<Auction> auctions = new List<Auction>();
+
+            foreach (var entry in sortedEntries)
+            {
+                var auction = JsonConvert.DeserializeObject<Auction>(entry);
+                auctions.Add(auction);
+            }
+
+            return auctions;
+        }
+
+        public Dictionary<string, string> LeaderboardMostPlacedAuctions()
+        {
+            var allEntries = redis.GetAllEntriesFromHash("auctionLeaderboard");
+            
+            return allEntries;
+        }
+
     }
-
-    return auctions;
-}
-
-
-
-       public Dictionary<string, string> LeaderboardMostPlacedAuctions()
-{
-      var allEntries = redis.GetAllEntriesFromHash("auctionLeaderboard");
-    return allEntries;
-}
-
-
-        
-}
 }
