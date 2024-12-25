@@ -15,18 +15,20 @@ namespace backend.Controllers
     public class ItemController : ControllerBase
     {
         private readonly ItemService itemService;
+        private readonly UserService userService;
 
-        public ItemController(ItemService itemService)
+        public ItemController(ItemService itemService, UserService userService)
         {
             this.itemService = itemService;
+            this.userService = userService;
         }
 
         [HttpPost("create")]
         [Authorize]
         public async Task<ActionResult<ItemResultDTO>> Create([FromForm] CreateItemDTO itemDTO) {
             try {
-                var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);//nece da procita id
-                var item = await itemService.Create(itemDTO, userId ?? "");
+                var user = await userService.GetCurrentUser(User);
+                var item = await itemService.Create(itemDTO, user?.Id ?? "");
 
                 return Ok(item);
             }

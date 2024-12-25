@@ -31,7 +31,7 @@ namespace DataLayer.Services
                 {
                     await picture.CopyToAsync(stream);
                 }
-                picturesPaths.Add(filePath);
+                picturesPaths.Add(fileName);
             }
 
 

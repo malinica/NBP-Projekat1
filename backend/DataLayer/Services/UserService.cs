@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using DataLayer.Context;
 using DataLayer.DTOs.UserDTOs;
@@ -82,6 +83,10 @@ namespace DataLayer.Services
                 Token = accessToken,
                 Role=userInDb.Role  
             };
+        }
+
+        public async Task<User?> GetCurrentUser(ClaimsPrincipal user) {
+            return await userManager.GetUserAsync(user);
         }
     }
 }
