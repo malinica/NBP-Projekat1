@@ -8,8 +8,6 @@ import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { AuctionStatus } from "../../Enums/AuctionStatus";
 
-
-
 const StranicaAukcija = () => {
     //const { isLoggedIn, user } = useAuth();
     return (
