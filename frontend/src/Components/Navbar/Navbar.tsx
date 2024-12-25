@@ -2,7 +2,7 @@ import { faUser , faBars} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../Context/useAuth";
-import "./Navbar.css"
+import styles from "./Navbar.module.css";
 import { Dropdown } from 'react-bootstrap';
 import { Role } from "../../Enums/Role";
 
@@ -21,19 +21,19 @@ const Navbar = () => {
   
   return (
     <>
-      <nav className={`navbar navbar-expand-xl bg-cyan-blue`} id="mainNav">
+      <nav className={`navbar navbar-expand-xl`} id="mainNav">
         <div className={`container d-flex justify-content-between`}>
           <Link className={`navbar-brand`} to="/">
-            <img className={`logo`} src="src/assets/logo.png" alt="logo" />
+            <img className={`${styles.logo}`} src="src/assets/logo.png" alt="logo" />
           </Link>
           <button className={`navbar-toggler`} type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive">
             <FontAwesomeIcon icon={faBars} />
           </button>
           <div className={`collapse navbar-collapse pb-4 pb-xxl-0 d-xl-flex justify-content-xl-end`} id="navbarResponsive">
             <ul className={`navbar-nav`}>
-              <li className={`my-2 text-end`}><Link to="/create-item" className={getLinkClass("/add-item")}>DODAJ PREDMET</Link></li>
+              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/create-item" className={` ${getLinkClass("/add-item")} ${styles.link}`}>DODAJ PREDMET</Link>} </li>
               {isLoggedIn() 
-                  ?
+                 ?                
                  <li className={`ms-3 text-end`}>
                  <Dropdown>
                    <Dropdown.Toggle className={`user-dropdown`} variant="light" id="dropdown-basic">
@@ -49,8 +49,8 @@ const Navbar = () => {
                 </li>         
                   :
                 <>
-                  <li className={`my-2 text-end`}><Link to="/login" className={getLinkClass("/login")}>PRIJAVA</Link></li>
-                  <li className={`my-2 text-end`}><Link to="/register" className={getLinkClass("/register")}>REGISTRACIJA</Link></li>
+                  <li className={`my-2 text-end`}><Link to="/login" className={`${getLinkClass("/login")} ${styles.link}`}>PRIJAVA</Link></li>
+                  <li className={`my-2 text-end`}><Link to="/register" className={`${getLinkClass("/register")} ${styles.link}`}>REGISTRACIJA</Link></li>
                 </>
               }
             </ul>

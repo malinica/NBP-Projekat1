@@ -88,9 +88,9 @@ const StranicaRegistracije = (props: Props) => {
 
   return (
     <div className={`container-fluid bg-pale-blue d-flex justify-content-center flex-grow-1`}>
-      <div className={`col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 p-5 m-4 bg-light rounded d-flex flex-column`}>
-        <h4 className={`mt-5 text-center`}>Registrujte Se</h4>
-        <h6 className={`text-center mb-3`}>Dobrodošli!</h6>
+      <div className={`col-xxl-7 col-xl-7 col-lg-6 col-md-10 col-sm-12 p-5 m-4 bg-light rounded d-flex flex-column`}>
+        <h4 className={`mt-5 text-center text-steel-blue`}>Registrujte Se</h4>
+        <h6 className={`text-center mb-3 text-coral`}>Dobrodošli!</h6>
         <div className={`form-floating mb-2 mt-2`}>
           <input
             type="text"
@@ -145,7 +145,7 @@ const StranicaRegistracije = (props: Props) => {
         >
           Registrujte Se
         </button>
-        <p className={`text-blue mt-2 text-center`}>
+        <p className={`text-coral mt-2 text-center`}>
           Imate nalog?&nbsp;
           <Link
             className={`text-blue text-decoration-none`}

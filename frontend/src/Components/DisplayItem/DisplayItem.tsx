@@ -26,45 +26,45 @@ const DisplayItem = (props: Props) => {
   }, []);
 
   return (
-    <div className="container">
+    <div className={`container`}>
         {!isLoading ? 
         (<>
-            <div className="row">
-                <div className="col-6">
-                    <div id="carouselExampleIndicators" className="carousel slide">
-                    <div className="carousel-indicators">
+            <div className={`row justify-content-center align-items-center`}>
+                <div className={`col-lg-6 mb-4 mb-lg-0`}>
+                    <div id="carouselExampleIndicators" className={`carousel slide shadow rounded overflow-hidden`}>
+                    <div className={`carousel-indicators`}>
                         {item?.pictures.map((_, i) =>
                             <button type="button" key={i} data-bs-target="#carouselExampleIndicators" data-bs-slide-to={`${i}`} className={`${i==0 ? 'active':''}`}></button>
                         )}
                     </div>
-                    <div className="carousel-inner">
+                    <div className={`carousel-inner`}>
                         {item?.pictures.map((pictureName, i) => (
                             <div className={`carousel-item ${i === 0 ? "active" : ""}`} key={i}>
-                                <img src={`${import.meta.env.VITE_API_URL}/${pictureName}`} className="d-block w-100" alt="..."/>
+                                <img src={`${import.meta.env.VITE_API_URL}/${pictureName}`} className={`d-block w-100`} alt="..."/>
                             </div>
                             ) 
                         )}
                     </div>
-                    <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span className="visually-hidden">Previous</span>
+                    <button className={`carousel-control-prev`} type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                        <span className={`carousel-control-prev-icon`} aria-hidden="true"></span>
+                        <span className={`visually-hidden`}>Previous</span>
                     </button>
-                    <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span className="visually-hidden">Next</span>
+                    <button className={`carousel-control-next`} type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                        <span className={`carousel-control-next-icon`} aria-hidden="true"></span>
+                        <span className={`visually-hidden`}>Next</span>
                     </button>
                     </div>
                 </div>
-                <div className="col-6">
-                    <p>{item?.name}</p>
-                    <p>{item?.description}</p>
-                    <p>{item?.category}</p>
+                <div className={`col-lg-6 text-lg-start text-center`}>
+                    <p className={`text-primary mb-3`}>{item?.name}</p>
+                    <p className={`text-muted mb-2`}>{item?.description}</p>
+                    <p className={`badge bg-coral`}>{item?.category}</p>
                 </div>
             </div>
             
         </>) 
         : 
-        (<p>Loading...</p>)}
+        (<p className={`text-center text-muted`}>Loading...</p>)}
     </div>
   );
 };

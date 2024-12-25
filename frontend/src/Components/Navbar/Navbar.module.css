@@ -1,0 +1,92 @@
+.logo {
+    width: 130px;
+    height: 130px;
+}
+
+.link {
+    margin-left: 30px;
+    font-weight: 400;
+    color: #EE6C4D;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.link:focus,
+.link:hover {
+    color: #4577b7; 
+}
+
+.link-hover {
+    position: relative;
+}
+
+.link-hover::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #EE6C4D;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.link-hover:hover::before {
+    transform: scaleX(1); 
+}
+
+.link-hover:active {
+    color: #4577b7; 
+}
+
+.btn-registracija {
+    background-color: #98C1D9;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    transition: 0.4s;
+}
+
+.btn-registracija:hover {
+    background-color: #4577b7;
+    color: white;
+}
+
+.link:focus{
+    color: #4577b7;
+}
+
+.link-hover.active {
+    color: #4577b7;
+}
+
+.user-dropdown {
+    color:#293241 !important;
+}
+
+.custom-dropdown-item {
+    background-color: #fff!important;
+    color:#EE6C4D !important;
+}
+
+.custom-dropdown-item:hover,
+.custom-dropdown-item:focus,
+.custom-dropdown-item:active {
+  background-color: #4577b7 !important;
+  color: #F5F8FD !important;
+}
+
+.custom-dropdown-item1 {
+    background-color: #fff!important;
+    color:#98C1D9 !important;
+}
+
+.custom-dropdown-item1:hover,
+.custom-dropdown-item1:focus,
+.custom-dropdown-item1:active {
+  background-color: #4577b7 !important;
+  color: #F5F8FD !important;
+}
