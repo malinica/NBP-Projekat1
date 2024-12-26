@@ -2,8 +2,14 @@ namespace DataLayer.Enums
 {
     public enum ItemCategory
     {
-        Subject,
-        Space,
-        Skill
+        Electronics,
+        Furniture,
+        Clothing,
+        Vehicles,
+        Collectibles,
+        Books,
+        Toys,
+        Games,
+        Musical
     }
 }

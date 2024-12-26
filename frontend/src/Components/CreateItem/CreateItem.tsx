@@ -11,7 +11,7 @@ type Props = {}
 const CreateItem = (props: Props) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [category, setCategory] = useState<ItemCategory>(ItemCategory.Subject);
+    const [category, setCategory] = useState<ItemCategory>(ItemCategory.Electronics);
     const [pictures, setPictures] = useState<FileList | null>(null);
 
     const navigate = useNavigate();

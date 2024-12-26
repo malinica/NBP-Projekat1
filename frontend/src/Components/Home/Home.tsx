@@ -9,18 +9,16 @@ interface Record {
   postedAuctions: string;
 }
 const Home = () => {
-  const [topUsers,setTopUsers]=useState<Record[]|undefined>(undefined);
+  const [topUsers, setTopUsers] = useState<Record[] | undefined>(undefined);
   const [showButton, setShowButton] = useState(false);
   //const { isLoggedIn, user } = useAuth();
 
   const loadLeaderboard = async () => {
     const data = await getLeaderboardForPlacedAuctions();
     if (data) {
-      setTopUsers(data);  
+      setTopUsers(data);
     }
   };
-
-
 
   useEffect(() => {
     loadLeaderboard();
@@ -42,36 +40,35 @@ const Home = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-
   return (
-    <div>
-        <h1>Pocetna</h1>
-        {topUsers ? (
-            <>
-                <p>Pocetnaaa</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Posted Auctions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {topUsers.map((user, index) => (
-                            <tr key={index}>
-                                <td>{user.username}</td>
-                                <td>{user.postedAuctions}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </>
-        ) : (
-            <p>Loading...</p>
-        )}
+    <div className="container mt-5">
+      <h1>Pocetna</h1>
+      {topUsers ? (
+        <>
+          <table className="table table-bordered mt-4">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Username</th>
+                <th>Posted Auctions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topUsers.map((user, index) => (
+                <tr key={index} className={index === 0 ? "table-primary" : ""}>
+                  <td>{index + 1}</td>
+                  <td>{user.username}</td>
+                  <td>{user.postedAuctions}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
-);
-
+  );
 };
 
 export default Home;

@@ -19,20 +19,20 @@ namespace backend.Controllers
         }
 
         [HttpPost("set")]
-        public ActionResult<string> Set([FromBody]CreateAuctionDTO auction, string username)
+        public ActionResult<string> Set([FromBody] CreateAuctionDTO auction, string username)
         {
             try
             {
-                bool result = auctionService.Set(auction,username);
+                bool result = auctionService.Set(auction, username);
 
-                if(result)
+                if (result)
                     return Ok("Auction's data has been successfully saved.");
 
                 return BadRequest("Auction's data has not been successfully saved.");
             }
-            catch(Exception)
+            catch (Exception ex)
             {
-                return BadRequest("Auction's data has not been successfully saved.");
+                return BadRequest(ex.Message);
             }
         }
 
@@ -49,34 +49,48 @@ namespace backend.Controllers
                 }
                 return NotFound("Auction with the specified key is not found.");
             }
-            catch(Exception)
+            catch (Exception ex)
             {
-                return BadRequest("There has been an error with auction.");
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpGet("auction/LeaderboardMostPlacedAuctions")]
         public IActionResult LeaderboardMostPlacedAuctions()
         {
-            var auctions = auctionService.LeaderboardMostPlacedAuctions();
-
-            if (auctions != null && auctions.Any())
+            try
             {
-                return Ok(auctions);
+                var auctions = auctionService.LeaderboardMostPlacedAuctions();
+
+                if (auctions != null && auctions.Any())
+                {
+                    return Ok(auctions);
+                }
+                return NotFound("Error in loading Leaderboard for users with the highest auction");
             }
-            return NotFound("Error in loading Leaderboard for users with the highest auction");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("auction/LeaderboardAuctionsBasedOnTimeExpiring/{fromPosition}/{N}")]
-        public IActionResult LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition,int N)
+        public IActionResult LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition, int N)
         {
-            var auctions = auctionService.LeaderboardAuctionsBasedOnTimeExpiring(fromPosition,N);
-
-            if (auctions != null && auctions.Any())
+            try
             {
-                return Ok(auctions);
+                var auctions = auctionService.LeaderboardAuctionsBasedOnTimeExpiring(fromPosition, N);
+
+                if (auctions != null && auctions.Any())
+                {
+                    return Ok(auctions);
+                }
+                return NotFound("Error in loading Leaderboard for auctions based on time expiring");
             }
-            return NotFound("Error in loading Leaderboard for auctions based on time expiring");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
