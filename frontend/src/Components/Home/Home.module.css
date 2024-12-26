@@ -11,18 +11,18 @@
 }
 
 .dugme1 {
-    background-color: #ABB0F5;
+    background-color: #98C1D9;
     font-size: 1.5rem; 
     padding: 1rem 2rem; 
     transition: 0.4s;
 }
 
 .dugme1:hover {
-    background-color: #F58F29;
+    background-color: #EE6C4D;
 }
 
 .dugme2 {
-    background-color: #F58F29;
+    background-color: #EE6C4D;
     font-size: 1.5rem; 
     padding: 1rem 2rem;
     white-space: nowrap;
@@ -30,7 +30,7 @@
 }
 
 .dugme2:hover {
-    background-color: #4464AD;
+    background-color: #4577b7;
 }
 
 .pocetak {
@@ -46,6 +46,6 @@
   }
   
   .pocetak:hover {
-    background-color: #F58F29;
+    background-color: #EE6C4D;
   }
   

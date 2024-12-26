@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getItemAPI } from "../../Services/ItemService";
 import { Item } from "../../Interfaces/Item/Item";
+import { truncateText } from '../../Helpers/stringHelpers.ts';
+import { wrapText } from '../../Helpers/stringHelpers.ts';
+
 
 type Props = {};
 
@@ -57,7 +60,7 @@ const DisplayItem = (props: Props) => {
                 </div>
                 <div className={`col-lg-6 text-lg-start text-center`}>
                     <p className={`text-primary mb-3`}>{item?.name}</p>
-                    <p className={`text-muted mb-2`}>{item?.description}</p>
+                    <p className={`text-muted mb-2`}>{wrapText(item!.description, 50)}</p>
                     <p className={`badge bg-coral`}>{item?.category}</p>
                 </div>
             </div>

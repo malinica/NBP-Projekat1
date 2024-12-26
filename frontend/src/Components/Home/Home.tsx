@@ -33,31 +33,32 @@ const Home = () => {
   };
 
   return (
-    <div>
-      <h1>Pocetna</h1>
-      {topUsers && topUsers.length > 0 ? (
-        <>
-          <p>Pocetnaaa</p>
-          <table>
-            <thead>
-              <tr>
-                <th>Username</th>
-                <th>Posted Auctions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {topUsers.map((user) => (
-                <tr key={user.username}>
-                  <td>{user.username}</td>
-                  <td>{user.auctions}</td>
+    <div className={`container-fluid bg-pale-blue d-flex justify-content-center flex-grow-1`}>
+      <div className={`col-xxl-7 col-xl-7 col-lg-6 col-md-10 col-sm-12 p-5 m-4 bg-light rounded d-flex flex-column`}>
+        <h1 className={`text-center text-steel-blue mb-3`}>Najaktivniji Korisnici</h1>
+        {topUsers && topUsers.length > 0 ? (
+          <div className={`table-responsive`}>
+            <table className={`table table-striped rounded`}>
+              <thead className={`table-primary`}>
+                <tr>
+                  <th className={``}>Username</th>
+                  <th className={``}>Posted Auctions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      ) : (
-        <p>Loading...</p>
-            )}
+              </thead>
+              <tbody>
+                {topUsers.map((user) => (
+                  <tr key={user.username}>
+                    <td className={`text-muted`}>{user.username}</td>
+                    <td className={`text-muted`}>{user.auctions}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p>Loading...</p>
+              )}
+      </div>
     </div>
   );
 };
