@@ -10,6 +10,8 @@ import { Toaster } from 'react-hot-toast';
 import Home from "./Components/Home/Home";
 import CreateItem from "./Components/CreateItem/CreateItem";
 import DisplayItem from "./Components/DisplayItem/DisplayItem";
+import Auction from "./Components/Auction/Auction";
+
 
 function App() {
   return (
@@ -26,6 +28,7 @@ function App() {
                 <Route path="/register" element={<StranicaRegistracije />} />
                 <Route path="/login" element={<StranicaPrijave />} />
                 <Route path="/auctions" element={<StranicaAukcija />} />
+                <Route path="/auctions/:id" element={<Auction />} />
               </Routes>
             </div>
             <Footer />

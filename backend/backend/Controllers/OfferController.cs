@@ -37,14 +37,14 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("{auctionId}/{count}")]
-        public ActionResult<List<Offer>> Get(int auctionId, int count)
+        [HttpGet("getOffersForAuction/{auctionId}/{count}")]
+        public async Task<ActionResult<List<OfferResultDTO>>> Get(string auctionId, int count)
         {
             try
             {
-                var offers = offerService.GetOffersForAuction(auctionId, count);
+                var offers = await offerService.GetOffersForAuction(auctionId, count);
 
-                return offers;
+                return Ok(offers);
             }
             catch (Exception)
             {

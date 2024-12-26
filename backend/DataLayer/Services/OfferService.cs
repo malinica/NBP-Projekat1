@@ -1,14 +1,19 @@
 using ServiceStack.Redis;
 using DataLayer.DTOs.OfferDTOs;
 using Newtonsoft.Json;
+using DataLayer.Context;
 
 namespace DataLayer.Services
 {
     public class OfferService
     {
         readonly RedisClient redis = new RedisClient(Config.SingleHost);
+        private readonly ProjectContext context;
 
-        public OfferService() { }
+        public OfferService(ProjectContext context) 
+        {
+            this.context = context;
+        }
 
         public bool Set(CreateOfferDTO offer)
         {
@@ -24,16 +29,24 @@ namespace DataLayer.Services
             return redis.AddItemToSortedSet(sortedSetKey, member, offer.Price);
         }
 
-        public List<Offer> GetOffersForAuction(int auctionId, int count)
+        public async Task<List<OfferResultDTO>> GetOffersForAuction(string auctionId, int count)
         {
             string sortedSetKey = $"auction:{auctionId}:offers";
 
             var offersDescending = redis.GetRangeFromSortedSetDesc(sortedSetKey, 0, count-1);
 
-            List<Offer> result = new List<Offer>();
+            List<OfferResultDTO> result = new List<OfferResultDTO>();
 
             foreach (var offer in offersDescending) {
-                result.Add(JsonConvert.DeserializeObject<Offer>(offer)!);
+                Offer o = JsonConvert.DeserializeObject<Offer>(offer)!;
+                User? u = await context.Users.FindAsync(o.UserId);
+                OfferResultDTO offerResult = new OfferResultDTO {
+                    ID = o.ID,
+                    OfferedAt = o.OfferedAt,
+                    Price = o.Price,
+                    User = u
+                };
+                result.Add(offerResult);
             }
 
             return result;

@@ -1,4 +1,5 @@
 using System.Text;
+using backend.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -51,6 +52,7 @@ builder.Services.AddScoped<UserService, UserService>();
 builder.Services.AddScoped<ItemService, ItemService>();
 builder.Services.AddScoped<AuctionService, AuctionService>();
 builder.Services.AddScoped<OfferService, OfferService>();
+builder.Services.AddSignalR();
 
 builder.Services.AddControllers().AddJsonOptions(opt =>
 {
@@ -142,6 +144,7 @@ app.UseCors("CORS");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<AuctionHub>("auctionHub");
 
 app.Run();
 
