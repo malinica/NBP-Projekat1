@@ -1,24 +1,16 @@
-import { Link } from "react-router-dom";
-import styles from "./Home.module.css";
 import { useState, useEffect } from "react";
-import { getLeaderboardForPlacedAuctions } from "../../Services/AuctionService";
-//import { Button } from "react-bootstrap";
-//import { useAuth } from "../../Context/useAuth";
-interface Record {
-  username: string;
-  postedAuctions: string;
-}
+import { getLeaderboardForPlacedAuctions  } from "../../Services/AuctionService";
+
 const Home = () => {
-  const [topUsers, setTopUsers] = useState<Record[] | undefined>(undefined);
+  const [topUsers, setTopUsers] = useState<Array<{ username: string; auctions: number }> | undefined>(undefined);
   const [showButton, setShowButton] = useState(false);
-  //const { isLoggedIn, user } = useAuth();
 
   const loadLeaderboard = async () => {
     const data = await getLeaderboardForPlacedAuctions();
-    if (data) {
-      setTopUsers(data);
-    }
+    setTopUsers(data);  
   };
+
+
 
   useEffect(() => {
     loadLeaderboard();
@@ -41,24 +33,23 @@ const Home = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div>
       <h1>Pocetna</h1>
-      {topUsers ? (
+      {topUsers && topUsers.length > 0 ? (
         <>
-          <table className="table table-bordered mt-4">
+          <p>Pocetnaaa</p>
+          <table>
             <thead>
               <tr>
-                <th>#</th>
                 <th>Username</th>
                 <th>Posted Auctions</th>
               </tr>
             </thead>
             <tbody>
-              {topUsers.map((user, index) => (
-                <tr key={index} className={index === 0 ? "table-primary" : ""}>
-                  <td>{index + 1}</td>
+              {topUsers.map((user) => (
+                <tr key={user.username}>
                   <td>{user.username}</td>
-                  <td>{user.postedAuctions}</td>
+                  <td>{user.auctions}</td>
                 </tr>
               ))}
             </tbody>
@@ -66,7 +57,7 @@ const Home = () => {
         </>
       ) : (
         <p>Loading...</p>
-      )}
+            )}
     </div>
   );
 };

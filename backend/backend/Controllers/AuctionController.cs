@@ -62,7 +62,7 @@ namespace backend.Controllers
             {
                 var auctions = auctionService.LeaderboardMostPlacedAuctions();
 
-                if (auctions != null && auctions.Any())
+                //if (auctions != null && auctions.Any())
                 {
                     return Ok(auctions);
                 }

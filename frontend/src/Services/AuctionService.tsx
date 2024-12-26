@@ -3,30 +3,23 @@ import { Auction } from "../Interfaces/Auction/Auction";
 import toast from "react-hot-toast";
 
 const baseApiRoute = "http://localhost:5257/api/Auction";
-interface LeaderboardData {
-    [key: string]: string; 
-    
-  }
-  
-  interface Record {
-    username: string;
-    postedAuctions: string;
-  }
-  
-  export const getLeaderboardForPlacedAuctions = async (): Promise<Record[] | undefined> => {
-      try {
-          const response = await axios.get<LeaderboardData>(baseApiRoute + "/auction/LeaderboardMostPlacedAuctions");
-          const data = response.data;
-  
-          const leaderboard: Record[] = Object.keys(data).map(key => ({
-              username: key,
-              postedAuctions: data[key],
-          }));
-  
-          return leaderboard;
-      }
-      catch (error) {
-          console.error(error);
-          return undefined; 
-      }
-  };
+
+export const getLeaderboardForPlacedAuctions = async (): Promise<Array<{ username: string; auctions: number }> | undefined> => {
+    try {
+        const response = await axios.get<Record<string, number>>(baseApiRoute + "/auction/LeaderboardMostPlacedAuctions");
+        const data = response.data;
+
+        // Transformacija objekta u niz objekata sa 'username' i 'auctions'
+        const transformedData = Object.entries(data).map(([username, auctions]) => ({
+            username,
+            auctions
+        }));
+
+        return transformedData;
+    }
+    catch (error) {
+        console.error(error);
+        return undefined;
+    }
+};
+

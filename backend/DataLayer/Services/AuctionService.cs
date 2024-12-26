@@ -4,12 +4,13 @@ using Newtonsoft.Json;
 using System.Text;
 using DataLayer.Enums;
 
+
 namespace DataLayer.Services
 {
     public class AuctionService
     {
         readonly RedisClient redis = new RedisClient(Config.SingleHost);
-
+        
         public AuctionService() { }
 
         public bool Set(CreateAuctionDTO auction, string username)
@@ -28,7 +29,8 @@ namespace DataLayer.Services
             bool status = redis.Set(keyEdited, JsonConvert.SerializeObject(i));
             if (status)
             {
-                redis.IncrementValueInHash("auctionLeaderboard", username, 1);
+                
+                redis.IncrementItemInSortedSet("auctionLeaderboard", username, 1);
                 double auctionEndTime = new DateTimeOffset(auction.DueTo).ToUnixTimeSeconds();
                 redis.AddItemToSortedSet("sortedAuctions", keyEdited, auctionEndTime);
             }
@@ -40,6 +42,7 @@ namespace DataLayer.Services
         {
             string keyEdited = "auction:" + key;
             string jsonData = redis.Get<string>(keyEdited);
+            
 
             if (!string.IsNullOrEmpty(jsonData))
             {
@@ -65,11 +68,11 @@ namespace DataLayer.Services
             return auctions;
         }
 
-        public Dictionary<string, string> LeaderboardMostPlacedAuctions()
+        public Dictionary<string, double> LeaderboardMostPlacedAuctions()
         {
-            var allEntries = redis.GetAllEntriesFromHash("auctionLeaderboard");
+            var allEntries = redis.GetRangeWithScoresFromSortedSetDesc("auctionLeaderboard",0,9);
             
-            return allEntries;
+            return new Dictionary<string, double>(allEntries);
         }
 
     }
