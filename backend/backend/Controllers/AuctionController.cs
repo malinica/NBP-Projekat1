@@ -81,7 +81,7 @@ namespace backend.Controllers
             {
                 var auctions = auctionService.LeaderboardAuctionsBasedOnTimeExpiring(fromPosition, N);
 
-                if (auctions != null && auctions.Any())
+              //  if (auctions != null && auctions.Any())
                 {
                     return Ok(auctions);
                 }

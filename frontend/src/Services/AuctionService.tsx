@@ -9,7 +9,6 @@ export const getLeaderboardForPlacedAuctions = async (): Promise<Array<{ usernam
         const response = await axios.get<Record<string, number>>(baseApiRoute + "/auction/LeaderboardMostPlacedAuctions");
         const data = response.data;
 
-        // Transformacija objekta u niz objekata sa 'username' i 'auctions'
         const transformedData = Object.entries(data).map(([username, auctions]) => ({
             username,
             auctions
@@ -20,6 +19,18 @@ export const getLeaderboardForPlacedAuctions = async (): Promise<Array<{ usernam
     catch (error) {
         console.error(error);
         return undefined;
+    }
+};
+
+export const getAuctions = async (fromPosition: number, N: number): Promise<Array<Auction> | null> => {
+
+    try {
+        const response = await axios.get<Auction[]>(`${baseApiRoute}/auction/LeaderboardAuctionsBasedOnTimeExpiring/${fromPosition}/${N}`);
+        return response.data;
+    }
+    catch (error) {
+        console.log(error)
+        return null;
     }
 };
 

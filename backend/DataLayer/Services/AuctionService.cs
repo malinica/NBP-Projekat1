@@ -51,29 +51,39 @@ namespace DataLayer.Services
             return null;
         }
 
-
-
-        public List<Auction> LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition, int N)
-        {
-            var sortedEntries = redis.GetRangeFromSortedSet("auctionLeaderboard", fromPosition, fromPosition + N - 1);
-
-            List<Auction> auctions = new List<Auction>();
-
-            foreach (var entry in sortedEntries)
-            {
-                var auction = JsonConvert.DeserializeObject<Auction>(entry);
-                auctions.Add(auction);
-            }
-
-            return auctions;
-        }
-
         public Dictionary<string, double> LeaderboardMostPlacedAuctions()
         {
             var allEntries = redis.GetRangeWithScoresFromSortedSetDesc("auctionLeaderboard",0,9);
             
             return new Dictionary<string, double>(allEntries);
         }
+
+
+       
+public List<Auction> LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition, int N)
+{
+    var sortedEntries = redis.GetRangeFromSortedSetDesc("sortedAuctions", fromPosition, fromPosition + N - 1);
+
+    List<Auction> auctions = new List<Auction>();
+
+    foreach (var auctionKey in sortedEntries)
+    {
+         Console.WriteLine($"Found {auctionKey} auctions in sortedAuctions:");
+
+        var auctionData = redis.Get<String>(auctionKey);
+
+        if (auctionData != null)
+        {
+
+            var auction = JsonConvert.DeserializeObject<Auction>(auctionData);
+            auctions.Add(auction);
+        }
+
+    }
+    return auctions;
+}
+
+
 
     }
 }
