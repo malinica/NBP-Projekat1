@@ -31,6 +31,7 @@ namespace DataLayer.Services
             {
                 
                 redis.IncrementItemInSortedSet("auctionLeaderboard", username, 1);
+                redis.Increment("auctionCounter",1);
                 double auctionEndTime = new DateTimeOffset(auction.DueTo).ToUnixTimeSeconds();
                 redis.AddItemToSortedSet("sortedAuctions", keyEdited, auctionEndTime);
             }
@@ -59,7 +60,12 @@ namespace DataLayer.Services
         }
 
 
-       
+       public int GetAuctionCounter()
+       {
+        var result=redis.Get<int>("auctionCounter");
+        return result;
+       }
+
 public List<Auction> LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition, int N)
 {
     var sortedEntries = redis.GetRangeFromSortedSetDesc("sortedAuctions", fromPosition, fromPosition + N - 1);

@@ -35,7 +35,18 @@ namespace backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        [HttpGet("auction/GetAuctionCounter")]
+        public ActionResult<int> GetAuctionCounter()
+        {
+            try{
+                int result=auctionService.GetAuctionCounter();
+                return result;
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpGet("auction/{key}")]
         public ActionResult<Auction> Get(string key)
         {

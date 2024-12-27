@@ -34,3 +34,15 @@ export const getAuctions = async (fromPosition: number, N: number): Promise<Arra
     }
 };
 
+export const GetAuctionCounter = async (): Promise<number | null> => {
+
+    try {
+        const response = await axios.get<number>(`${baseApiRoute}/auction/GetAuctionCounter`);
+        return response.data;
+    }
+    catch (error) {
+        console.log(error)
+        return null;
+    }
+};
+

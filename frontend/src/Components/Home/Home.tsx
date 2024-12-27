@@ -36,13 +36,13 @@ const Home = () => {
     <div className={`container-fluid bg-pale-blue d-flex justify-content-center flex-grow-1`}>
       <div className={`col-xxl-7 col-xl-7 col-lg-6 col-md-10 col-sm-12 p-5 m-4 bg-light rounded d-flex flex-column`}>
         <h1 className={`text-center text-steel-blue mb-3`}>Najaktivniji Korisnici</h1>
-        {topUsers && topUsers.length > 0 ? (
+        {(topUsers && topUsers.length >0) && (
           <div className={`table-responsive`}>
             <table className={`table table-striped rounded`}>
               <thead className={`table-primary`}>
                 <tr>
-                  <th className={``}>Username</th>
-                  <th className={``}>Posted Auctions</th>
+                  <th className={``}>Korisničko ime</th>
+                  <th className={``}>Broj kreiranih aukcija</th>
                 </tr>
               </thead>
               <tbody>
@@ -55,9 +55,7 @@ const Home = () => {
               </tbody>
             </table>
           </div>
-        ) : (
-          <p>Loading...</p>
-              )}
+        ) }
       </div>
     </div>
   );
