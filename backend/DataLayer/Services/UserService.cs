@@ -42,6 +42,7 @@ namespace DataLayer.Services
                 request.Password = "";
                 return new AuthResponseDTO
                 {
+                    Id = appUser.Id,
                     Username = appUser.UserName,
                     Email = appUser.Email,
                     Token = tokenService.CreateToken(appUser),
@@ -78,6 +79,7 @@ namespace DataLayer.Services
 
             return new()
             {
+                Id = userInDb.Id,
                 Username = userInDb.UserName,
                 Email = userInDb.Email,
                 Token = accessToken,

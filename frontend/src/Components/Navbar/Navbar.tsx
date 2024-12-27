@@ -42,7 +42,7 @@ const Navbar = () => {
                  <li className={`ms-3 text-end`}>
                  <Dropdown>
                    <Dropdown.Toggle className={styles['user-dropdown']} variant="light" id="dropdown-basic">
-                     <FontAwesomeIcon icon={faUser} /> {user!.username.toUpperCase()}
+                     <FontAwesomeIcon icon={faUser} /> {user!.userName.toUpperCase()}
                    </Dropdown.Toggle>
 
                    <Dropdown.Menu align={'end'}>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.DTOs;
 using DataLayer.DTOs.OfferDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace backend.Controllers
@@ -13,27 +14,31 @@ namespace backend.Controllers
     public class OfferController : ControllerBase
     {
         private readonly OfferService offerService;
+        private readonly UserService userService;
 
-        public OfferController(OfferService offerService)
+
+        public OfferController(OfferService offerService, UserService userService)
         {
             this.offerService = offerService;
+            this.userService = userService;
         }
 
         [HttpPost("create")]
+        [Authorize]
         public ActionResult<string> Create([FromBody] CreateOfferDTO offer)
         {
             try
             {
-                bool result = offerService.Set(offer);
+                bool result = offerService.Create(offer);
 
                 if (result)
                     return Ok("Uspešno dodata ponuda.");
                 
-                return BadRequest("Greška prilikom dodavanja ponude.");
+                return BadRequest("Došlo je do greške prilikom dodavanja ponude.");
             }
             catch (Exception)
             {
-                return BadRequest("Greška prilikom dodavanja ponude.");
+                return BadRequest("Došlo je do greške prilikom dodavanja ponude.");
             }
         }
 
