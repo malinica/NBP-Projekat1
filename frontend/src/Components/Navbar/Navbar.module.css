@@ -64,7 +64,19 @@
 }
 
 .user-dropdown {
-    color:#293241 !important;
+    background-color: #d4eefb; 
+    color: #293241; 
+    border: none; 
+}
+  
+.user-dropdown:hover {
+    background-color: #4577b7; 
+    color: #d4eefb; 
+}
+
+.user-dropdown:focus {
+    background-color: #4577b7; 
+    color: #d4eefb; 
 }
 
 .custom-dropdown-item {

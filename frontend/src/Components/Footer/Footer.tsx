@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
           </li>
           <li className={`nav-item`}>
             <Link to="/auctions" className={`text-white mx-2 text-decoration-none`} onClick={scrollToTop}>
-              Aukcije
+              AUKCIJE
             </Link>
           </li>
           <li className={`nav-item`}>
