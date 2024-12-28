@@ -26,7 +26,7 @@ namespace DataLayer.Services
             Offer o = new Offer{
                 ID = Guid.NewGuid().ToString(),
                 Price = offer.Price,
-                OfferedAt = new DateTime(),
+                OfferedAt = DateTime.Now,
                 UserId = offer.UserId
             };
             string offerSerialized = JsonConvert.SerializeObject(o);
@@ -74,6 +74,26 @@ namespace DataLayer.Services
             }
 
             return redis.Remove(sortedSetKey);
+        }
+
+        public void PublishNewOffers(string auctionId, List<OfferResultDTO> offers) {
+            string auctionChannel = $"auction:{auctionId}";
+            string offersSerialized = JsonConvert.SerializeObject(offers);
+            redis.PublishMessage(auctionChannel, offersSerialized);
+        }
+
+        public void SubscribeToAuction(string auctionId, Action<string, string> action) {
+            string auctionChannel = $"auction:{auctionId}";
+            
+            var subscription = redis.CreateSubscription();
+            
+            subscription.OnMessage = (channel, message) =>
+            {
+                Console.WriteLine($"Primljena poruka na kanalu {channel}: {message}");
+                redis.PublishMessage("test-kanal", "ide sub");
+                action(channel, message);
+            };
+            subscription.SubscribeToChannels(auctionChannel);
         }
     }
 }

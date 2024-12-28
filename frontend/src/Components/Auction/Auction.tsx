@@ -19,7 +19,7 @@ const Auction = (props: Props) => {
   const {user, token} = useAuth();
 
 
-  const initializeSignalRConnection = () => {
+  const initializeSignalRConnection = async () => {
     const connection = new HubConnectionBuilder()
                     .withUrl(`${import.meta.env.VITE_API_URL}/auctionHub`, {
                       withCredentials: false,
@@ -27,18 +27,32 @@ const Auction = (props: Props) => {
                     })
                     .build();
 
-    connection.start()
-                .then(() => console.log('Uspesna konekcija na SignalR hub'))
-                .catch(err => console.error('Doslo je do greske pri konekciji sa SignalR hubom', err));
-
     connection.on("ReceiveMessage", message => {
-        console.log("Primljena poruka:", message);
+      console.log("Primljena poruka:", message);
     });
 
-    setConnection(connection);
+    connection.on("ReceiveOffers", offers => {
+      console.log('Receive', offers);
+      setOffers(offers);
+    });
+
+    try {
+      await connection.start();
+      console.log('Uspesna konekcija na SignalR hub');
+      setConnection(connection);
+    } catch(ex) {
+      console.error("Doslo je do greske pri konekciji sa SignalR hubom:", ex);
+    }
   }
 
-  const loadOffers = async () => {
+  const initializePage = async () => {
+    console.log("Saljem sub");
+    await connection?.send("SubscribeToAuction", {
+      auctionId: id,
+      userId: user?.id
+    });
+    console.log("")
+
     const response = await getOffersAPI(id!, 10);
     
     if(response && response.status == 200) {
@@ -69,7 +83,7 @@ const Auction = (props: Props) => {
   
   useEffect(() => {
     initializeSignalRConnection();
-    loadOffers();
+    initializePage();
   }, [])
 
   return (
