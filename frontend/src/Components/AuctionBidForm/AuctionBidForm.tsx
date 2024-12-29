@@ -1,4 +1,5 @@
 import React, { FormEvent, useState } from "react";
+import styles from "./AuctionBidForm.module.css";
 
 type Props = {
     onSubmitBid: (bid: number) => void;
@@ -20,20 +21,27 @@ const AuctionBidForm = ({onSubmitBid}:Props) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="bid">Unesite vašu ponudu:</label>
-        <input
-          type="number"
-          id="bid"
-          value={bid}
-          onChange={(e) => setBid(e.target.value)}
-          placeholder="Unesite iznos"
-          min="1"
-          step="1"
-          required
-        />
+      <div className={`row align-items-center`}>
+        <div className={`col-auto`}>
+          <label htmlFor="bid" className={`lead form-label text-metal`}>Unesite vašu ponudu: </label>
+        </div>
+        <div className={`col`}>
+          <input
+            type="number"
+            id="bid"
+            value={bid}
+            onChange={(e) => setBid(e.target.value)}
+            placeholder="Unesite iznos"
+            className={`rounded-3 form-control`}
+            min="1"
+            step="1"
+            required
+          />
+        </div>
+        <div className={`col`}>
+          <button type="submit" className={`rounded-3 bg-blue p-3 border-0 text-light ${styles.dugme}`}>Licitiraj</button>
+        </div>
       </div>
-      <button type="submit" className="bg-info">Licitiraj</button>
     </form>
   );
 };

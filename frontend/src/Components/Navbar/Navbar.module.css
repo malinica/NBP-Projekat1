@@ -4,20 +4,19 @@
 
 .link {
     margin-left: 30px;
-    font-weight: 400;
+    font-weight: 600;
     color: #EE6C4D;
     cursor: pointer;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-.link:focus,
-.link:hover {
-    color: #4577b7; 
-}
-
 .link-hover {
     position: relative;
+}
+
+.link-hover:hover {
+    color: #EE6C4D;
 }
 
 .link-hover::before {
@@ -37,8 +36,12 @@
     transform: scaleX(1); 
 }
 
-.link-hover:active {
-    color: #4577b7; 
+.link:focus{
+    color: #4577b7;
+}
+
+.link-hover.active {
+    color: #4577b7;
 }
 
 .btn-registracija {
@@ -52,14 +55,6 @@
 .btn-registracija:hover {
     background-color: #4577b7;
     color: white;
-}
-
-.link:focus{
-    color: #4577b7;
-}
-
-.link-hover.active {
-    color: #4577b7;
 }
 
 .user-dropdown {

@@ -18,24 +18,31 @@ const Navbar = () => {
   const getLinkClass = (path: string) => {
     return location.pathname === path ? 'link link-hover active' : 'link link-hover';
   };
+  const getLinkClass3 = (path1: string, path2:string,path3:string) => {
+    return (location.pathname === path1 || location.pathname===path2 || location.pathname===path3) ? 'link link-hover active' : 'link link-hover';
+  };
   
   return (
     <>
       <nav className={`navbar navbar-expand-xl bg-baby-blue`} id="mainNav">
-        <div className={`container d-flex justify-content-between`}>
+        <div className={`container text-center`}>
           <Link className={`navbar-brand`} to="/">
             <img className={`${styles.logo}`} src="src/assets/logo.png" alt="logo" />
           </Link>
           <button className={`navbar-toggler`} type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive">
             <FontAwesomeIcon icon={faBars} />
           </button>
-          <div className={`collapse navbar-collapse pb-4 pb-xxl-0 d-xl-flex justify-content-xl-end`} id="navbarResponsive">
-            <ul className={`navbar-nav`}>
-              <li className={`my-2 text-end`}>{<Link to="/auctions" className={` ${getLinkClass("/add-item")} ${styles.link}`}>AUKCIJE</Link>} </li>
-              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/create-item" className={` ${getLinkClass("/add-item")} ${styles.link}`}>DODAJ PREDMET</Link>} </li>
-              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/MyItems" className={` ${getLinkClass("/add-item")} ${styles.link}`}>MOJI PREDMETI</Link>} </li>
-              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/" className={` ${getLinkClass("/add-item")} ${styles.link}`}>MOJE PONUDE</Link>} </li>
-              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/" className={` ${getLinkClass("/add-item")} ${styles.link}`}>OMILJENO</Link>} </li>
+          <div className={`collapse navbar-collapse justify-content-xl-end`} id="navbarResponsive">
+            <ul className={`navbar-nav justify-content-center flex-wrap`}>
+              {location.pathname === '/' && (
+                <li className="my-2 text-end">
+                  <a href="#onama" className={`${styles.link} ${styles['link-hover']}`}>O NAMA</a>
+                </li>)}
+              <li className={`my-2 text-end`}>{<Link to="/auctions" className={` ${getLinkClass("/add-item")} ${styles.link} ${styles['link-hover']}`}>AUKCIJE</Link>} </li>
+              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/create-item" className={` ${getLinkClass("/add-item")} ${styles.link} ${styles['link-hover']}`}>DODAJ PREDMET</Link>} </li>
+              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/MyItems" className={` ${getLinkClass("/add-item")} ${styles.link} ${styles['link-hover']}`}>MOJI PREDMETI</Link>} </li>
+              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/" className={` ${getLinkClass("/add-item")} ${styles.link} ${styles['link-hover']}`}>MOJE PONUDE</Link>} </li>
+              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/" className={` ${getLinkClass("/add-item")} ${styles.link} ${styles['link-hover']}`}>OMILJENO</Link>} </li>
 
               {isLoggedIn() 
                  ?                
@@ -54,8 +61,8 @@ const Navbar = () => {
                 </li>         
                   :
                 <>
-                  <li className={`my-2 text-end`}><Link to="/login" className={`${getLinkClass("/login")} ${styles.link}`}>PRIJAVA</Link></li>
-                  <li className={`my-2 text-end`}><Link to="/register" className={`${getLinkClass("/register")} ${styles.link}`}>REGISTRACIJA</Link></li>
+                  <li className={`my-2 text-end`}><Link to="/login" className={`${getLinkClass("/login")} ${styles.link} ${styles['link-hover']}`}>PRIJAVA</Link></li>
+                  <li className={`my-2 text-end`}><Link to="/register" className={`${getLinkClass("/register")} ${styles.link} ${styles['link-hover']}`}>REGISTRACIJA</Link></li>
                 </>
               }
             </ul>

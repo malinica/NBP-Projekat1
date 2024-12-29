@@ -67,7 +67,7 @@ const CreateItem = (props: Props) => {
        <div className={`col-xxl-7 col-xl-7 col-lg-6 col-md-10 col-sm-12 p-5 m-4 bg-light rounded d-flex flex-column`}>
         <div className={`m-4`}>
           <h4 className={`text-center text-coral`}>Kreiraj Novi Predmet</h4>
-          <form onSubmit={handleSubmit} className={`mt-4`}>
+          <form onSubmit={handleSubmit} className={`mt-5`}>
             <div className={`form-floating mb-2 mt-2`}>
               <input
                 type="text"

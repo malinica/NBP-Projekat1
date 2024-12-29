@@ -99,8 +99,8 @@ const Auction = (props: Props) => {
   }
 
   return (
-    <div className="container">
-        <div>Ovde treba prikazemo vrv predmet ili nesto da se zna za sta se licitira</div>
+    <div className={`container`}>
+        <div className={`my-4`}>Ovde treba prikazemo vrv predmet ili nesto da se zna za sta se licitira</div>
 
         <AuctionBidForm onSubmitBid={submitBid}></AuctionBidForm>
 
@@ -121,7 +121,14 @@ const Auction = (props: Props) => {
                   <td className={`text-muted`}>{i+1}.</td>
                   <td className={`text-muted`}>{offer.user.userName}</td>
                   <td className={`text-muted`}>{offer.price}</td>
-                  <td className={`text-muted`}>{offer.offeredAt.toString()}</td>
+                  <td className={`text-muted`}> {new Date(offer.offeredAt).toLocaleString(undefined, {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',})}
+                  </td>
                 </tr>
               ))}
             </tbody>
