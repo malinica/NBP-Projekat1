@@ -33,7 +33,7 @@ const Navbar = () => {
             <ul className={`navbar-nav`}>
               <li className={`my-2 text-end`}>{<Link to="/auctions" className={` ${getLinkClass("/add-item")} ${styles.link}`}>AUKCIJE</Link>} </li>
               <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/create-item" className={` ${getLinkClass("/add-item")} ${styles.link}`}>DODAJ PREDMET</Link>} </li>
-              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/" className={` ${getLinkClass("/add-item")} ${styles.link}`}>MOJI PREDMETI</Link>} </li>
+              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/MyItems" className={` ${getLinkClass("/add-item")} ${styles.link}`}>MOJI PREDMETI</Link>} </li>
               <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/" className={` ${getLinkClass("/add-item")} ${styles.link}`}>MOJE PONUDE</Link>} </li>
               <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/" className={` ${getLinkClass("/add-item")} ${styles.link}`}>OMILJENO</Link>} </li>
 

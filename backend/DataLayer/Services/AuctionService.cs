@@ -87,5 +87,28 @@ namespace DataLayer.Services
             }
             return auctions;
         }
+
+        public List<Auction> GetAuctionsBidedByUser(string username)
+        {
+            var sortedEntries = redis.GetAllItemsFromSet("AuctionsBidedByUser:"+username+":");
+
+            List<Auction> auctions = new List<Auction>();
+
+            foreach (var auctionKey in sortedEntries)
+            {
+                Console.WriteLine($"Found {auctionKey} auctions in sortedAuctions:");
+
+                var auctionData = redis.Get<String>(auctionKey);
+
+                if (auctionData != null)
+                {
+
+                    var auction = JsonConvert.DeserializeObject<Auction>(auctionData);
+                    auctions.Add(auction);
+                }
+
+            }
+            return auctions;
+        }
     }
 }

@@ -5,6 +5,8 @@ import Navbar from "./Components/Navbar/Navbar";
 import StranicaRegistracije from "./Components/StranicaRegistracije/StranicaRegistracije";
 import StranicaAukcija from "./Components/StranicaAukcija/StranicaAukcija";
 import StranicaPrijave from "./Components/StranicaPrijave/StranicaPrijave";
+import PageMyItems from "./Components/PageMyItems/PageMyItems";
+
 import Footer from './Components/Footer/Footer';
 import { Toaster } from 'react-hot-toast';
 import Home from "./Components/Home/Home";
@@ -29,6 +31,7 @@ function App() {
                 <Route path="/login" element={<StranicaPrijave />} />
                 <Route path="/auctions" element={<StranicaAukcija />} />
                 <Route path="/auctions/:id" element={<Auction />} />
+                <Route path="/MyItems" element={<PageMyItems />} />
               </Routes>
             </div>
             <Footer />

@@ -48,5 +48,18 @@ namespace backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+         [HttpGet("GetItemsFromUser/{username}")]
+        public async Task<ActionResult<ItemResultDTO>> GetItemsFromUser(string username) {
+            try {
+                var items = await itemService.GetItemsByUser(username);
+                return Ok(items);
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        
     }
 }

@@ -31,8 +31,12 @@ namespace DataLayer.Services
             };
             string offerSerialized = JsonConvert.SerializeObject(o);
             bool offerCreated = redis.Set(offerKey, offerSerialized);
+            
+            redis.AddItemToSet("AuctionsBidedByUser:"+offer.UserId+":", "auction:"+offer.AuctionId);
+            bool auctionBidExists = redis.SetContainsItem("AuctionsBidedByUser:"+offer.UserId+":", "auction:"+offer.AuctionId);
 
-            return itemAdded && offerCreated;
+
+            return itemAdded && offerCreated && auctionBidExists;
         }
 
         public async Task<List<OfferResultDTO>> GetOffersForAuction(string auctionId, int count)

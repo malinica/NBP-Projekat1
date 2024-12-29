@@ -29,3 +29,14 @@ export const getItemAPI = async (itemId: number) => {
         toast.error(error.response.data);
     }
 }
+
+export const getItemsForUserAPI = async (username: string) => {
+    try {
+        const response = await axios.get<Item[]>(baseApiRoute + `/GetItemsFromUser/${username}`);
+
+        return response;
+    }
+    catch(error:any) {
+        toast.error(error.response.data);
+    }
+}

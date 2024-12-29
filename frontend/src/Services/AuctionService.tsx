@@ -6,7 +6,7 @@ const baseApiRoute = "http://localhost:5257/api/Auction";
 
 export const getLeaderboardForPlacedAuctions = async (): Promise<Array<{ username: string; auctions: number }> | undefined> => {
     try {
-        const response = await axios.get<Record<string, number>>(baseApiRoute + "/auction/LeaderboardMostPlacedAuctions");
+        const response = await axios.get<Record<string, number>>(baseApiRoute + "/LeaderboardMostPlacedAuctions");
         const data = response.data;
 
         const transformedData = Object.entries(data).map(([username, auctions]) => ({
@@ -25,7 +25,7 @@ export const getLeaderboardForPlacedAuctions = async (): Promise<Array<{ usernam
 export const getAuctions = async (fromPosition: number, N: number): Promise<Array<Auction> | null> => {
 
     try {
-        const response = await axios.get<Auction[]>(`${baseApiRoute}/auction/LeaderboardAuctionsBasedOnTimeExpiring/${fromPosition}/${N}`);
+        const response = await axios.get<Auction[]>(`${baseApiRoute}/LeaderboardAuctionsBasedOnTimeExpiring/${fromPosition}/${N}`);
         return response.data;
     }
     catch (error) {
@@ -37,7 +37,7 @@ export const getAuctions = async (fromPosition: number, N: number): Promise<Arra
 export const GetAuctionCounter = async (): Promise<number | null> => {
 
     try {
-        const response = await axios.get<number>(`${baseApiRoute}/auction/GetAuctionCounter`);
+        const response = await axios.get<number>(`${baseApiRoute}/GetAuctionCounter`);
         return response.data;
     }
     catch (error) {

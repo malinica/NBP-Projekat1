@@ -35,7 +35,7 @@ namespace backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("auction/GetAuctionCounter")]
+        [HttpGet("GetAuctionCounter")]
         public ActionResult<int> GetAuctionCounter()
         {
             try{
@@ -47,7 +47,7 @@ namespace backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("auction/{key}")]
+        [HttpGet("{key}")]
         public ActionResult<Auction> Get(string key)
         {
             try
@@ -66,7 +66,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("auction/LeaderboardMostPlacedAuctions")]
+        [HttpGet("LeaderboardMostPlacedAuctions")]
         public IActionResult LeaderboardMostPlacedAuctions()
         {
             try
@@ -85,7 +85,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("auction/LeaderboardAuctionsBasedOnTimeExpiring/{fromPosition}/{N}")]
+        [HttpGet("LeaderboardAuctionsBasedOnTimeExpiring/{fromPosition}/{N}")]
         public IActionResult LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition, int N)
         {
             try
@@ -97,6 +97,25 @@ namespace backend.Controllers
                     return Ok(auctions);
                 }
                 return NotFound("Error in loading Leaderboard for auctions based on time expiring");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+          [HttpGet("GetAuctionsBidedByUser/{username}")]
+        public ActionResult<Auction[]> GetAuctionsBidedByUser(string username)
+        {
+            try
+            {
+                var auctions = auctionService.GetAuctionsBidedByUser(username);
+
+                {
+                    return Ok(auctions);
+                }
+                return NotFound("Error in loading auctions bided by user");
             }
             catch (Exception ex)
             {
