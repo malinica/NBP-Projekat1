@@ -19,29 +19,23 @@ namespace backend.Hubs
             this.offerService = offerService;
         }
 
-        public override async Task OnConnectedAsync()
-        {
-            await Clients.All.ReceiveMessage($"{Context.ConnectionId} has joined");
-            var userId = Context.UserIdentifier;
+        public async Task JoinAuctionGroup(string auctionId) {
+            await Groups.AddToGroupAsync(Context.ConnectionId, auctionId);
         }
 
-        public void SubscribeToAuction(SubscribeToAuctionDTO auctionDTO) {
-            offerService.SubscribeToAuction(auctionDTO.AuctionId, async (channel, message) =>
-            {
-                var offers = JsonConvert.DeserializeObject<List<OfferResultDTO>>(message);
-                await Clients.All.ReceiveOffers(offers!);
-            });
-        }
-
-        public async Task SendMessage(string message) {
-            await Clients.All.ReceiveMessage($"{Context.ConnectionId}: {message}");
+        public async Task LeaveAuctionGroup(string auctionId) {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, auctionId);
         }
 
         public async Task CreateOffer(CreateOfferDTO offerDTO) {
-            offerService.Create(offerDTO);
-            List<OfferResultDTO> topOffers = await offerService.GetOffersForAuction(offerDTO.AuctionId, 10);
-            offerService.PublishNewOffers(offerDTO.AuctionId, topOffers);
-            //await Clients.All.ReceiveMessage($"{Context.ConnectionId} je napravio ponudu za aukciju {offerDTO.AuctionId} u iznosu od {offerDTO.Price}");
+            try {
+                offerService.Create(offerDTO);
+                List<OfferResultDTO> topOffers = await offerService.GetOffersForAuction(offerDTO.AuctionId, 10);
+                offerService.PublishNewOffers(offerDTO.AuctionId, topOffers);
+                await Clients.Groups(offerDTO.AuctionId).ReceiveMessage("Kreirana je nova ponuda.", true);
+            } catch(Exception ex) {
+                await Clients.Caller.ReceiveMessage(ex.Message, false);
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ namespace backend.Interfaces
 {
     public interface IAuctionClient
     {
-        Task ReceiveMessage(string message);
+        Task ReceiveMessage(string message, bool isSuccess);
         Task ReceiveOffers(List<OfferResultDTO> offers);
     }
 }

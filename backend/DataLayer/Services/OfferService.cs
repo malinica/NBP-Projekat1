@@ -17,8 +17,15 @@ namespace DataLayer.Services
 
         public bool Create(CreateOfferDTO offer)
         {
-            // sorted set pamti rangirane korisnike za odredjenu aukciju
+            // Check if the current highest offer is greater than or equal to the new offer
             string sortedSetKey = $"auction:{offer.AuctionId}:users";
+            double? highestOffer = redis.GetRangeWithScoresFromSortedSetDesc(sortedSetKey, 0, 0)
+                                    .FirstOrDefault().Value;
+
+            if (highestOffer.HasValue && highestOffer.Value >= offer.Price)
+                throw new Exception("Nova ponuda mora biti veća od trenutne najveće.");
+
+            // sorted set pamti rangirane korisnike za odredjenu aukciju
             bool itemAdded = redis.AddItemToSortedSet(sortedSetKey, offer.UserId, offer.Price);
             
             // u posebnom key-value paru se pamti id aukcije i korisnika i offer koji je napravio
@@ -88,16 +95,11 @@ namespace DataLayer.Services
 
         public void SubscribeToAuction(string auctionId, Action<string, string> action) {
             string auctionChannel = $"auction:{auctionId}";
-            
-            var subscription = redis.CreateSubscription();
-            
-            subscription.OnMessage = (channel, message) =>
-            {
-                Console.WriteLine($"Primljena poruka na kanalu {channel}: {message}");
-                redis.PublishMessage("test-kanal", "ide sub");
-                action(channel, message);
-            };
-            subscription.SubscribeToChannels(auctionChannel);
+
+            var clientsManager = new PooledRedisClientManager();
+            var redisPubSub = new RedisPubSubServer(clientsManager, auctionChannel) {
+                OnMessage = action
+            }.Start();
         }
     }
 }

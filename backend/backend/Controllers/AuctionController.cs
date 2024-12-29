@@ -2,8 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using backend.Hubs;
+using backend.Interfaces;
 using DataLayer.DTOs;
 using DataLayer.DTOs.AuctionDTOs;
+using DataLayer.DTOs.OfferDTOs;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace backend.Controllers
 {
@@ -12,10 +17,15 @@ namespace backend.Controllers
     public class AuctionController : ControllerBase
     {
         private readonly AuctionService auctionService;
+        private readonly OfferService offerService;
 
-        public AuctionController(AuctionService auctionService)
+        private readonly IHubContext<AuctionHub, IAuctionClient> hubContext;
+
+        public AuctionController(AuctionService auctionService, OfferService offerService, IHubContext<AuctionHub, IAuctionClient> hubContext)
         {
             this.auctionService = auctionService;
+            this.offerService = offerService;
+            this.hubContext = hubContext;
         }
 
         [HttpPost("set")]
@@ -105,7 +115,7 @@ namespace backend.Controllers
         }
 
 
-          [HttpGet("GetAuctionsBidedByUser/{username}")]
+        [HttpGet("GetAuctionsBidedByUser/{username}")]
         public ActionResult<Auction[]> GetAuctionsBidedByUser(string username)
         {
             try
@@ -116,6 +126,26 @@ namespace backend.Controllers
                     return Ok(auctions);
                 }
                 return NotFound("Error in loading auctions bided by user");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("SubscribeToAuction/{auctionId}")]
+        public ActionResult<string> SubscribeToAuction(string auctionId)
+        {
+            try
+            {
+                offerService.SubscribeToAuction(auctionId, async (channel, message) =>
+                {
+                    var offers = JsonConvert.DeserializeObject<List<OfferResultDTO>>(message);
+                    await hubContext.Clients.Group(auctionId).ReceiveOffers(offers!);
+                });
+ 
+                return Ok("Uspešno praćenje aukcije.");
+
             }
             catch (Exception ex)
             {

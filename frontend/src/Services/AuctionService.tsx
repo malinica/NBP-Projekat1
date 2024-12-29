@@ -46,3 +46,15 @@ export const GetAuctionCounter = async (): Promise<number | null> => {
     }
 };
 
+export const subscribeToAuctionAPI = async (auctionId: string): Promise<string | null> => {
+
+    try {
+        const response = await axios.post<string>(`${baseApiRoute}/SubscribeToAuction/${auctionId}`);
+        return response.data;
+    }
+    catch (error) {
+        toast.error("Došlo je do greške pri pretplati na aukciju.");
+        console.error(error)
+        return null;
+    }
+};

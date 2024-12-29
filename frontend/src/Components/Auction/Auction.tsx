@@ -6,6 +6,7 @@ import { getOffersAPI } from '../../Services/OfferService'
 import AuctionBidForm from '../AuctionBidForm/AuctionBidForm'
 import toast from 'react-hot-toast'
 import { useAuth } from '../../Context/useAuth'
+import { subscribeToAuctionAPI } from '../../Services/AuctionService'
 
 type Props = {}
 
@@ -18,48 +19,66 @@ const Auction = (props: Props) => {
 
   const {user, token} = useAuth();
 
+  useEffect(() => {
+    onComponentMount();
 
-  const initializeSignalRConnection = async () => {
-    const connection = new HubConnectionBuilder()
+    return () => {
+      onComponentUnmount();
+    };
+  }, [])
+
+  const onComponentMount = async () => {
+    await initializePage();
+  }
+
+  const initializePage = async () => {
+    if(connection) 
+    {
+      console.log("Konekcija je vec uspostavljena.");
+      return;
+    }
+
+    const newConnection = new HubConnectionBuilder()
                     .withUrl(`${import.meta.env.VITE_API_URL}/auctionHub`, {
                       withCredentials: false,
                       accessTokenFactory: () => (token || ""),
                     })
                     .build();
 
-    connection.on("ReceiveMessage", message => {
-      console.log("Primljena poruka:", message);
-    });
 
-    connection.on("ReceiveOffers", offers => {
-      console.log('Receive', offers);
+    newConnection.on("ReceiveOffers", offers => {
       setOffers(offers);
     });
 
+    newConnection.on("ReceiveMessage", (message, isSuccess) => {
+      if(isSuccess) {
+        toast.success(message);
+      }
+      else {
+        toast.error(message);
+      }
+    });
+
     try {
-      await connection.start();
-      console.log('Uspesna konekcija na SignalR hub');
-      setConnection(connection);
+      await newConnection.start();
+      await subscribeToAuctionAPI(id!);
+      await newConnection?.invoke("JoinAuctionGroup", id);
+
+      const response = await getOffersAPI(id!, 10);
+      
+      if(response && response.status == 200) {
+        setOffers(response.data);
+      }
+      
+      setIsLoading(false);
+      setConnection(newConnection);
     } catch(ex) {
       console.error("Doslo je do greske pri konekciji sa SignalR hubom:", ex);
     }
   }
 
-  const initializePage = async () => {
-    console.log("Saljem sub");
-    await connection?.send("SubscribeToAuction", {
-      auctionId: id,
-      userId: user?.id
-    });
-    console.log("")
-
-    const response = await getOffersAPI(id!, 10);
-    
-    if(response && response.status == 200) {
-        console.log(response);
-        setOffers(response.data);
-    }
-    setIsLoading(false);
+  const onComponentUnmount = async () => {
+    await connection?.invoke("LeaveAuctionGroup", id);
   }
 
   const submitBid = async (bid: number) => {
@@ -69,26 +88,19 @@ const Auction = (props: Props) => {
     }
 
     try {
-      console.log(user?.id);
-      await connection.send("CreateOffer", {
+      await connection.invoke<string>("CreateOffer", {
         price: bid,
         auctionId: id,
         userId: user?.id
       });
-      console.log("Ponuda je uspešno poslata.");
     } catch (error) {
       console.error("Došlo je do greške pri slanju ponude:", error);
     }
   }
-  
-  useEffect(() => {
-    initializeSignalRConnection();
-    initializePage();
-  }, [])
 
   return (
     <div className="container">
-        <div>Aukcija sa ID {id} (ovde treba prikazemo vrv predmet ili nesto da se zna za sta se licitira)</div>
+        <div>Ovde treba prikazemo vrv predmet ili nesto da se zna za sta se licitira</div>
 
         <AuctionBidForm onSubmitBid={submitBid}></AuctionBidForm>
 
@@ -97,14 +109,16 @@ const Auction = (props: Props) => {
           <table className={`table table-striped rounded`}>
             <thead className={`table-primary`}>
               <tr>
+                <th className={``}>Rang</th>
                 <th className={``}>Korisničko ime</th>
                 <th className={``}>Iznos ponude</th>
                 <th className={``}>Vreme ponude</th>
               </tr>
             </thead>
             <tbody>
-              {offers?.map(offer => (
+              {offers?.map((offer, i) => (
                 <tr key={offer.id}>
+                  <td className={`text-muted`}>{i+1}.</td>
                   <td className={`text-muted`}>{offer.user.userName}</td>
                   <td className={`text-muted`}>{offer.price}</td>
                   <td className={`text-muted`}>{offer.offeredAt.toString()}</td>
