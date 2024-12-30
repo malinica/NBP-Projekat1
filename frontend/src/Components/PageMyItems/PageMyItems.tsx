@@ -45,7 +45,7 @@ export const PageMyItems = () => {
           ) : items && items.length > 0 ? (
             <div className="row">
               {items.map((item) => (
-                <div key={item.id} className="col-12 cursor-pointer" onClick={() => navigate(`../items/${item.id}`)}>
+                <div key={item.id} className="col-12 cursor-pointer">
                   <ItemCard item={item} />
                 </div>
               ))}
