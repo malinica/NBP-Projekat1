@@ -3,7 +3,7 @@ import "./App.css";
 import { UserProvider } from "./Context/useAuth";
 import Navbar from "./Components/Navbar/Navbar";
 import StranicaRegistracije from "./Components/StranicaRegistracije/StranicaRegistracije";
-import StranicaAukcija from "./Components/StranicaAukcija/StranicaAukcija";
+import SearchPage from "./Components/SearchPage/SerachPage";
 import StranicaPrijave from "./Components/StranicaPrijave/StranicaPrijave";
 import PageMyItems from "./Components/PageMyItems/PageMyItems";
 
@@ -30,9 +30,9 @@ function App() {
                 <Route path="/items/:id" element={<DisplayItem />} />
                 <Route path="/register" element={<StranicaRegistracije />} />
                 <Route path="/login" element={<StranicaPrijave />} />
-                <Route path="/auctions" element={<StranicaAukcija />} />
+                <Route path="/search-page/:id" element={<SearchPage />} />
                 <Route path="/auctions/:id" element={<AuctionPage />} />
-                <Route path="/MyItems" element={<PageMyItems />} />
+                <Route path="/my-items" element={<PageMyItems />} />
                 <Route path="/favorite-auctions" element={<FavoriteAuctionsPage />} />
               </Routes>
             </div>
