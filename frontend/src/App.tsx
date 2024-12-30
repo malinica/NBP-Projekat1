@@ -12,7 +12,7 @@ import { Toaster } from 'react-hot-toast';
 import Home from "./Components/Home/Home";
 import CreateItem from "./Components/CreateItem/CreateItem";
 import DisplayItem from "./Components/DisplayItem/DisplayItem";
-import Auction from "./Components/Auction/Auction";
+import AuctionPage from "./Components/Auction/AuctionPage";
 import FavoriteAuctionsPage from "./Components/FavoriteAuctionsPage/FavoriteAuctionsPage";
 
 
@@ -31,7 +31,7 @@ function App() {
                 <Route path="/register" element={<StranicaRegistracije />} />
                 <Route path="/login" element={<StranicaPrijave />} />
                 <Route path="/auctions" element={<StranicaAukcija />} />
-                <Route path="/auctions/:id" element={<Auction />} />
+                <Route path="/auctions/:id" element={<AuctionPage />} />
                 <Route path="/MyItems" element={<PageMyItems />} />
                 <Route path="/favorite-auctions" element={<FavoriteAuctionsPage />} />
               </Routes>

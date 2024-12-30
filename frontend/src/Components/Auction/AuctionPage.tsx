@@ -6,15 +6,18 @@ import { getOffersAPI } from '../../Services/OfferService'
 import AuctionBidForm from '../AuctionBidForm/AuctionBidForm'
 import toast from 'react-hot-toast'
 import { useAuth } from '../../Context/useAuth'
-import { subscribeToAuctionAPI } from '../../Services/AuctionService'
+import { getAuctionWithItemAPI, subscribeToAuctionAPI } from '../../Services/AuctionService'
+import AuctionCard from '../AuctionCard/AuctionCard'
+import { Auction } from '../../Interfaces/Auction/Auction'
 
 type Props = {}
 
-const Auction = (props: Props) => {
+const AuctionPage = (props: Props) => {
   const {id} = useParams();
 
   const [offers, setOffers] = useState<Offer[]|undefined>(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [auction, setAuction] = useState<Auction|null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [connection, setConnection] = useState<HubConnection | null>(null);
 
   const {user, token} = useAuth();
@@ -64,16 +67,21 @@ const Auction = (props: Props) => {
       await subscribeToAuctionAPI(id!);
       await newConnection?.invoke("JoinAuctionGroup", id);
 
-      const response = await getOffersAPI(id!, 10);
-      
-      if(response && response.status == 200) {
-        setOffers(response.data);
+      // const auctionResponse = await getAuctionWithItemAPI(id!);
+      // if(auctionResponse && auctionResponse.status == 200) {
+      //   setAuction(auctionResponse.data);
+      // }
+      const offersResponse = await getOffersAPI(id!, 10);
+      if(offersResponse && offersResponse.status == 200) {
+        setOffers(offersResponse.data);
       }
       
-      setIsLoading(false);
       setConnection(newConnection);
     } catch(ex) {
-      console.error("Doslo je do greske pri konekciji sa SignalR hubom:", ex);
+      console.error("Doslo je do greske pri inicijalizaciji stranice:", ex);
+    }
+    finally {
+      setIsLoading(false);
     }
   }
 
@@ -100,7 +108,13 @@ const Auction = (props: Props) => {
 
   return (
     <div className={`container`}>
-        <div className={`my-4`}>Ovde treba prikazemo vrv predmet ili nesto da se zna za sta se licitira</div>
+        {isLoading ? 
+        <p className={`text-center text-muted`}>Učitavanje aukcije...</p>
+        :
+        <>
+        <div className={`my-4`}>
+          {auction && <AuctionCard auction={auction} />}
+        </div>
 
         <AuctionBidForm onSubmitBid={submitBid}></AuctionBidForm>
 
@@ -121,21 +135,16 @@ const Auction = (props: Props) => {
                   <td className={`text-muted`}>{i+1}.</td>
                   <td className={`text-muted`}>{offer.user.userName}</td>
                   <td className={`text-muted`}>{offer.price}</td>
-                  <td className={`text-muted`}> {new Date(offer.offeredAt).toLocaleString(undefined, {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',})}
+                  <td className={`text-muted`}> {new Date(offer.offeredAt).toLocaleString("sr")}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>   
+        </div>
+        </>}
     </div>
   )
 }
 
-export default Auction
+export default AuctionPage

@@ -3,12 +3,12 @@ import { Item } from "../Item/Item";
 
 //AuctionStatus
 export interface Auction {
-    id: number;
-    Title: string;
-    StartingPrice: Number;
-    CurrentPrice: Number;
-    Status: AuctionStatus;
-    PostedOnDate: Date;
-    DueTo:Date;
-    Item: Item;
+    id: string;
+    title: string;
+    startingPrice: number;
+    currentPrice: number;
+    status: AuctionStatus;
+    postedOnDate: Date;
+    dueTo:Date;
+    item: Item;
 }

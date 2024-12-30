@@ -46,7 +46,7 @@ export const PageMyItems = () => {
             <div className="row">
               {items.map((item) => (
                 <div key={item.id} className="col-12 cursor-pointer" onClick={() => navigate(`../items/${item.id}`)}>
-                  <ItemCard id={item.id.toString()} />
+                  <ItemCard item={item} />
                 </div>
               ))}
             </div>

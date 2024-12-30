@@ -59,6 +59,7 @@ namespace backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpGet("{key}")]
         public ActionResult<Auction> Get(string key)
         {
@@ -71,6 +72,21 @@ namespace backend.Controllers
                     return Ok(auction);
                 }
                 return NotFound("Auction with the specified key is not found.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("AuctionWithItem/{auctionId}")]
+        public ActionResult<Auction> GetAuctionWithItem(string auctionId)
+        {
+            try
+            {
+                var auction = auctionService.GetFullAuction(auctionId);
+
+                return Ok(auction);
             }
             catch (Exception ex)
             {

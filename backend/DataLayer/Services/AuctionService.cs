@@ -57,6 +57,27 @@ namespace DataLayer.Services
             return null;
         }
 
+        public async Task<AuctionResultDTO?> GetFullAuction(string auctionId)
+        {
+            var auction = Get(auctionId);
+            if (auction != null)
+            {
+                var item = await itemService.GetItem(auction.ItemId);
+                AuctionResultDTO auctionResult = new AuctionResultDTO {
+                    ID = auction.ID,
+                    Title = auction.Title,
+                    StartingPrice = auction.StartingPrice,
+                    CurrentPrice = auction.CurrentPrice,
+                    Status = auction.Status,
+                    PostedOnDate = auction.PostedOnDate,
+                    DueTo = auction.DueTo,
+                    Item = item
+                };
+                return auctionResult;
+            }
+            return null;
+        }
+
         public Dictionary<string, double> LeaderboardMostPlacedAuctions()
         {
             var allEntries = redis.GetRangeWithScoresFromSortedSetDesc("auctionLeaderboard", 0, 9);
@@ -120,6 +141,10 @@ namespace DataLayer.Services
         public void AddAuctionToFavorite(string userId, string auctionId)
         {
             string key = $"user:{userId}:favoriteAuctions";
+            if (redis.Lists[key].Contains(auctionId))
+            {
+                return;
+            }
             redis.AddItemToList(key, auctionId);
         }
 
@@ -136,22 +161,9 @@ namespace DataLayer.Services
             List<AuctionResultDTO> auctions = new List<AuctionResultDTO>();
             foreach (var auctionId in auctionsIds)
             {
-                var auction = Get(auctionId);
-                if (auction != null)
-                {
-                    var item = await itemService.GetItem(auction.ItemId);
-                    AuctionResultDTO auctionResult = new AuctionResultDTO {
-                        ID = auction.ID,
-                        Title = auction.Title,
-                        StartingPrice = auction.StartingPrice,
-                        CurrentPrice = auction.CurrentPrice,
-                        Status = auction.Status,
-                        PostedOnDate = auction.PostedOnDate,
-                        DueTo = auction.DueTo,
-                        Item = item
-                    };
-                    auctions.Add(auctionResult);
-                }
+                var auction = await GetFullAuction(auctionId);
+                if(auction!=null)
+                    auctions.Add(auction);
             }
             return auctions;
         }

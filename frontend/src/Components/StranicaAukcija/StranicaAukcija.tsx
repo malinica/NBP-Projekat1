@@ -2,6 +2,7 @@ import styles from "./StranicaAukcija.module.css";
 import { useEffect, useState } from 'react';
 import { getAuctions, GetAuctionCounter } from "../../Services/AuctionService";
 import { Auction } from "../../Interfaces/Auction/Auction";
+import AuctionCard from "../AuctionCard/AuctionCard";
 
 
 const AuctionPage = () => {

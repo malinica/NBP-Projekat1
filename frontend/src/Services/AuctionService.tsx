@@ -59,9 +59,29 @@ export const subscribeToAuctionAPI = async (auctionId: string): Promise<string |
     }
 };
 
+export const removeFavoriteAuctionAPI = async (auctionId: string) => {
+    try {
+        const response = await axios.delete(`${baseApiRoute}/RemoveFromFavorite/${auctionId}`);
+        return response;
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}
+
 export const getFavoriteAuctionsAPI = async () => {
     try {
         const response = await axios.get<Auction[]>(`${baseApiRoute}/GetFavoriteAuctions`);
+        return response;
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}
+
+export const getAuctionWithItemAPI = async (auctionId: string) => {
+    try {
+        const response = await axios.get<Auction|null>(`${baseApiRoute}/AuctionWithItem/${auctionId}`);
         return response;
     } catch (error) {
         console.error(error);
