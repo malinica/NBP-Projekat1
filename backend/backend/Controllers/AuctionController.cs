@@ -31,11 +31,11 @@ namespace backend.Controllers
         }
 
         [HttpPost("set")]
-        public ActionResult<string> Set([FromBody] CreateAuctionDTO auction, string username)
+        public async Task<ActionResult<string>> Set([FromBody] CreateAuctionDTO auction, string username)
         {
             try
             {
-                bool result = auctionService.Set(auction, username);
+                bool result = await auctionService.Set(auction, username);
 
                 if (result)
                     return Ok("Auction's data has been successfully saved.");

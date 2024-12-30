@@ -18,7 +18,7 @@ namespace DataLayer.Services
             this.itemService = itemService;
         }
 
-        public bool Set(CreateAuctionDTO auction, string username)
+        public async Task<bool> Set(CreateAuctionDTO auction, string username)
         {
             Auction i = new Auction()
             {
@@ -31,14 +31,17 @@ namespace DataLayer.Services
                 DueTo = auction.DueTo,
                 ItemId = auction.ItemId
             };
+            var item = await itemService.GetItem(auction.ItemId);
             string keyEdited = $"auction:" + i.ID;
             bool status = redis.Set(keyEdited, JsonConvert.SerializeObject(i));
             if (status)
             {
-                redis.IncrementItemInSortedSet("auctionLeaderboard", username, 1);
-                redis.Increment("auctionCounter", 1);
+                redis.IncrementItemInSortedSet("auctionLeaderboard", username, 1);//za liderbord najaktivnijih clanova
+                redis.Increment("auctionCounter", 1);//za pocetnu stranicu auction search 
                 double auctionEndTime = new DateTimeOffset(auction.DueTo).ToUnixTimeSeconds();
-                redis.AddItemToSortedSet("sortedAuctions", keyEdited, auctionEndTime);
+                redis.Set("AuctionIDforItem:"+item.ID,i.ID);//za pretragu u searchauction
+                redis.AddItemToSet("ItemsForCategory:"+item.Category,item.ID.ToString());//za pretragu u auctionsearch
+                redis.AddItemToSortedSet("sortedAuctions", keyEdited, auctionEndTime);// za searchpage kad nema parametara pretrage
             }
             return status;
 
