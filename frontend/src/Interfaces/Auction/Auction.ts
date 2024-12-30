@@ -1,4 +1,5 @@
 import { AuctionStatus } from "../../Enums/AuctionStatus";
+import { Item } from "../Item/Item";
 
 //AuctionStatus
 export interface Auction {
@@ -9,4 +10,5 @@ export interface Auction {
     Status: AuctionStatus;
     PostedOnDate: Date;
     DueTo:Date;
+    Item: Item;
 }

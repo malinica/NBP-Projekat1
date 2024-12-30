@@ -14,13 +14,11 @@ namespace backend.Controllers
     public class OfferController : ControllerBase
     {
         private readonly OfferService offerService;
-        private readonly UserService userService;
 
 
-        public OfferController(OfferService offerService, UserService userService)
+        public OfferController(OfferService offerService)
         {
             this.offerService = offerService;
-            this.userService = userService;
         }
 
         [HttpPost("create")]

@@ -58,3 +58,13 @@ export const subscribeToAuctionAPI = async (auctionId: string): Promise<string |
         return null;
     }
 };
+
+export const getFavoriteAuctionsAPI = async () => {
+    try {
+        const response = await axios.get<Auction[]>(`${baseApiRoute}/GetFavoriteAuctions`);
+        return response;
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}

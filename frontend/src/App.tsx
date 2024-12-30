@@ -13,6 +13,7 @@ import Home from "./Components/Home/Home";
 import CreateItem from "./Components/CreateItem/CreateItem";
 import DisplayItem from "./Components/DisplayItem/DisplayItem";
 import Auction from "./Components/Auction/Auction";
+import FavoriteAuctionsPage from "./Components/FavoriteAuctionsPage/FavoriteAuctionsPage";
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
                 <Route path="/auctions" element={<StranicaAukcija />} />
                 <Route path="/auctions/:id" element={<Auction />} />
                 <Route path="/MyItems" element={<PageMyItems />} />
+                <Route path="/favorite-auctions" element={<FavoriteAuctionsPage />} />
               </Routes>
             </div>
             <Footer />

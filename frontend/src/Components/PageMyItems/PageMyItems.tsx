@@ -4,12 +4,14 @@ import { getItemsForUserAPI } from "../../Services/ItemService";
 import { Item } from "../../Interfaces/Item/Item";
 import { useAuth } from "../../Context/useAuth";
 import ItemCard from "../ItemCard/ItemCard";
+import { useNavigate } from "react-router-dom";
 
 
 export const PageMyItems = () => {
     const { isLoggedIn, user } = useAuth();
     const [items, setItems] = useState<Array<Item> | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const navigate = useNavigate();
 
     const loadItems = async () => {
         if (!user) return;
@@ -43,7 +45,7 @@ export const PageMyItems = () => {
           ) : items && items.length > 0 ? (
             <div className="row">
               {items.map((item) => (
-                <div key={item.id} className="col-12">
+                <div key={item.id} className="col-12 cursor-pointer" onClick={() => navigate(`../items/${item.id}`)}>
                   <ItemCard id={item.id.toString()} />
                 </div>
               ))}

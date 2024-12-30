@@ -14,9 +14,7 @@ namespace DataLayer.Models
         public required AuctionStatus Status {get;set;}
         public required DateTime PostedOnDate {get;set;}
         public required DateTime DueTo {get;set;}
-
-        //[InverseProperty("OnAuction")]
-        //public required Item AuctionItem {get;set;}
+        public required int ItemId {get;set;}
 
         //[InverseProperty("DuringAuction")]
         //public List<Offer> OfferList{get;set;}
@@ -33,10 +31,11 @@ namespace DataLayer.Models
             CurrentPrice = auction.CurrentPrice;    
             Status = auction.Status;    
             PostedOnDate = auction.PostedOnDate;
-            DueTo = auction.DueTo;      
+            DueTo = auction.DueTo;
+            ItemId = auction.ItemId;
         }
 
-        public Auction(string title,  int startingPrice, int currentPrice, AuctionStatus status, DateTime postedOn, DateTime dueTo)
+        public Auction(string title,  int startingPrice, int currentPrice, AuctionStatus status, DateTime postedOn, DateTime dueTo, int itemId)
         {
             Title = title;
             StartingPrice = startingPrice;
@@ -44,6 +43,7 @@ namespace DataLayer.Models
             Status = status;
             PostedOnDate = postedOn;
             DueTo = dueTo;
+            ItemId = itemId;
         }
     }
 }

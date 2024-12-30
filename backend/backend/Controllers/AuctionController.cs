@@ -7,6 +7,7 @@ using backend.Interfaces;
 using DataLayer.DTOs;
 using DataLayer.DTOs.AuctionDTOs;
 using DataLayer.DTOs.OfferDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 
@@ -18,13 +19,14 @@ namespace backend.Controllers
     {
         private readonly AuctionService auctionService;
         private readonly OfferService offerService;
-
+        private readonly UserService userService;
         private readonly IHubContext<AuctionHub, IAuctionClient> hubContext;
 
-        public AuctionController(AuctionService auctionService, OfferService offerService, IHubContext<AuctionHub, IAuctionClient> hubContext)
+        public AuctionController(AuctionService auctionService, OfferService offerService, UserService userService, IHubContext<AuctionHub, IAuctionClient> hubContext)
         {
             this.auctionService = auctionService;
             this.offerService = offerService;
+            this.userService = userService;
             this.hubContext = hubContext;
         }
 
@@ -146,6 +148,54 @@ namespace backend.Controllers
  
                 return Ok("Uspešno praćenje aukcije.");
 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("AddToFavorite/{auctionId}")]
+        [Authorize]
+        public async Task<IActionResult> AddAuctionToFavorite([FromRoute] string auctionId)
+        {
+            try
+            {
+                var user = await userService.GetCurrentUser(User);
+                auctionService.AddAuctionToFavorite(user?.Id ?? "", auctionId);
+                return Ok("Uspešno dodata aukcija u listu omiljenih.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("RemoveFromFavorite/{auctionId}")]
+        [Authorize]
+        public async Task<IActionResult> RemoveAuctionFromFavorite([FromRoute] string auctionId)
+        {
+            try
+            {
+                var user = await userService.GetCurrentUser(User);
+                auctionService.RemoveAuctionFromFavorite(user?.Id ?? "", auctionId);
+                return Ok("Uspešno uklonjena aukcija iz liste omiljenih.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetFavoriteAuctions")]
+        [Authorize]
+        public async Task<ActionResult<List<AuctionResultDTO>>> GetFavoriteAuctions()
+        {
+            try
+            {
+                var user = await userService.GetCurrentUser(User);
+                var favoriteAuctions = await auctionService.GetFavoriteAuctions(user?.Id ?? "");
+                return Ok(favoriteAuctions);
             }
             catch (Exception ex)
             {

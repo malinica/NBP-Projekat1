@@ -9,9 +9,14 @@ namespace DataLayer.Services
 {
     public class AuctionService
     {
-        readonly RedisClient redis = new RedisClient(Config.SingleHost);
+        private readonly RedisClient redis = new RedisClient(Config.SingleHost);
 
-        public AuctionService() { }
+        private readonly ItemService itemService;
+
+        public AuctionService(ItemService itemService) 
+        { 
+            this.itemService = itemService;
+        }
 
         public bool Set(CreateAuctionDTO auction, string username)
         {
@@ -24,6 +29,7 @@ namespace DataLayer.Services
                 Status = auction.Status,
                 PostedOnDate = auction.PostedOnDate,
                 DueTo = auction.DueTo,
+                ItemId = auction.ItemId
             };
             string keyEdited = $"auction:" + i.ID;
             bool status = redis.Set(keyEdited, JsonConvert.SerializeObject(i));
@@ -38,9 +44,9 @@ namespace DataLayer.Services
 
         }
 
-        public Auction? Get(string key)
+        public Auction? Get(string auctionId)
         {
-            string keyEdited = "auction:" + key;
+            string keyEdited = "auction:" + auctionId;
             string jsonData = redis.Get<string>(keyEdited);
 
 
@@ -107,6 +113,45 @@ namespace DataLayer.Services
                     auctions.Add(auction);
                 }
 
+            }
+            return auctions;
+        }
+
+        public void AddAuctionToFavorite(string userId, string auctionId)
+        {
+            string key = $"user:{userId}:favoriteAuctions";
+            redis.AddItemToList(key, auctionId);
+        }
+
+        public void RemoveAuctionFromFavorite(string userId, string auctionId)
+        {
+            string key = $"user:{userId}:favoriteAuctions";
+            redis.RemoveItemFromList(key, auctionId);
+        }
+
+        public async Task<List<AuctionResultDTO>> GetFavoriteAuctions(string userId)
+        {
+            string key = $"user:{userId}:favoriteAuctions";
+            var auctionsIds = redis.GetAllItemsFromList(key);
+            List<AuctionResultDTO> auctions = new List<AuctionResultDTO>();
+            foreach (var auctionId in auctionsIds)
+            {
+                var auction = Get(auctionId);
+                if (auction != null)
+                {
+                    var item = await itemService.GetItem(auction.ItemId);
+                    AuctionResultDTO auctionResult = new AuctionResultDTO {
+                        ID = auction.ID,
+                        Title = auction.Title,
+                        StartingPrice = auction.StartingPrice,
+                        CurrentPrice = auction.CurrentPrice,
+                        Status = auction.Status,
+                        PostedOnDate = auction.PostedOnDate,
+                        DueTo = auction.DueTo,
+                        Item = item
+                    };
+                    auctions.Add(auctionResult);
+                }
             }
             return auctions;
         }
