@@ -67,10 +67,10 @@ const AuctionPage = (props: Props) => {
       await subscribeToAuctionAPI(id!);
       await newConnection?.invoke("JoinAuctionGroup", id);
 
-      // const auctionResponse = await getAuctionWithItemAPI(id!);
-      // if(auctionResponse && auctionResponse.status == 200) {
-      //   setAuction(auctionResponse.data);
-      // }
+      const auctionResponse = await getAuctionWithItemAPI(id!);
+      if(auctionResponse && auctionResponse.status == 200) {
+        setAuction(auctionResponse.data);
+      }
       const offersResponse = await getOffersAPI(id!, 10);
       if(offersResponse && offersResponse.status == 200) {
         setOffers(offersResponse.data);
@@ -101,8 +101,14 @@ const AuctionPage = (props: Props) => {
         auctionId: id,
         userId: user?.id
       });
+      setAuction((prevAuction) => {
+        if (prevAuction) {
+          return { ...prevAuction, currentPrice: bid };
+        }
+        return prevAuction;
+      });
     } catch (error) {
-      console.error("Došlo je do greške pri slanju ponude:", error);
+    console.error("Došlo je do greške pri slanju ponude:", error);
     }
   }
 

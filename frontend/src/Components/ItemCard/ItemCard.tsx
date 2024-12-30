@@ -3,6 +3,7 @@ import { Item } from "../../Interfaces/Item/Item";
 import styles from "./ItemCard.module.css";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useAuth } from "../../Context/useAuth";
 
 type Props = {
     item: Item;
@@ -16,12 +17,14 @@ const ItemCard = ({ item }: Props) => {
     const openModal = () => setModalOpen(true);
     const closeModal = () => setModalOpen(false);
 
+    const {user} = useAuth();
+
     const handleSubmit = async () => {
-        const username = localStorage.getItem("username");
-        if (!username) {
-            console.error("Korisnik nije ulogovan");
-            return;
-        }
+        const username = user?.userName;
+        // if (!username) {
+        //     console.error("Korisnik nije ulogovan");
+        //     return;
+        // }
 
         const auctionData = {
             title,

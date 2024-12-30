@@ -80,11 +80,11 @@ namespace backend.Controllers
         }
 
         [HttpGet("AuctionWithItem/{auctionId}")]
-        public ActionResult<Auction> GetAuctionWithItem(string auctionId)
+        public async Task<ActionResult<Auction>> GetAuctionWithItem(string auctionId)
         {
             try
             {
-                var auction = auctionService.GetFullAuction(auctionId);
+                var auction = await auctionService.GetFullAuction(auctionId);
 
                 return Ok(auction);
             }
