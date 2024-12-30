@@ -3,6 +3,8 @@ import { getLeaderboardForPlacedAuctions  } from "../../Services/AuctionService"
 import pocetna from "../../Assets/pocetna.png";
 import { Link } from "react-router-dom";
 import styles from "./Home.module.css";
+import { faSearch , faPlusCircle, faUsers} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Home = () => {
   const [topUsers, setTopUsers] = useState<Array<{ username: string; auctions: number }> | undefined>(undefined);
@@ -55,30 +57,37 @@ const Home = () => {
 
       <hr className={`text-metal mx-5`}></hr>
 
-      <div className={`container my-5`}>
-        <div className={`row text-center`}>
+      <div className={`container my-5 d-flex justify-content-center`}>
+        <div className={`row justify-content-center text-center`}>
           <div className={`col-md-3`}>
-            <i className={`bi bi-shield-check text-primary fs-1`}></i>
-            <h5 className={`mt-3`}>Sigurnost</h5>
-            <p className={`text-muted`}>Vaši podaci i transakcije su zaštićeni.</p>
+            <FontAwesomeIcon icon={faSearch} className={`text-coral fs-1`} />            
+            <h5 className={`mt-3 text-steel-blue`}>Pretražite aukcije</h5>
+            <p className={`text-metal`}>Pronađite aukcije koje vas zanimaju brzo i jednostavno.</p>
+            <Link
+                    to="/CreateItem"
+                    className={`btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
+                  >
+                    Pretraži Aukcije
+            </Link>
           </div>
           <div className={`col-md-3`}>
-            <i className={`bi bi-tags text-primary fs-1`}></i>
-            <h5 className={`mt-3`}>Najbolje ponude</h5>
-            <p className={`text-muted`}>Pronađite najbolje ponude na aukcijama.</p>
+            <FontAwesomeIcon icon={faPlusCircle} className={`text-coral fs-1`} />
+            <h5 className={`mt-3 text-steel-blue`}>Dodajte predmet</h5>
+            <p className={`text-metal`}>Postavite svoj predmet na aukciju u nekoliko koraka.</p>
+            <Link
+                    to="/CreateItem"
+                    className={`btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
+                  >
+                    Dodaj Predmet
+            </Link>
           </div>
           <div className={`col-md-3`}>
-            <i className={`bi bi-people text-primary fs-1`}></i>
-            <h5 className={`mt-3`}>Zajednica</h5>
-            <p className={`text-muted`}>Pridružite se velikoj bazi korisnika.</p>
-          </div>
-          <div className={`col-md-3`}>
-            <i className={`bi bi-currency-dollar text-primary fs-1`}></i>
-            <h5 className={`mt-3`}>Jednostavno plaćanje</h5>
-            <p className={`text-muted`}>Sigurna i brza plaćanja.</p>
+            <FontAwesomeIcon icon={faUsers} className={`text-coral fs-1`} />
+            <h5 className={`mt-3 text-steel-blue`}>Zajednica</h5>
+            <p className={`text-metal`}>Pridružite se velikoj bazi korisnika.</p>
           </div>
         </div>
-    </div>
+      </div>
 
     {(topUsers && topUsers.length > 0) && (
   <div className={`container-fluid bg-pale-blue d-flex justify-content-center flex-grow-1`}>
