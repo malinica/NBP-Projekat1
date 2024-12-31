@@ -14,6 +14,8 @@ import CreateItem from "./Components/CreateItem/CreateItem";
 import DisplayItem from "./Components/DisplayItem/DisplayItem";
 import AuctionPage from "./Components/Auction/AuctionPage";
 import FavoriteAuctionsPage from "./Components/FavoriteAuctionsPage/FavoriteAuctionsPage";
+import UserProfilePage from "./Components/UserProfilePage/UserProfilePage";
+import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 
 
 function App() {
@@ -26,14 +28,15 @@ function App() {
             <div className="content">
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/create-item" element={<CreateItem />} />
-                <Route path="/items/:id" element={<DisplayItem />} />
+                <Route path="/create-item" element={<ProtectedRoute><CreateItem /></ProtectedRoute>} />
+                <Route path="/items/:id" element={<ProtectedRoute><DisplayItem /></ProtectedRoute>} />
                 <Route path="/register" element={<StranicaRegistracije />} />
                 <Route path="/login" element={<StranicaPrijave />} />
                 <Route path="/search-page/:id" element={<SearchPage />} />
-                <Route path="/auctions/:id" element={<AuctionPage />} />
-                <Route path="/my-items" element={<PageMyItems />} />
-                <Route path="/favorite-auctions" element={<FavoriteAuctionsPage />} />
+                <Route path="/auctions/:id" element={<ProtectedRoute><AuctionPage /></ProtectedRoute>} />
+                <Route path="/my-items" element={<ProtectedRoute><PageMyItems /></ProtectedRoute>} />
+                <Route path="/favorite-auctions" element={<ProtectedRoute><FavoriteAuctionsPage /></ProtectedRoute>} />
+                <Route path="/users/:username" element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>} />
               </Routes>
             </div>
             <Footer />

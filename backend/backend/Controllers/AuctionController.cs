@@ -89,11 +89,7 @@ namespace backend.Controllers
             {
                 var auctions = auctionService.LeaderboardMostPlacedAuctions();
 
-                //if (auctions != null && auctions.Any())
-                {
-                    return Ok(auctions);
-                }
-                return NotFound("Error in loading Leaderboard for users with the highest auction");
+                return Ok(auctions);
             }
             catch (Exception ex)
             {
@@ -108,11 +104,7 @@ namespace backend.Controllers
             {
                 var auctions = auctionService.LeaderboardAuctionsBasedOnTimeExpiring(fromPosition, N);
 
-              //  if (auctions != null && auctions.Any())
-                {
-                    return Ok(auctions);
-                }
-                return NotFound("Error in loading Leaderboard for auctions based on time expiring");
+                return Ok(auctions);
             }
             catch (Exception ex)
             {
@@ -128,10 +120,7 @@ namespace backend.Controllers
             {
                 var auctions = auctionService.GetAuctionsBidedByUser(username);
 
-                {
-                    return Ok(auctions);
-                }
-                return NotFound("Error in loading auctions bided by user");
+                return Ok(auctions);
             }
             catch (Exception ex)
             {
@@ -206,16 +195,31 @@ namespace backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        //GetAuctionsFromFilter
 
+        //GetAuctionsFromFilter
         [HttpGet("GetAuctionsFromFilter")]
-        [Authorize]
+        [Authorize] // ne treba authorize ako je ona stranica pretrage dostupna i neulogovanom korisniku
         public async Task<ActionResult<List<AuctionResultDTO>>> GetAuctionsFromFilter(string itemName,ItemCategory[] categories,int price)
         {
             try
             {
                 var result = await auctionService.GetAuctionsFromFilter(itemName,categories,price);
                 return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetAuctionsCreatedBy/{username}")]
+        [Authorize]
+        public async Task<ActionResult<List<AuctionResultDTO>>> GetAuctionsCreatedByUser(string username)
+        {
+            try
+            {
+                var createdAuctions = await auctionService.GetAuctionsCreatedByUser(username);
+                return Ok(createdAuctions);
             }
             catch (Exception ex)
             {

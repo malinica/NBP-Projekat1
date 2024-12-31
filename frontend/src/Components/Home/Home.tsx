@@ -104,7 +104,11 @@ const Home = () => {
           <tbody>
             {topUsers.map((user) => (
               <tr key={user.username}>
-                <td className={`text-muted`}>{user.username}</td>
+                <td className={`text-muted`}>
+                  <Link to={`users/${user.username}`}>
+                    {user.username}
+                  </Link>
+                </td>
                 <td className={`text-muted`}>{user.auctions}</td>
               </tr>
             ))}

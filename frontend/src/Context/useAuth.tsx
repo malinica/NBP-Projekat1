@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import React, { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { loginAPI, registerAPI } from "../Services/AuthService";
@@ -21,6 +21,8 @@ export const UserContext = createContext<UserContextType>({} as UserContextType)
 
 export const UserProvider = ({ children }: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isReady, setIsReady] = useState<boolean>(false);
@@ -54,7 +56,7 @@ export const UserProvider = ({ children }: Props) => {
           setToken(res?.data.token);
           setUser(userObj!);
 
-          navigate("/");
+          navigate(from, { replace: true });
         }
       })
       .catch((e) => console.error(e));
@@ -75,11 +77,13 @@ export const UserProvider = ({ children }: Props) => {
           axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("token");
           
 
+
+
           setToken(res?.data.token);
           setUser(userObj!);
 
           
-          navigate("/");
+          navigate(from, { replace: true });
         }
       })
       .catch((e) => console.error(e));

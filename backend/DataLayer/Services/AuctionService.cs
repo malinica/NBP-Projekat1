@@ -15,12 +15,12 @@ namespace DataLayer.Services
 
         private readonly ItemService itemService;
 
-        public AuctionService(ItemService itemService) 
-        { 
+        public AuctionService(ItemService itemService)
+        {
             this.itemService = itemService;
         }
 
-         public bool Set(CreateAuctionDTO auction, string username)
+        public bool Set(CreateAuctionDTO auction, string username)
         {
             Auction i = new Auction()
             {
@@ -40,7 +40,8 @@ namespace DataLayer.Services
                 redis.IncrementItemInSortedSet("auctionLeaderboard", username, 1);//za najaktivnije korisnike
                 double auctionEndTime = new DateTimeOffset(auction.DueTo).ToUnixTimeSeconds();
                 redis.AddItemToSortedSet("sortedAuctions:", i.ID, auctionEndTime);//za prikupljanje aukcija na stranici aukcija
-                redis.Set("AuctionIDForItemID:"+auction.ItemId,keyEdited);
+                redis.Set("AuctionIDForItemID:" + auction.ItemId, keyEdited);
+                redis.AddItemToSet("user:" + username + ":createdAuctions", i.ID);
             }
             return status;
 
@@ -65,7 +66,8 @@ namespace DataLayer.Services
             if (auction != null)
             {
                 var item = await itemService.GetItem(auction.ItemId);
-                AuctionResultDTO auctionResult = new AuctionResultDTO {
+                AuctionResultDTO auctionResult = new AuctionResultDTO
+                {
                     ID = auction.ID,
                     Title = auction.Title,
                     StartingPrice = auction.StartingPrice,
@@ -87,27 +89,24 @@ namespace DataLayer.Services
             return new Dictionary<string, double>(allEntries);
         }
 
+        public async Task<List<AuctionResultDTO>> LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition, int N)
+        {
 
-        
-
-       public async Task<List<AuctionResultDTO>> LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition, int N)
-{
-  
-    var auctionsIds = redis.GetRangeFromSortedSetDesc("sortedAuctions:", fromPosition, fromPosition + N - 1);
+            var auctionsIds = redis.GetRangeFromSortedSetDesc("sortedAuctions:", fromPosition, fromPosition + N - 1);
             List<AuctionResultDTO> auctions = new List<AuctionResultDTO>();
             foreach (var auctionId in auctionsIds)
             {
                 var auction = await GetFullAuction(auctionId);
-                if(auction!=null)
+                if (auction != null)
                     auctions.Add(auction);
             }
             return auctions;
-}
+        }
 
 
         public List<Auction> GetAuctionsBidedByUser(string username)
         {
-            var sortedEntries = redis.GetAllItemsFromSet("AuctionsBidedByUser:"+username+":");
+            var sortedEntries = redis.GetAllItemsFromSet("AuctionsBidedByUser:" + username + ":");
 
             List<Auction> auctions = new List<Auction>();
 
@@ -152,54 +151,66 @@ namespace DataLayer.Services
             foreach (var auctionId in auctionsIds)
             {
                 var auction = await GetFullAuction(auctionId);
-                if(auction!=null)
+                if (auction != null)
                     auctions.Add(auction);
             }
             return auctions;
         }
-       
-public async Task<List<AuctionResultDTO>> GetAuctionsFromFilter(string itemName, ItemCategory[] categories, int price)
-{
-    if (string.IsNullOrEmpty(itemName))
-{
-    itemName = "";  
-}
 
-if (categories == null || categories.Length == 0)
-{
-    categories = new ItemCategory[] { };
-}
-
-    var items = await itemService.GetItemsByFilter(itemName, categories);
-    var auctionList = new List<AuctionResultDTO>();
-
-    if (items != null)
-    {
-        foreach (var x in items)
+        public async Task<List<AuctionResultDTO>> GetAuctionsFromFilter(string itemName, ItemCategory[] categories, int price)
         {
-            var auction = redis.Get<Auction>("AuctionIDForItemID:" + x.ID);
-            
-            if (auction != null && auction.CurrentPrice <= price)
+            if (string.IsNullOrEmpty(itemName))
             {
-                auctionList.Add(new AuctionResultDTO
-                {
-                ID   = auction.ID,
-                Title=auction.Title,
-                Item=x,
-                StartingPrice = auction.StartingPrice,
-                CurrentPrice = auction.CurrentPrice, 
-                Status = auction.Status,
-                PostedOnDate = auction.PostedOnDate,
-                DueTo = auction.DueTo,
-                
-                });
+                itemName = "";
             }
+
+            if (categories == null || categories.Length == 0)
+            {
+                categories = new ItemCategory[] { };
+            }
+
+            var items = await itemService.GetItemsByFilter(itemName, categories);
+            var auctionList = new List<AuctionResultDTO>();
+
+            if (items != null)
+            {
+                foreach (var x in items)
+                {
+                    var auction = redis.Get<Auction>("AuctionIDForItemID:" + x.ID);
+
+                    if (auction != null && auction.CurrentPrice <= price)
+                    {
+                        auctionList.Add(new AuctionResultDTO
+                        {
+                            ID = auction.ID,
+                            Title = auction.Title,
+                            Item = x,
+                            StartingPrice = auction.StartingPrice,
+                            CurrentPrice = auction.CurrentPrice,
+                            Status = auction.Status,
+                            PostedOnDate = auction.PostedOnDate,
+                            DueTo = auction.DueTo,
+
+                        });
+                    }
+                }
+            }
+
+            return auctionList;
         }
-    }
 
-    return auctionList;
-}
-
-
+        public async Task<List<AuctionResultDTO>> GetAuctionsCreatedByUser(string username)
+        {
+            string key = $"user:{username}:createdAuctions";
+            var auctionsIds = redis.GetAllItemsFromSet(key);
+            List<AuctionResultDTO> auctions = new List<AuctionResultDTO>();
+            foreach (var auctionId in auctionsIds)
+            {
+                var auction = await GetFullAuction(auctionId);
+                if (auction != null)
+                    auctions.Add(auction);
+            }
+            return auctions;
+        }
     }
 }

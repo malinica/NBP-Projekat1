@@ -60,6 +60,16 @@ export const subscribeToAuctionAPI = async (auctionId: string): Promise<string |
     }
 };
 
+export const addFavoriteAuctionAPI = async (auctionId: string) => {
+    try {
+        const response = await axios.post(`${baseApiRoute}/AddToFavorite/${auctionId}`);
+        return response;
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}
+
 export const removeFavoriteAuctionAPI = async (auctionId: string) => {
     try {
         const response = await axios.delete(`${baseApiRoute}/RemoveFromFavorite/${auctionId}`);
@@ -89,6 +99,9 @@ export const getAuctionWithItemAPI = async (auctionId: string) => {
         return undefined;
     }
 }
+
+
+
 export const getAuctionsFromFilter = async (
     itemName: string | null,
     categories: ItemCategory[],
@@ -105,6 +118,16 @@ export const getAuctionsFromFilter = async (
                 }
             }
         );
+        return response;
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}
+
+export const getAuctionsCreatedByUserAPI = async (username:string) => {
+    try {
+        const response = await axios.get<Auction[]>(`${baseApiRoute}/GetAuctionsCreatedBy/${username}`);
         return response;
     } catch (error) {
         console.error(error);

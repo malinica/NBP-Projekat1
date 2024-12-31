@@ -53,8 +53,10 @@ const Navbar = () => {
                    </Dropdown.Toggle>
 
                    <Dropdown.Menu align={'end'}>
-                    {user?.role!=Role.User &&
-                     <Dropdown.Divider />}
+                     <Dropdown.Item className={styles['custom-dropdown-item1']}>
+                        <Link to={`/users/${user!.userName}`} className={styles['custom-dropdown-link']}>MOJ PROFIL</Link>
+                     </Dropdown.Item>
+                     <Dropdown.Divider />
                      <Dropdown.Item onClick={handleLogout} className={styles['custom-dropdown-item1']}>ODJAVI SE</Dropdown.Item>
                    </Dropdown.Menu>
                  </Dropdown>
