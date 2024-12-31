@@ -106,15 +106,14 @@ export const getAuctionsFromFilter = async (
     currentPrice: number
 ) => {
     try {
+        const params: any = {
+            ...(itemName ? { itemName } : {}),
+            ...(categories && categories.length ? { categories: categories.join(",") } : {}),
+            ...(currentPrice !== null && currentPrice !== undefined ? { currentPrice } : {})
+        };
         const response = await axios.get<Auction[] | null>(
             `${baseApiRoute}/GetAuctionsFromFilter`,
-            {
-                params: {
-                    itemName, 
-                    categories: categories.join(","),  
-                    currentPrice
-                }
-            }
+            { params }
         );
         return response;
     } catch (error) {

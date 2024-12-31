@@ -98,11 +98,11 @@ namespace backend.Controllers
         }
 
         [HttpGet("LeaderboardAuctionsBasedOnTimeExpiring/{fromPosition}/{N}")]
-        public IActionResult LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition, int N)
+        public async Task<ActionResult<List<AuctionResultDTO>>> LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition, int N)
         {
             try
             {
-                var auctions = auctionService.LeaderboardAuctionsBasedOnTimeExpiring(fromPosition, N);
+                var auctions = await auctionService.GetAuctionsBasedOnTimeExpiring(fromPosition, N);
 
                 return Ok(auctions);
             }

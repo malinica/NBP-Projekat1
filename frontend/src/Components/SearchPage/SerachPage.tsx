@@ -70,13 +70,13 @@ type Props = {}
   };
   const handleButtonSearchClick=()=>
   {
-    if (category.length<=0 && searchPrice!=0 && serachName!="")
+    if (category.length<=0 && searchPrice<=0 && serachName=="")
     {
       loadAuctionsWithoutFilter();
     }
     else
     {
-      
+      loadAuctionsWithFilter();
     }
   }
   useEffect(()=>{
@@ -84,8 +84,14 @@ type Props = {}
   },[])
 
   useEffect(() => {
-    loadAuctionsWithoutFilter();  
-}, [currentPageNumber,auctionsPerPage]); 
+    if (category.length<=0 && searchPrice<=0 && serachName=="")
+      {
+        loadAuctionsWithoutFilter();
+      }
+      else
+      {
+        loadAuctionsWithFilter();
+      }}, [currentPageNumber,auctionsPerPage]); 
 
   return (<>
     

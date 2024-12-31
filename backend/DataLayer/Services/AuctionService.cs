@@ -40,13 +40,13 @@ namespace DataLayer.Services
                 redis.IncrementItemInSortedSet("auctionLeaderboard", username, 1);//za najaktivnije korisnike
                 double auctionEndTime = new DateTimeOffset(auction.DueTo).ToUnixTimeSeconds();
                 redis.AddItemToSortedSet("sortedAuctions:", i.ID, auctionEndTime);//za prikupljanje aukcija na stranici aukcija
-                redis.Set("AuctionIDForItemID:" + auction.ItemId, keyEdited);
+                redis.Set("AuctionIDForItemID:" + auction.ItemId, i.ID);
                 redis.AddItemToSet("user:" + username + ":createdAuctions", i.ID);
                 
                 return i.ID;
             }
 
-            return null;
+            return "Error in set function for auction";
 
         }
 
@@ -92,7 +92,7 @@ namespace DataLayer.Services
             return new Dictionary<string, double>(allEntries);
         }
 
-        public async Task<List<AuctionResultDTO>> LeaderboardAuctionsBasedOnTimeExpiring(int fromPosition, int N)
+        public async Task<List<AuctionResultDTO>> GetAuctionsBasedOnTimeExpiring (int fromPosition, int N)
         {
 
             var auctionsIds = redis.GetRangeFromSortedSetDesc("sortedAuctions:", fromPosition, fromPosition + N - 1);
