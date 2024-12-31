@@ -1,6 +1,6 @@
 import styles from "./SearchPage.module.css";
 import { useEffect, useState } from 'react';
-import { getAuctions, GetAuctionCounter } from "../../Services/AuctionService";
+import { getAuctions, GetAuctionCounter, getAuctionsFromFilter } from "../../Services/AuctionService";
 import { Auction } from "../../Interfaces/Auction/Auction";
 import AuctionCard from "../AuctionCard/AuctionCard";
 import { ItemCategory } from '../../Enums/ItemCategory';
@@ -13,30 +13,20 @@ type Props = {}
   const [auctions, setAuctions] = useState<Array<Auction> | null>(null);
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(id ? parseInt(id, 10) : 1);
   const [auctionsPerPage, setAuctionsPerPage] = useState<number>(10);
-  const [auctionCounter,setAuctionCounter]=useState<number>(0);
-  const [pages, setPages] = useState<Number[]>([1]);
   const [auctionsPerPageArray,setAuctionsPerPageArray]=useState<number[]>([5,10,15])
   const [category, setCategory] = useState<ItemCategory[]>([]);
-  const [searchPrice, setSerachPrice] = useState<string>("");
+  const [searchPrice, setSerachPrice] = useState<number>(0);
   const [serachName, setSearchName] = useState<string>("");
 
   
-
-
-  const calculateNumberOfPages = () => {
-    var p = (auctionCounter / auctionsPerPage) + 1;
-    const str = [];
-    for (let i = 1; i <= p; i++) {
-      str.push(i);
-    }
-    setPages(str);
-    }
     const handleSearchNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchName(e.target.value);
     }
     const handleSearchPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-         setSerachPrice(e.target.value);   
-    }
+      const price = parseInt(e.target.value, 10); 
+      setSerachPrice(isNaN(price) ? 0 : price);  
+  }
+  
 
     const changePageNumber = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       const valueString = e.currentTarget.getAttribute('data-value');
@@ -51,16 +41,22 @@ type Props = {}
       }
     }
 
-  const loadAuctionCounter = async () => {
-    const data = await GetAuctionCounter();
-    if (data!=null)
-    setAuctionCounter(data);  
-  };
 
- const loadAuctions = async () => {
+ const loadAuctionsWithoutFilter = async () => {
     const data = await getAuctions(auctionsPerPage*(currentPageNumber-1),auctionsPerPage);
+    console.log(data);
     setAuctions(data);  
   };
+  const loadAuctionsWithFilter = async () => {
+    const response = await getAuctionsFromFilter(serachName, category, searchPrice);
+    
+    if (response && response.data) {
+        setAuctions(response.data);  
+    } else {
+        setAuctions(null);  // Ako nema podataka, postavi null
+    }
+};
+
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value as ItemCategory;
@@ -74,17 +70,22 @@ type Props = {}
   };
   const handleButtonSearchClick=()=>
   {
-    
+    if (category.length<=0 && searchPrice!=0 && serachName!="")
+    {
+      loadAuctionsWithoutFilter();
+    }
+    else
+    {
+      
+    }
   }
   useEffect(()=>{
-  loadAuctions();
-  loadAuctionCounter();
-  calculateNumberOfPages();
+    loadAuctionsWithoutFilter();
   },[])
 
   useEffect(() => {
-    loadAuctions();  
-}, [currentPageNumber,auctionsPerPage,auctionCounter]); 
+    loadAuctionsWithoutFilter();  
+}, [currentPageNumber,auctionsPerPage]); 
 
   return (<>
     
@@ -144,56 +145,17 @@ type Props = {}
     onClick={handleButtonSearchClick}
   ></button>
 
-    
-    <nav className={`mt-2 me-2 d-flex justify-content-end`}>
-              <ul className={`pagination`}>
-                {currentPageNumber != 1 && (
-                  <>
-                    <li className={`page-item`}>
-                      <a
-                        className={`page-link`}
-                        data-value={currentPageNumber - 1}
-                        onClick={(e) => {
-                          changePageNumber(e);
-                        }}
-                      >
-                        Previous
-                      </a>
-                    </li>
-                  </>
-                )}
-                
+<div className="auctions-list">
+    {auctions && auctions.length > 0 ? (
+        auctions.map((auction) => (
+            <AuctionCard key={auction.id} auction={auction} />
+        ))
+    ) : (
+        <p>Nema aukcija.</p>  
+    )}
+</div>
 
-                {pages.map((pageN) => (
-                  <li key={`PageNumber-${pageN}`} className={`${pageN === currentPageNumber ? 'page-item active' : 'page-item'}`}>
-                    <a
-                      data-value={pageN}
-                      className={`page-link`}
-                      onClick={(e) => {
-                        changePageNumber(e);
-                      }}
-                    >
-                      {pageN.toString()}
-                    </a>
-                  </li>
-                ))}
-                {currentPageNumber != pages[pages.length-1] && (
-                  <>
-                    <li className={`page-item`}>
-                      <a
-                        className={`page-link`}
-                        data-value={currentPageNumber + 1}
-                        onClick={(e) => {
-                          changePageNumber(e);
-                        }}
-                      >
-                        Next
-                      </a>
-                    </li>
-                  </>
-                )}
-              </ul>
-            </nav>
+
   </>);
 }
 export default SearchPage;

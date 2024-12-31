@@ -38,7 +38,7 @@ const ItemCard = ({ item }: Props) => {
 
         try {
             const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/api/Auction/set?username=${username}`,
+                `http://localhost:5257/api/Auction/set?username=${username}`,
                 {
                     method: "POST",
                     headers: {

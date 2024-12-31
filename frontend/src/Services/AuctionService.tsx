@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Auction } from "../Interfaces/Auction/Auction";
 import toast from "react-hot-toast";
+import { ItemCategory } from "../Enums/ItemCategory";
 
 const baseApiRoute = "http://localhost:5257/api/Auction";
 
@@ -82,6 +83,28 @@ export const getFavoriteAuctionsAPI = async () => {
 export const getAuctionWithItemAPI = async (auctionId: string) => {
     try {
         const response = await axios.get<Auction|null>(`${baseApiRoute}/AuctionWithItem/${auctionId}`);
+        return response;
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}
+export const getAuctionsFromFilter = async (
+    itemName: string | null,
+    categories: ItemCategory[],
+    currentPrice: number
+) => {
+    try {
+        const response = await axios.get<Auction[] | null>(
+            `${baseApiRoute}/GetAuctionsFromFilter`,
+            {
+                params: {
+                    itemName, 
+                    categories: categories.join(","),  
+                    currentPrice
+                }
+            }
+        );
         return response;
     } catch (error) {
         console.error(error);

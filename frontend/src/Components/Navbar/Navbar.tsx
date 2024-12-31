@@ -40,7 +40,7 @@ const Navbar = () => {
                 </li>)}
               <li className={`my-2 text-end`}>{<Link to="/search-page/1" className={` ${getLinkClass("/add-item")} ${styles.link} ${styles['link-hover']}`}>AUKCIJE</Link>} </li>
               <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/create-item" className={` ${getLinkClass("/add-item")} ${styles.link} ${styles['link-hover']}`}>DODAJ PREDMET</Link>} </li>
-              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/MyItems" className={` ${getLinkClass("/add-item")} ${styles.link} ${styles['link-hover']}`}>MOJI PREDMETI</Link>} </li>
+              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/my-items" className={` ${getLinkClass("/add-item")} ${styles.link} ${styles['link-hover']}`}>MOJI PREDMETI</Link>} </li>
               <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/" className={` ${getLinkClass("/add-item")} ${styles.link} ${styles['link-hover']}`}>MOJE PONUDE</Link>} </li>
               <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/favorite-auctions" className={` ${getLinkClass("/add-item")} ${styles.link} ${styles['link-hover']}`}>OMILJENO</Link>} </li>
 

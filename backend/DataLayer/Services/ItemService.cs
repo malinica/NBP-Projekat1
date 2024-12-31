@@ -5,6 +5,7 @@ using DataLayer.Context;
 using DataLayer.DTOs.ItemDTOs;
 using System.Text.Json;
 using Newtonsoft.Json;
+using DataLayer.Enums;
 
 
 namespace DataLayer.Services
@@ -100,6 +101,27 @@ namespace DataLayer.Services
 
         return itemResults;
         }
+
+
+         public async Task<List<ItemResultDTO>> GetItemsByFilter(string name, ItemCategory[] categories)
+{
+    var items = await context.Items
+        .Where(item => item.Name.ToLower().Contains(name.ToLower()) &&
+                       categories.Contains(item.Category))
+        .Select(item => new ItemResultDTO
+        {
+            ID = item.ID,
+            Name = item.Name,
+            Description=item.Description,
+            Category = item.Category,
+            Pictures = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>()
+
+        })
+        .ToListAsync();
+
+    return items;
+}
+
 
     }
 }

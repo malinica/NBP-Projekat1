@@ -31,11 +31,11 @@ namespace backend.Controllers
         }
 
         [HttpPost("set")]
-        public async Task<ActionResult<string>> Set([FromBody] CreateAuctionDTO auction, string username)
+        public ActionResult<string> Set([FromBody] CreateAuctionDTO auction, string username)
         {
             try
             {
-                bool result = await auctionService.Set(auction, username);
+                bool result = auctionService.Set(auction, username);
 
                 if (result)
                     return Ok("Auction's data has been successfully saved.");
@@ -47,19 +47,7 @@ namespace backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetAuctionCounter")]
-        public ActionResult<int> GetAuctionCounter()
-        {
-            try{
-                int result=auctionService.GetAuctionCounter();
-                return result;
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
+        
         [HttpGet("{key}")]
         public ActionResult<Auction> Get(string key)
         {
@@ -212,6 +200,22 @@ namespace backend.Controllers
                 var user = await userService.GetCurrentUser(User);
                 var favoriteAuctions = await auctionService.GetFavoriteAuctions(user?.Id ?? "");
                 return Ok(favoriteAuctions);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        //GetAuctionsFromFilter
+
+        [HttpGet("GetAuctionsFromFilter")]
+        [Authorize]
+        public async Task<ActionResult<List<AuctionResultDTO>>> GetAuctionsFromFilter(string itemName,ItemCategory[] categories,int price)
+        {
+            try
+            {
+                var result = await auctionService.GetAuctionsFromFilter(itemName,categories,price);
+                return Ok(result);
             }
             catch (Exception ex)
             {
