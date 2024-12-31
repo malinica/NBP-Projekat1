@@ -1,8 +1,15 @@
-.borderRadius{
-    border-radius: 5px;
+.dugme1 {
+    background-color: #4577b7;
+    transition: 0.4s;
+    padding: 4px 8px; 
+    font-size: 14px; 
+    line-height: 1.2; 
 }
 
-.imgSize{
-    height: 300px;
-    border-radius: 5px;
+.dugme1:hover {
+    background-color: #EE6C4D;
+}
+
+.linija_ispod_dugmeta{
+    text-decoration: none;
 }

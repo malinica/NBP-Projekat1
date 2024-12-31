@@ -15,8 +15,6 @@ const Home = () => {
     setTopUsers(data);  
   };
 
-
-
   useEffect(() => {
     loadLeaderboard();
     window.addEventListener("scroll", handleScroll);
@@ -42,7 +40,7 @@ const Home = () => {
       <div className={`w-100 text-center`}>
           <div className={`text-center mt-5`}>
             <h1 className={`text-steel-blue`}>Dobrodošli na našu platformu za aukcije!</h1>
-            <p className={`lead text-coral`}>
+            <p className={`lead text-coral fw-normal`}>
               Kupujte, prodajte i licitirajte sa lakoćom. Pridružite se već danas!
             </p>
             <Link
@@ -65,10 +63,15 @@ const Home = () => {
             <p className={`text-metal`}>Pronađite aukcije koje vas zanimaju brzo i jednostavno.</p>
             <Link
                     to="/CreateItem"
-                    className={`btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
+                    className={`btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`}
                   >
                     Pretraži Aukcije
             </Link>
+          </div>
+          <div className={`col-md-3`}>
+            <FontAwesomeIcon icon={faUsers} className={`text-coral fs-1`} />
+            <h5 className={`mt-3 text-steel-blue`}>Zajednica</h5>
+            <p className={`text-metal`}>Pridružite se velikoj bazi korisnika.</p>
           </div>
           <div className={`col-md-3`}>
             <FontAwesomeIcon icon={faPlusCircle} className={`text-coral fs-1`} />
@@ -76,15 +79,10 @@ const Home = () => {
             <p className={`text-metal`}>Postavite svoj predmet na aukciju u nekoliko koraka.</p>
             <Link
                     to="/CreateItem"
-                    className={`btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
+                    className={`btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`}
                   >
                     Dodaj Predmet
             </Link>
-          </div>
-          <div className={`col-md-3`}>
-            <FontAwesomeIcon icon={faUsers} className={`text-coral fs-1`} />
-            <h5 className={`mt-3 text-steel-blue`}>Zajednica</h5>
-            <p className={`text-metal`}>Pridružite se velikoj bazi korisnika.</p>
           </div>
         </div>
       </div>
@@ -105,7 +103,7 @@ const Home = () => {
             {topUsers.map((user) => (
               <tr key={user.username}>
                 <td className={`text-muted`}>
-                  <Link to={`users/${user.username}`}>
+                  <Link to={`users/${user.username}`} className={`text-steel-blue ${styles.linija_ispod_dugmeta}`}>
                     {user.username}
                   </Link>
                 </td>
@@ -120,7 +118,7 @@ const Home = () => {
 )}  
 
 
-      <button onClick={scrollToTop} className={`bg-blue text-white ${styles.pocetak} ${showButton ? 'd-block' : 'd-none'}`} title="Idi na pocetak">^</button>
+  <button onClick={scrollToTop} className={`bg-blue text-white ${styles.pocetak} ${showButton ? 'd-block' : 'd-none'}`} title="Idi na pocetak">^</button>
     </div>
   );
 };

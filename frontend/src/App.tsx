@@ -35,7 +35,7 @@ function App() {
                 <Route path="/search-page/:id" element={<SearchPage />} />
                 <Route path="/auctions/:id" element={<ProtectedRoute><AuctionPage /></ProtectedRoute>} />
                 <Route path="/my-items" element={<ProtectedRoute><PageMyItems /></ProtectedRoute>} />
-                <Route path="/favorite-auctions" element={<ProtectedRoute><FavoriteAuctionsPage /></ProtectedRoute>} />
+                <Route path="/favorite-auctions" element={<ProtectedRoute><FavoriteAuctionsPage/></ProtectedRoute>} />
                 <Route path="/users/:username" element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>} />
               </Routes>
             </div>

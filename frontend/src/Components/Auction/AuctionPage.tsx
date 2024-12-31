@@ -124,6 +124,7 @@ const AuctionPage = (props: Props) => {
 
         <AuctionBidForm onSubmitBid={submitBid}></AuctionBidForm>
 
+
         <br />
         <div className={`table-responsive`}>
           <table className={`table table-striped rounded`}>

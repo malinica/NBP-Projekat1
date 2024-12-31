@@ -59,6 +59,7 @@ const FavoriteAuctionsPage = (props: Props) => {
             <button className='btn btn-danger' onClick={() => handleRemoveFavoriteAuction(auction.id)}>Ukloni iz omiljenih</button>
           </div>
         ))}
+
       </div>
     ) : (
       <p className="text-center text-muted">Nemate omiljenih aukcija.</p>

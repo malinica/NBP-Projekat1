@@ -32,7 +32,7 @@ const DisplayItem = (props: Props) => {
         {!isLoading ? 
         (<>
             <div className={`row justify-content-center align-items-center`}>
-                <div className={`col-lg-6 my-4 mb-lg-0`}>
+                <div className={`col-lg-6 my-4 img-fluid`}>
                     <div id="carouselExampleIndicators" className={`carousel slide shadow rounded overflow-hidden`}>
                     <div className={`carousel-indicators`}>
                         {item?.pictures.map((_, i) =>
