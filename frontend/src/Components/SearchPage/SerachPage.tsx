@@ -6,7 +6,8 @@ import AuctionCard from "../AuctionCard/AuctionCard";
 import { ItemCategory } from '../../Enums/ItemCategory';
 import { useParams } from "react-router-dom";
 
-type Props = {}
+type Props = {
+};
 
   const SearchPage = () => {
     const { id } = useParams();
@@ -103,6 +104,7 @@ type Props = {}
         loadAuctionsWithFilter();
       }
     }, [currentPageNumber, auctionsPerPage]);
+
 
 return (
     <div className={`container`}>
