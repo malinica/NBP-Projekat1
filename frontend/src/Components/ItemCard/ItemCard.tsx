@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Item } from "../../Interfaces/Item/Item";
 import styles from "./ItemCard.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../../Context/useAuth";
+import { createAuctionAPI } from "../../Services/AuctionService";
 
 type Props = {
     item: Item;
@@ -19,12 +20,10 @@ const ItemCard = ({ item }: Props) => {
 
     const {user} = useAuth();
 
+    const navigate = useNavigate();
+
     const handleSubmit = async () => {
         const username = user?.userName;
-        // if (!username) {
-        //     console.error("Korisnik nije ulogovan");
-        //     return;
-        // }
 
         const auctionData = {
             title,
@@ -37,21 +36,9 @@ const ItemCard = ({ item }: Props) => {
         };
 
         try {
-            const response = await fetch(
-                `http://localhost:5257/api/Auction/set?username=${username}`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(auctionData),
-                }
-            );
-            if (!response.ok) {
-                throw new Error(`Greska: ${response.statusText}`);
-            }
+            const auctionId = await createAuctionAPI(username!, auctionData);
             toast.success("Aukcija je uspesno kreirana!");
-            //nek server vrati id aukcije pa redirektuj na stranicu za tu aukciju
+            navigate(`../auctions/${auctionId}`);
             closeModal();
         } catch (error) {
             console.error("Greska prilikom kreiranja aukcije:", error);

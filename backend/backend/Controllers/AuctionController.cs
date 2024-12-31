@@ -35,10 +35,10 @@ namespace backend.Controllers
         {
             try
             {
-                bool result = auctionService.Set(auction, username);
+                string auctionID = auctionService.Set(auction, username);
 
-                if (result)
-                    return Ok("Auction's data has been successfully saved.");
+                if (!string.IsNullOrEmpty(auctionID))
+                    return Ok(new {id = auctionID});
 
                 return BadRequest("Auction's data has not been successfully saved.");
             }

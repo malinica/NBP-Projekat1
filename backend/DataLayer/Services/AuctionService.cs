@@ -20,7 +20,7 @@ namespace DataLayer.Services
             this.itemService = itemService;
         }
 
-        public bool Set(CreateAuctionDTO auction, string username)
+        public string Set(CreateAuctionDTO auction, string username)
         {
             Auction i = new Auction()
             {
@@ -42,8 +42,11 @@ namespace DataLayer.Services
                 redis.AddItemToSortedSet("sortedAuctions:", i.ID, auctionEndTime);//za prikupljanje aukcija na stranici aukcija
                 redis.Set("AuctionIDForItemID:" + auction.ItemId, keyEdited);
                 redis.AddItemToSet("user:" + username + ":createdAuctions", i.ID);
+                
+                return i.ID;
             }
-            return status;
+
+            return null;
 
         }
 

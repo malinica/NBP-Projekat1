@@ -100,8 +100,6 @@ export const getAuctionWithItemAPI = async (auctionId: string) => {
     }
 }
 
-
-
 export const getAuctionsFromFilter = async (
     itemName: string | null,
     categories: ItemCategory[],
@@ -132,5 +130,21 @@ export const getAuctionsCreatedByUserAPI = async (username:string) => {
     } catch (error) {
         console.error(error);
         return undefined;
+    }
+}
+
+export const createAuctionAPI = async (username: string, auctionData: any) => {
+    try{
+        const response = await axios.post<{id: string}>(`${baseApiRoute}/set?username=${username}`, auctionData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        return response.data.id;
+    }
+    catch(error: any)
+    {
+        toast.error(error.response.data);
     }
 }
