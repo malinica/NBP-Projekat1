@@ -99,17 +99,19 @@ export const getAuctionWithItemAPI = async (auctionId: string) => {
         return undefined;
     }
 }
-
 export const getAuctionsFromFilter = async (
     itemName: string | null,
-    categories: ItemCategory[],
-    currentPrice: number
+    categories: ItemCategory[] | null,
+    minPrice: number | null,
+    maxPrice:number|null
 ) => {
     try {
         const params: any = {
             ...(itemName ? { itemName } : {}),
-            ...(categories && categories.length ? { categories: categories.join(",") } : {}),
-            ...(currentPrice !== null && currentPrice !== undefined ? { currentPrice } : {})
+            ...(categories && categories.length ? { categories: categories.join(",") } : { categories: "" }),
+            ...(minPrice !== null && minPrice !== undefined ? { minPrice } : {}),
+            ...(maxPrice !== null && maxPrice !== undefined ? { maxPrice } : {}),
+
         };
         const response = await axios.get<Auction[] | null>(
             `${baseApiRoute}/GetAuctionsFromFilter`,
@@ -121,6 +123,7 @@ export const getAuctionsFromFilter = async (
         return undefined;
     }
 }
+
 
 export const getAuctionsCreatedByUserAPI = async (username:string) => {
     try {

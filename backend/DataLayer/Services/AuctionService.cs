@@ -160,7 +160,7 @@ namespace DataLayer.Services
             return auctions;
         }
 
-        public async Task<List<AuctionResultDTO>> GetAuctionsFromFilter(string itemName, ItemCategory[] categories, int price)
+        public async Task<List<AuctionResultDTO>> GetAuctionsFromFilter(string? itemName, ItemCategory[] categories, int? pricemin,int? pricemax)
         {
             if (string.IsNullOrEmpty(itemName))
             {
@@ -181,7 +181,7 @@ namespace DataLayer.Services
                 {
                     var auction = redis.Get<Auction>("AuctionIDForItemID:" + x.ID);
 
-                    if (auction != null && auction.CurrentPrice <= price)
+                    if (auction != null &&  (pricemax==null || auction.CurrentPrice <= pricemax) && (pricemin==null || auction.CurrentPrice >= pricemin ))
                     {
                         auctionList.Add(new AuctionResultDTO
                         {

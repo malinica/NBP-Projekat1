@@ -11,26 +11,31 @@ type Props = {}
   const SearchPage = () => {
     const { id } = useParams();
     const [auctions, setAuctions] = useState<Array<Auction> | null>(null);
-    const [currentPageNumber, setCurrentPageNumber] = useState<number>(
-      id ? parseInt(id, 10) : 1
-    );
+    const [currentPageNumber, setCurrentPageNumber] = useState<number>(id ? parseInt(id, 10) : 1);
     const [auctionsPerPage, setAuctionsPerPage] = useState<number>(10);
-    const [auctionsPerPageArray, setAuctionsPerPageArray] = useState<number[]>([
-      5, 10, 15,
-    ]);
+    const [auctionsPerPageArray, setAuctionsPerPageArray] = useState<number[]>([5, 10, 15,]);
     const [category, setCategory] = useState<ItemCategory[]>([]);
-    const [searchPrice, setSerachPrice] = useState<number>(0);
+    const [minPrice, setMinPrice] = useState<number>(0);
+    const [maxPrice, setMaxPrice] = useState<number>(0);
+
     const [serachName, setSearchName] = useState<string>("");
 
     const handleSearchNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchName(e.target.value);
     };
 
-    const handleSearchPriceChange = (
+    const handleMaxPrice = (
       e: React.ChangeEvent<HTMLInputElement>
     ) => {
       const price = parseInt(e.target.value, 10);
-      setSerachPrice(isNaN(price) ? 0 : price);
+      setMaxPrice(isNaN(price) ? 0 : price);
+    };
+
+    const handleMinPrice = (
+      e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+      const price = parseInt(e.target.value, 10);
+      setMinPrice(isNaN(price) ? 0 : price);
     };
 
     const changePageNumber = (
@@ -60,11 +65,7 @@ type Props = {}
     };
 
     const loadAuctionsWithFilter = async () => {
-      const response = await getAuctionsFromFilter(
-        serachName,
-        category,
-        searchPrice
-      );
+      const response = await getAuctionsFromFilter(serachName,category,minPrice,maxPrice);
 
       if (response && response.data) {
         setAuctions(response.data);
@@ -85,7 +86,7 @@ type Props = {}
     };
 
     const handleButtonSearchClick = () => {
-      if (category.length <= 0 && searchPrice <= 0 && serachName == "") {
+      if (category.length <= 0 && minPrice <= 0 && maxPrice <= 0 && serachName=="") {
         loadAuctionsWithoutFilter();
       } else {
         loadAuctionsWithFilter();
@@ -96,7 +97,7 @@ type Props = {}
     }, []);
 
     useEffect(() => {
-      if (category.length <= 0 && searchPrice <= 0 && serachName == "") {
+      if (category.length <= 0 && minPrice <= 0 && maxPrice <= 0 && serachName=="") {
         loadAuctionsWithoutFilter();
       } else {
         loadAuctionsWithFilter();
@@ -133,16 +134,16 @@ return (
             <div className={`d-flex flex-column ms-2 me-2 my-2`}>
               <input
                 className={`form-control rounded-2`}
-                value={searchPrice}
-                onChange={handleSearchPriceChange}
+                value={minPrice}
+                onChange={handleMinPrice}
               ></input>
             </div>
             <label className={`mx-2 text-cyan-blue`}>Unesite maksimalnu cenu: </label>
             <div className={`d-flex flex-column ms-2 me-2 my-2`}>
               <input
                 className={`form-control rounded-2`}
-                value={searchPrice}
-                onChange={handleSearchPriceChange}
+                value={maxPrice}
+                onChange={handleMaxPrice}
               ></input>
             </div>
 
