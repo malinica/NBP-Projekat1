@@ -212,5 +212,17 @@ namespace DataLayer.Services
             }
             return auctions;
         }
+
+        public bool UpdateCurrentPrice(string auctionId, int price)
+        {
+            string key = "auction:" + auctionId;
+            var auction = Get(auctionId);
+            if (auction != null)
+            {
+                auction.CurrentPrice = price;
+                return redis.Set(key, JsonConvert.SerializeObject(auction));
+            }
+            return false;
+        }
     }
 }

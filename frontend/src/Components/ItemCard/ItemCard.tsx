@@ -51,6 +51,7 @@ const ItemCard = ({ item }: Props) => {
                 throw new Error(`Greska: ${response.statusText}`);
             }
             toast.success("Aukcija je uspesno kreirana!");
+            //nek server vrati id aukcije pa redirektuj na stranicu za tu aukciju
             closeModal();
         } catch (error) {
             console.error("Greska prilikom kreiranja aukcije:", error);

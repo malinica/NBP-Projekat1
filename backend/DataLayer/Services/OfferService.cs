@@ -10,19 +10,29 @@ namespace DataLayer.Services
         readonly RedisClient redis = new RedisClient(Config.SingleHost);
         private readonly ProjectContext context;
 
-        public OfferService(ProjectContext context) 
+        private readonly AuctionService auctionService;
+
+        public OfferService(ProjectContext context, AuctionService auctionService) 
         {
             this.context = context;
+            this.auctionService = auctionService;
         }
 
         public bool Create(CreateOfferDTO offer)
         {
-            // Check if the current highest offer is greater than or equal to the new offer
             string sortedSetKey = $"auction:{offer.AuctionId}:users";
             double? highestOffer = redis.GetRangeWithScoresFromSortedSetDesc(sortedSetKey, 0, 0)
                                     .FirstOrDefault().Value;
 
-            if (highestOffer.HasValue && highestOffer.Value >= offer.Price)
+            Auction? auction = auctionService.Get(offer.AuctionId);
+
+            if(auction == null)
+                throw new Exception("Aukcija ne postoji.");
+
+            if(offer.Price <= auction.StartingPrice)
+                throw new Exception("Ponuda mora biti veća od početne cene na aukciji.");
+
+            if (highestOffer.HasValue && offer.Price <= highestOffer.Value)
                 throw new Exception("Nova ponuda mora biti veća od trenutne najveće.");
 
             // sorted set pamti rangirane korisnike za odredjenu aukciju
@@ -38,12 +48,15 @@ namespace DataLayer.Services
             };
             string offerSerialized = JsonConvert.SerializeObject(o);
             bool offerCreated = redis.Set(offerKey, offerSerialized);
+
+            // azurira se i trenutna cena aukcije
+            bool auctionPriceUpdated = auctionService.UpdateCurrentPrice(offer.AuctionId, offer.Price);
             
             redis.AddItemToSet("AuctionsBidedByUser:"+offer.UserId+":", "auction:"+offer.AuctionId);
             bool auctionBidExists = redis.SetContainsItem("AuctionsBidedByUser:"+offer.UserId+":", "auction:"+offer.AuctionId);
 
 
-            return itemAdded && offerCreated && auctionBidExists;
+            return itemAdded && offerCreated && auctionPriceUpdated && auctionBidExists;
         }
 
         public async Task<List<OfferResultDTO>> GetOffersForAuction(string auctionId, int count)
