@@ -9,6 +9,7 @@ import { useAuth } from '../../Context/useAuth'
 import { getAuctionWithItemAPI, subscribeToAuctionAPI } from '../../Services/AuctionService'
 import AuctionCard from '../AuctionCard/AuctionCard'
 import { Auction } from '../../Interfaces/Auction/Auction'
+import styles from "./AuctionPage.module.css";
 
 type Props = {}
 
@@ -19,6 +20,7 @@ const AuctionPage = (props: Props) => {
   const [auction, setAuction] = useState<Auction|null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [connection, setConnection] = useState<HubConnection | null>(null);
+  const [showAuctionCard, setShowAuctionCard] = useState<boolean>(true);
 
   const {user, token} = useAuth();
 
@@ -115,15 +117,19 @@ const AuctionPage = (props: Props) => {
   return (
     <div className={`container`}>
         {isLoading ? 
-        <p className={`text-center text-muted`}>Učitavanje aukcije...</p>
+        <p className={`text-center text-coral`}>Učitavanje aukcije...</p>
         :
         <>
         <div className={`my-4`}>
-          {auction && <AuctionCard auction={auction} />}
+          {showAuctionCard && auction && <AuctionCard auction={auction} />} {}
         </div>
-
+        <button
+          className={`btn btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.dugme_ispod_linije}`}
+          onClick={() => setShowAuctionCard(!showAuctionCard)} 
+        >
+          {showAuctionCard ? "Sakrij Aukciju" : "Prikaži Aukciju"}
+        </button>
         <AuctionBidForm onSubmitBid={submitBid}></AuctionBidForm>
-
 
         <br />
         <div className={`table-responsive`}>

@@ -125,7 +125,7 @@ return (
               </div>
             ))}
 
-            <label className={`mx-2 text-cyan-blue`}>Unesite naziv: </label>
+            <label className={`mx-2 text-cyan-blue`}>Unesite naziv predmeta: </label>
             <div className={`d-flex flex-column ms-2 me-2 my-2`}>
               <input
                 className={`form-control rounded-2`}

@@ -126,4 +126,4 @@ const CreateItem = (props: Props) => {
       );
 }
 
-export default CreateItem
+export default CreateItem;

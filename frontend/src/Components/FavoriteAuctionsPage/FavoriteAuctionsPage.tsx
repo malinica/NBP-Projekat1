@@ -47,22 +47,22 @@ const FavoriteAuctionsPage = (props: Props) => {
       }
   }
 
-  return <div className="container">
-    <h1 className="text-center">Omiljene aukcije</h1>
+  return <div className={`container`}>
+    <h1 className={`text-center text-steel-blue m-3`}>Omiljene aukcije</h1>
     {isLoading ? (
-      <p className="text-center text-muted">Ucitavanje omiljenih aukcija...</p>
+      <p className={`text-center text-muted`}>Ucitavanje omiljenih aukcija...</p>
     ) : auctions && auctions.length > 0 ? (
-      <div className="row">
+      <div className={`row`}>
         {auctions.map((auction) => (
-          <div key={auction.id} className="col-12">
+          <div key={auction.id} className={`col-12`}>
             <AuctionCard auction={auction}/>
-            <button className='btn btn-danger' onClick={() => handleRemoveFavoriteAuction(auction.id)}>Ukloni iz omiljenih</button>
+            <button className={`btn btn-danger`} onClick={() => handleRemoveFavoriteAuction(auction.id)}>Ukloni iz omiljenih</button>
           </div>
         ))}
 
       </div>
     ) : (
-      <p className="text-center text-muted">Nemate omiljenih aukcija.</p>
+      <p className={`text-center text-coral`}>Nemate omiljenih aukcija.</p>
     )}
   </div>;
 };

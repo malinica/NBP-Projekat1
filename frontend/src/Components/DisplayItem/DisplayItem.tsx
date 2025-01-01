@@ -4,7 +4,6 @@ import { getItemAPI } from "../../Services/ItemService";
 import { Item } from "../../Interfaces/Item/Item";
 import { wrapText } from '../../Helpers/stringHelpers.ts';
 
-
 type Props = {};
 
 const DisplayItem = (props: Props) => {

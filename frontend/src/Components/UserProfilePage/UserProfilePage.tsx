@@ -27,20 +27,20 @@ const UserProfilePage = (props: Props) => {
   }, []);
 
   return (
-    <div className="container">
-    <h3 className="text-center">Aukcije koje je korisnik <strong>@{username}</strong> kreirao</h3>
+    <div className={`container`}>
+    <h3 className={`text-center text-steel-blue m-3`}>Aukcije koje je korisnik <strong>{username}</strong> kreirao</h3>
     {isLoading ? (
-      <p className="text-center text-muted">Ucitavanje aukcija...</p>
+      <p className={`text-center text-muted`}>Ucitavanje aukcija...</p>
     ) : auctions && auctions.length > 0 ? (
-      <div className="row">
+      <div className={`row`}>
         {auctions.map((auction) => (
-          <div key={auction.id} className="col-12">
+          <div key={auction.id} className={`col-12`}>
             <AuctionCard auction={auction}/>
           </div>
         ))}
       </div>
     ) : (
-      <p className="text-center text-muted">Korisnik nema kreiranih aukcija.</p>
+      <p className={`text-center text-coral`}>Korisnik nema kreiranih aukcija.</p>
     )}
   </div>
   );

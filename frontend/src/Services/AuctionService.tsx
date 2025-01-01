@@ -109,8 +109,8 @@ export const getAuctionsFromFilter = async (
         const params: any = {
             ...(itemName ? { itemName } : {}),
             ...(categories && categories.length ? { categories: categories.join(",") } : {}),
-            ...(minPrice !== null && minPrice !== undefined ? { minPrice } : {}),
-            ...(maxPrice !== null && maxPrice !== undefined ? { maxPrice } : {}),
+            ...(minPrice !== null && minPrice !== undefined && minPrice!=0 ? { minPrice } : {}),
+            ...(maxPrice !== null && maxPrice !== undefined && maxPrice!=0 ? { maxPrice } : {}),
 
         };
         const response = await axios.get<Auction[] | null>(
