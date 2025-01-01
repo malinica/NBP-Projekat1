@@ -198,17 +198,17 @@ namespace backend.Controllers
 
         //GetAuctionsFromFilter
         [HttpGet("GetAuctionsFromFilter")]
-        [Authorize] // ne treba authorize ako je ona stranica pretrage dostupna i neulogovanom korisniku
+        //[Authorize] // ne treba authorize ako je ona stranica pretrage dostupna i neulogovanom korisniku
        public async Task<ActionResult<List<AuctionResultDTO>>> GetAuctionsFromFilter(
     [FromQuery] string? itemName = null,
     [FromQuery] ItemCategory[]? categories = null,
-    [FromQuery] int? pricemin = null,
-    [FromQuery] int? pricemax = null)
+    [FromQuery] int? minprice = null,
+    [FromQuery] int? maxprice = null)
 {
     try
     {
         categories ??= Array.Empty<ItemCategory>();
-        var result = await auctionService.GetAuctionsFromFilter(itemName, categories, pricemin, pricemax);
+        var result = await auctionService.GetAuctionsFromFilter(itemName, categories, minprice, maxprice);
         return Ok(result);
     }
     catch (Exception ex)

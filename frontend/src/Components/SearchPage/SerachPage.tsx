@@ -61,7 +61,7 @@ type Props = {
         auctionsPerPage * (currentPageNumber - 1),
         auctionsPerPage
       );
-      console.log(data);
+      //console.log(data);
       setAuctions(data);
     };
 
@@ -70,6 +70,7 @@ type Props = {
 
       if (response && response.data) {
         setAuctions(response.data);
+        console.log(response.data);
       } else {
         setAuctions(null); // Ako nema podataka, postavi null
       }

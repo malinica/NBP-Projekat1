@@ -108,7 +108,7 @@ export const getAuctionsFromFilter = async (
     try {
         const params: any = {
             ...(itemName ? { itemName } : {}),
-            ...(categories && categories.length ? { categories: categories.join(",") } : { categories: "" }),
+            ...(categories && categories.length ? { categories: categories.join(",") } : {}),
             ...(minPrice !== null && minPrice !== undefined ? { minPrice } : {}),
             ...(maxPrice !== null && maxPrice !== undefined ? { maxPrice } : {}),
 

@@ -179,23 +179,14 @@ namespace DataLayer.Services
             {
                 foreach (var x in items)
                 {
-                    var auction = redis.Get<Auction>("AuctionIDForItemID:" + x.ID);
+                    var auctionID = redis.Get<string>("AuctionIDForItemID:" + x.ID);
+                     var auction = await GetFullAuction(auctionID);
 
-                    if (auction != null &&  (pricemax==null || auction.CurrentPrice <= pricemax) && (pricemin==null || auction.CurrentPrice >= pricemin ))
-                    {
-                        auctionList.Add(new AuctionResultDTO
-                        {
-                            ID = auction.ID,
-                            Title = auction.Title,
-                            Item = x,
-                            StartingPrice = auction.StartingPrice,
-                            CurrentPrice = auction.CurrentPrice,
-                            Status = auction.Status,
-                            PostedOnDate = auction.PostedOnDate,
-                            DueTo = auction.DueTo,
-
-                        });
-                    }
+            if (auction != null && 
+            (pricemin == null || auction.CurrentPrice >= pricemin) &&
+            (pricemax == null || auction.CurrentPrice <= pricemax))
+                         auctionList.Add(auction);
+        
                 }
             }
 
