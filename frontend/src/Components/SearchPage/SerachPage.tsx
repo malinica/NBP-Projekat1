@@ -1,13 +1,13 @@
 import styles from "./SearchPage.module.css";
 import { useEffect, useState } from 'react';
-import { getAuctions, GetAuctionCounter, getAuctionsFromFilter } from "../../Services/AuctionService";
+import { getAuctions, getAuctionsFromFilter } from "../../Services/AuctionService";
 import { Auction } from "../../Interfaces/Auction/Auction";
 import AuctionCard from "../AuctionCard/AuctionCard";
 import { ItemCategory } from '../../Enums/ItemCategory';
 import { useParams } from "react-router-dom";
 
-type Props = {
-};
+
+type Props = {};
 
   const SearchPage = () => {
     const { id } = useParams();
@@ -16,10 +16,10 @@ type Props = {
     const [auctionsPerPage, setAuctionsPerPage] = useState<number>(10);
     const [auctionsPerPageArray, setAuctionsPerPageArray] = useState<number[]>([5, 10, 15,]);
     const [category, setCategory] = useState<ItemCategory[]>([]);
-    const [minPrice, setMinPrice] = useState<number>(0);
-    const [maxPrice, setMaxPrice] = useState<number>(0);
-
+    const [minPrice, setMinPrice] = useState<number|null>(null);
+    const [maxPrice, setMaxPrice] = useState<number|null>(null);
     const [serachName, setSearchName] = useState<string>("");
+    const [filter,setFilter]=useState<boolean>(false);// da li je pretraga po filteru ili obicna
 
     const handleSearchNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchName(e.target.value);
@@ -29,14 +29,14 @@ type Props = {
       e: React.ChangeEvent<HTMLInputElement>
     ) => {
       const price = parseInt(e.target.value, 10);
-      setMaxPrice(isNaN(price) ? 0 : price);
+      setMaxPrice(isNaN(price) ? null : price);
     };
 
     const handleMinPrice = (
       e: React.ChangeEvent<HTMLInputElement>
     ) => {
       const price = parseInt(e.target.value, 10);
-      setMinPrice(isNaN(price) ? 0 : price);
+      setMinPrice(isNaN(price) ? null : price);
     };
 
     const changePageNumber = (
@@ -45,6 +45,8 @@ type Props = {
       const valueString = e.currentTarget.getAttribute("data-value");
       const valueNumber = valueString !== null ? parseInt(valueString, 10) : 1;
       setCurrentPageNumber(valueNumber);
+      window.history.pushState({}, '', `http://localhost:5173/search-page/${valueNumber}`);
+
     };
 
     const changePageNumberPerPage = (
@@ -61,8 +63,8 @@ type Props = {
         auctionsPerPage * (currentPageNumber - 1),
         auctionsPerPage
       );
-      //console.log(data);
       setAuctions(data);
+      setFilter(false);
     };
 
     const loadAuctionsWithFilter = async () => {
@@ -70,10 +72,10 @@ type Props = {
 
       if (response && response.data) {
         setAuctions(response.data);
-        console.log(response.data);
       } else {
-        setAuctions(null); // Ako nema podataka, postavi null
+        setAuctions(null);
       }
+        setFilter(true);
     };
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,21 +90,26 @@ type Props = {
     };
 
     const handleButtonSearchClick = () => {
-      if (category.length <= 0 && minPrice <= 0 && maxPrice <= 0 && serachName=="") {
+      if (category.length <= 0 && minPrice ==null && maxPrice ==null && serachName=="") {
         loadAuctionsWithoutFilter();
       } else {
         loadAuctionsWithFilter();
       }
+      setCurrentPageNumber(1);
     };
     useEffect(() => {
       loadAuctionsWithoutFilter();
     }, []);
 
     useEffect(() => {
-      if (category.length <= 0 && minPrice <= 0 && maxPrice <= 0 && serachName=="") {
+      if (category.length <= 0 && minPrice ==null && maxPrice ==null && serachName=="") {
         loadAuctionsWithoutFilter();
+        
       } else {
-        loadAuctionsWithFilter();
+        if(filter==false)
+        {
+          loadAuctionsWithFilter();
+        }
       }
     }, [currentPageNumber, auctionsPerPage]);
 
@@ -137,7 +144,7 @@ return (
             <div className={`d-flex flex-column ms-2 me-2 my-2`}>
               <input
                 className={`form-control rounded-2`}
-                value={minPrice}
+                value={minPrice || ''}
                 onChange={handleMinPrice}
               ></input>
             </div>
@@ -145,7 +152,7 @@ return (
             <div className={`d-flex flex-column ms-2 me-2 my-2`}>
               <input
                 className={`form-control rounded-2`}
-                value={maxPrice}
+                value={maxPrice || ''}
                 onChange={handleMaxPrice}
               ></input>
             </div>
@@ -160,16 +167,32 @@ return (
         </div>
 
         <div className={`col-xxl-8 col-xl-8 col-lg-7 col-md-6 col-sm-12 m-2`}>
-          <div className="auctions-list">
-            {auctions && auctions.length > 0 ? (
-              auctions.map((auction) => (
-                <AuctionCard key={auction.id} auction={auction} />
-              ))
-            ) : (
-              <p>Nema aukcija.</p>
-            )}
-          </div>
-        </div>
+  {(filter) ? (
+    <div className="auctions-list">
+      {auctions && auctions.length > 0 ? (
+        auctions
+        .slice((currentPageNumber - 1) * auctionsPerPage, currentPageNumber * auctionsPerPage)
+        .map((auction) => (
+          <AuctionCard key={auction.id} auction={auction} />
+        ))
+      ) : (
+        <p>Nema aukcija.</p>
+      )}
+    </div>
+  ) : (
+    <div className="auctions-list">
+      {auctions && auctions.length > 0 ? (
+        auctions
+        .map((auction) => (
+          <AuctionCard key={auction.id} auction={auction} />
+        ))
+      ) : (
+        <p>Nema aukcija.</p>
+      )}
+    </div>
+  )}
+</div>
+
 
         <div className={`d-flex justify-content-end`}>
           <div className={`m-2 dropdown`}>
@@ -197,6 +220,47 @@ return (
             </ul>
           </div>
         </div>
+
+
+        <nav className={`mt-2 me-2 d-flex justify-content-end`}>
+              <ul className={`pagination`}>
+                {currentPageNumber != 1 && (
+                  <>
+                    <li className={`page-item`}>
+                      <a
+                        className={`page-link`}
+                        data-value={currentPageNumber - 1}
+                        onClick={(e) => {
+                          changePageNumber(e);
+                        }}
+                      >
+                        Prethodna
+                      </a>
+                    </li>
+                  </>
+                )}
+                          
+                {(
+                  (filter && auctions && ((auctions.length-currentPageNumber*auctionsPerPage)>0) ) ||
+                  (!filter && auctions && auctions.length==auctionsPerPage)
+                ) && (
+                  <>
+                    <li className={`page-item`}>
+                      <a
+                        className={`page-link`}
+                        data-value={currentPageNumber + 1}
+                        onClick={(e) => {
+                          changePageNumber(e);
+                        }}
+                      >
+                        Sledeca
+                      </a>
+                    </li>
+                  </>
+                )}
+              </ul>
+            </nav>
+
       </div>
     </div>
   );

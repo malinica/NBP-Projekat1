@@ -105,12 +105,6 @@ namespace DataLayer.Services
 
          public async Task<List<ItemResultDTO>> GetItemsByFilter(string name, ItemCategory[] categories)
 {
-    Console.Write("AAAAAAAAAAAAAAAAAAAAAA");
-    foreach (var category in categories)
-{
-    Console.WriteLine(category);
-}
-
     var items = await context.Items
         .Where(item => item.Name.ToLower().Contains(name.ToLower()) &&
                        ((categories.Length==0) || categories.Contains(item.Category)))

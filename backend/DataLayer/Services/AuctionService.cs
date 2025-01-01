@@ -95,7 +95,7 @@ namespace DataLayer.Services
         public async Task<List<AuctionResultDTO>> GetAuctionsBasedOnTimeExpiring (int fromPosition, int N)
         {
 
-            var auctionsIds = redis.GetRangeFromSortedSetDesc("sortedAuctions:", fromPosition, fromPosition + N - 1);
+            var auctionsIds = redis.GetRangeFromSortedSet("sortedAuctions:", fromPosition, fromPosition + N - 1);
             List<AuctionResultDTO> auctions = new List<AuctionResultDTO>();
             foreach (var auctionId in auctionsIds)
             {
@@ -157,7 +157,7 @@ namespace DataLayer.Services
                 if (auction != null)
                     auctions.Add(auction);
             }
-            return auctions;
+    return auctions.OrderByDescending(a => a.DueTo).ToList(); 
         }
 
         public async Task<List<AuctionResultDTO>> GetAuctionsFromFilter(string? itemName, ItemCategory[] categories, int? pricemin,int? pricemax)
