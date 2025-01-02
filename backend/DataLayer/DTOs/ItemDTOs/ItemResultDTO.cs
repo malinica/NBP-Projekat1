@@ -13,5 +13,7 @@ namespace DataLayer.DTOs.ItemDTOs
         public required string Description { get; set;}
         public required ItemCategory Category {get; set;}
         public required List<string> Pictures {get;set;}
+        public User? Author { get; set; }
+        public User? AuctionWinner { get; set; }
     }
 }

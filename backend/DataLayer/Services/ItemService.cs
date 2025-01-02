@@ -58,7 +58,11 @@ namespace DataLayer.Services
         
         public async Task<ItemResultDTO> GetItem(int id) 
         {
-            var item = await context.Items.FindAsync(id);
+            var item = await context.Items
+                                    .Include(i => i.Author)
+                                    .Include(i => i.AuctionWinner)
+                                    .Where(i => i.ID == id)
+                                    .FirstOrDefaultAsync();
 
             if (item == null)
                 throw new Exception("Nije pronadjen željeni predmet.");
@@ -69,7 +73,19 @@ namespace DataLayer.Services
                 Name = item.Name,
                 Description = item.Description,
                 Category = item.Category,
-                Pictures = picturesPaths
+                Pictures = picturesPaths,
+                Author = new User {
+                    Id = item.Author!.Id,
+                    UserName = item.Author!.UserName,
+                    Email = item.Author!.Email,
+                    Role = item.Author!.Role
+                },
+                AuctionWinner = item.AuctionWinner != null ? new User {
+                    Id = item.AuctionWinner.Id,
+                    UserName = item.AuctionWinner.UserName,
+                    Email = item.AuctionWinner.Email,
+                    Role = item.AuctionWinner.Role
+                } : null
             };
             
             
@@ -84,7 +100,9 @@ namespace DataLayer.Services
                 throw new Exception("Korisnik nije pronađen.");
 
             var items = await context.Items
-                                    .Where(i => i.Author.Id == user.Id)
+                                    .Include(i => i.Author)
+                                    .Include(i => i.AuctionWinner)
+                                    .Where(i => i.Author!.Id == user.Id)
                                     .ToListAsync();
 
             List<ItemResultDTO> itemResults = items.Select(item => new ItemResultDTO
@@ -93,32 +111,60 @@ namespace DataLayer.Services
                 Name = item.Name,
                 Description = item.Description,
                 Category = item.Category,
-                Pictures = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>()
+                Pictures = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>(),
+                Author = new User
+                {
+                    Id = item.Author!.Id,
+                    UserName = item.Author!.UserName,
+                    Email = item.Author!.Email,
+                    Role = item.Author!.Role
+                },
+                AuctionWinner = item.AuctionWinner != null ? new User
+                {
+                    Id = item.AuctionWinner.Id,
+                    UserName = item.AuctionWinner.UserName,
+                    Email = item.AuctionWinner.Email,
+                    Role = item.AuctionWinner.Role
+                } : null
             }).ToList();
 
             return itemResults;
         }
 
 
-         public async Task<List<ItemResultDTO>> GetItemsByFilter(string name, ItemCategory[] categories)
-{
-    var items = await context.Items
-        .Where(item => item.Name.ToLower().Contains(name.ToLower()) &&
-                       ((categories.Length==0) || categories.Contains(item.Category)))
-        .Select(item => new ItemResultDTO
+        public async Task<List<ItemResultDTO>> GetItemsByFilter(string name, ItemCategory[] categories)
         {
-            ID = item.ID,
-            Name = item.Name,
-            Description=item.Description,
-            Category = item.Category,
-            Pictures = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>()
+            var items = await context.Items
+                .Include(i => i.Author)
+                .Include(i => i.AuctionWinner)
+                .Where(item => item.Name.ToLower().Contains(name.ToLower()) &&
+                            ((categories.Length==0) || categories.Contains(item.Category)))
+                .Select(item => new ItemResultDTO
+                {
+                    ID = item.ID,
+                    Name = item.Name,
+                    Description=item.Description,
+                    Category = item.Category,
+                    Pictures = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>(),
+                    Author = new User
+                    {
+                        Id = item.Author!.Id,
+                        UserName = item.Author!.UserName,
+                        Email = item.Author!.Email,
+                        Role = item.Author!.Role
+                    },
+                    AuctionWinner = item.AuctionWinner != null ? new User
+                    {
+                        Id = item.AuctionWinner.Id,
+                        UserName = item.AuctionWinner.UserName,
+                        Email = item.AuctionWinner.Email,
+                        Role = item.AuctionWinner.Role
+                    } : null
+                })
+                .ToListAsync();
 
-        })
-        .ToListAsync();
-
-    return items;
-}
-
+            return items;
+        }
 
     }
 }
