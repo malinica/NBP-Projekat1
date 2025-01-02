@@ -70,6 +70,16 @@ export const addFavoriteAuctionAPI = async (auctionId: string) => {
     }
 }
 
+export const canAddFavoriteAuctionAPI = async (auctionId: string) => {
+    try {
+        const response = await axios.get<boolean>(`${baseApiRoute}/CanAddToFavorite/${auctionId}`);
+        return response;
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}
+
 export const removeFavoriteAuctionAPI = async (auctionId: string) => {
     try {
         const response = await axios.delete(`${baseApiRoute}/RemoveFromFavorite/${auctionId}`);

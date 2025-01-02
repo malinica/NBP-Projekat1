@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 type Props = {};
 
 const FavoriteAuctionsPage = (props: Props) => {
-  const { user } = useAuth();
 
   const [auctions, setAuctions] = useState<Auction[] | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -31,20 +30,8 @@ const FavoriteAuctionsPage = (props: Props) => {
     }
   };
 
-  const handleRemoveFavoriteAuction = async (auctionId: string) => {
-    try {
-        setIsLoading(true);
-        const response = await removeFavoriteAuctionAPI(auctionId);
-  
-        if (response && response.status === 200) {
-          toast.success(response.data);
-          setAuctions((prevAuctions) => prevAuctions?.filter((auction) => auction.id !== auctionId));
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
+  const handleRemoveFavoriteAuction = (auctionId: string) => {
+    setAuctions((prevAuctions) => prevAuctions?.filter((auction) => auction.id !== auctionId));
   }
 
   return <div className={`container`}>
@@ -55,8 +42,7 @@ const FavoriteAuctionsPage = (props: Props) => {
       <div className={`row`}>
         {auctions.map((auction) => (
           <div key={auction.id} className={`col-12`}>
-            <AuctionCard auction={auction}/>
-            <button className={`btn btn-danger`} onClick={() => handleRemoveFavoriteAuction(auction.id)}>Ukloni iz omiljenih</button>
+            <AuctionCard auction={auction} onRemoveFavoriteAuction={handleRemoveFavoriteAuction}/>
           </div>
         ))}
 

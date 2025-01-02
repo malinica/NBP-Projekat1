@@ -148,6 +148,22 @@ namespace backend.Controllers
             }
         }
 
+        [HttpGet("CanAddToFavorite/{auctionId}")]
+        [Authorize]
+        public async Task<ActionResult<bool>> CanAddAuctionToFavorite([FromRoute] string auctionId)
+        {
+            try
+            {
+                var user = await userService.GetCurrentUser(User);
+                var result = auctionService.CanAddAuctionToFavorite(user?.Id ?? "", auctionId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpDelete("RemoveFromFavorite/{auctionId}")]
         [Authorize]
         public async Task<IActionResult> RemoveAuctionFromFavorite([FromRoute] string auctionId)

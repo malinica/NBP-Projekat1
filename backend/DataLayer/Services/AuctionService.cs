@@ -116,6 +116,16 @@ namespace DataLayer.Services
             redis.AddItemToList(key, auctionId);
         }
 
+        public bool CanAddAuctionToFavorite(string userId, string auctionId)
+        {
+            string key = $"user:{userId}:favoriteAuctions";
+            if (redis.Lists[key].Contains(auctionId))
+            {
+                return false;
+            }
+            return true;
+        }
+
         public void RemoveAuctionFromFavorite(string userId, string auctionId)
         {
             string key = $"user:{userId}:favoriteAuctions";

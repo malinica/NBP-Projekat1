@@ -4,7 +4,6 @@ import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../Context/useAuth";
 import styles from "./Navbar.module.css";
 import { Dropdown } from 'react-bootstrap';
-import { Role } from "../../Enums/Role";
 
 const Navbar = () => {
   const { isLoggedIn, logout, user } = useAuth();
@@ -49,14 +48,14 @@ const Navbar = () => {
                    </Dropdown.Toggle>
 
                    <Dropdown.Menu align={'end'}>
-                     <Dropdown.Item className={styles['custom-dropdown-item1']}>
-                        <Link to={`/users/${user!.userName}`} className={styles['custom-dropdown-item2']}>MOJE AUKCIJE</Link>
+                     <Dropdown.Item className={styles['custom-dropdown-item1']} href={`/users/${user!.userName}`}>
+                        <span className={styles['custom-dropdown-item2']}>MOJE AUKCIJE</span>
                      </Dropdown.Item>
-                     <Dropdown.Item className={styles['custom-dropdown-item1']}>
-                        <Link to='/myoffers-page/1' className={styles['custom-dropdown-item2']}>MOJE PONUDE</Link>
+                     <Dropdown.Item className={styles['custom-dropdown-item1']} href='/myoffers-page/1'>
+                        <span className={styles['custom-dropdown-item2']}>MOJE PONUDE</span>
                      </Dropdown.Item>
-                     <Dropdown.Item className={styles['custom-dropdown-item1']}>
-                        <Link to="/favorite-auctions" className={styles['custom-dropdown-item2']}>OMILJENO</Link>
+                     <Dropdown.Item className={styles['custom-dropdown-item1']} href="/favorite-auctions">
+                        <span className={styles['custom-dropdown-item2']}>OMILJENO</span>
                      </Dropdown.Item>
                      <Dropdown.Divider />
                      <Dropdown.Item onClick={handleLogout} className={styles['custom-dropdown-item1']}>ODJAVI SE</Dropdown.Item>

@@ -56,7 +56,7 @@ const ItemCard = ({ item }: Props) => {
                     alt="Prva slika"
                 />
                 <p className={`text-steel-blue`}>{item?.name}
-                    <p className={`badge bg-coral mx-2`}>{item?.category}</p>
+                    <span className={`badge bg-coral mx-2`}>{item?.category}</span>
                 </p>
                 <Link to={`/items/${item.id}`} className={`btn btn-sm w-50 m-2 text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`} >Detaljnije o predmetu</Link>
                 <button onClick={openModal} className={`btn btn-sm w-50 mx-2 text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta} ms-auto`}>
