@@ -37,10 +37,12 @@ const ItemCard = ({ item }: Props) => {
             };
       
             try {
-                const auctionId = await createAuctionAPI(username!, auctionData);
-                toast.success("Aukcija je uspesno kreirana!");
-                navigate(`../auctions/${auctionId}`);
-                closeModal();
+                const response = await createAuctionAPI(username!, auctionData);
+                if(response && response.status === 200) {
+                    toast.success("Aukcija je uspešno kreirana!");
+                    navigate(`../auctions/${response.data.id}`);
+                    closeModal();
+                }
             } catch (error) {
                 console.error("Greska prilikom kreiranja aukcije:", error);
             }

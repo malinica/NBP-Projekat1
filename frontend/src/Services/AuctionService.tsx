@@ -153,7 +153,7 @@ export const createAuctionAPI = async (username: string, auctionData: any) => {
             }
         });
 
-        return response.data.id;
+        return response;
     }
     catch(error: any)
     {

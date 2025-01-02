@@ -22,6 +22,11 @@ namespace DataLayer.Services
 
         public string Set(CreateAuctionDTO auction, string username)
         {
+            var existingAuctionId = redis.Get<string>("AuctionIDForItemID:" + auction.ItemId);
+            
+            if(!string.IsNullOrEmpty(existingAuctionId))
+                throw new Exception("Predmet se može postaviti na aukciju samo jednom.");
+
             Auction i = new Auction()
             {
                 ID = Guid.NewGuid().ToString(),
@@ -46,7 +51,7 @@ namespace DataLayer.Services
                 return i.ID;
             }
 
-            return "Error in set function for auction";
+            throw new Exception("Neuspešno kreiranje aukcije.");
 
         }
 

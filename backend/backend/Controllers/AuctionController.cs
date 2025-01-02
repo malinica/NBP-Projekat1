@@ -40,7 +40,7 @@ namespace backend.Controllers
                 if (!string.IsNullOrEmpty(auctionID))
                     return Ok(new {id = auctionID});
 
-                return BadRequest("Auction's data has not been successfully saved.");
+                return BadRequest("Neuspešno kreiranje aukcije.");
             }
             catch (Exception ex)
             {
