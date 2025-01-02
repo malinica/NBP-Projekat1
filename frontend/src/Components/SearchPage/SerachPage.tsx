@@ -228,7 +228,7 @@ return (
                   <>
                     <li className={`page-item`}>
                       <a
-                        className={`page-link`}
+                        className={`btn btn-sm mx-2 text-white text-center rounded py-1 px-1 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
                         data-value={currentPageNumber - 1}
                         onClick={(e) => {
                           changePageNumber(e);
@@ -247,13 +247,13 @@ return (
                   <>
                     <li className={`page-item`}>
                       <a
-                        className={`page-link`}
+                        className={`btn btn-sm mx-2 text-white text-center rounded py-1 px-1 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
                         data-value={currentPageNumber + 1}
                         onClick={(e) => {
                           changePageNumber(e);
                         }}
                       >
-                        Sledeca
+                        Sledeća
                       </a>
                     </li>
                   </>

@@ -22,18 +22,18 @@ const Footer: React.FC = () => {
             </a>
           </li>
           <li className={`nav-item`}>
-            <Link to="/auctions" className={`text-white mx-2 text-decoration-none`} onClick={scrollToTop}>
+            <Link to="/search-page/1" className={`text-white mx-2 text-decoration-none`} onClick={scrollToTop}>
               AUKCIJE
             </Link>
           </li>
           <li className={`nav-item`}>
-            <Link to="" className={`text-white mx-2 text-decoration-none`} onClick={scrollToTop}>
-              USKORO
+            <Link to="/login" className={`text-white mx-2 text-decoration-none`} onClick={scrollToTop}>
+              PRIJAVA
             </Link>
           </li>
           <li className={`nav-item`}>
-            <Link to="" className={`text-white mx-2 text-decoration-none`} onClick={scrollToTop}>
-              USKORO
+            <Link to="/register" className={`text-white mx-2 text-decoration-none`} onClick={scrollToTop}>
+              REGISTRACIJA
             </Link>
           </li>
         </ul>

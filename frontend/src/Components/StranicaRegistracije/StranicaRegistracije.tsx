@@ -148,8 +148,8 @@ const StranicaRegistracije = (props: Props) => {
         <p className={`text-coral mt-2 text-center`}>
           Imate nalog?&nbsp;
           <Link
-            className={`text-blue text-decoration-none`}
-            to="/StranicaPrijave"
+            className={`text-steel-blue text-decoration-none`}
+            to="/login"
           >
             Prijavite se.
           </Link>

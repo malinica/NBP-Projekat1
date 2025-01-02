@@ -16,8 +16,10 @@ const Navbar = () => {
   };
 
   const getLinkClass = (path: string) => {
-    return location.pathname === path ? `${styles.link} ${styles['link-hover']} ${styles['link-hover:active']}` : `${styles.link} ${styles['link-hover']}`;
-  };
+    return location.pathname === path
+      ? `${styles.link} ${styles['link-hover']} ${styles.active}`
+      : `${styles.link} ${styles['link-hover']}`;
+  };  
 
   return (
     <>
@@ -31,15 +33,12 @@ const Navbar = () => {
           </button>
           <div className={`collapse navbar-collapse justify-content-xl-end`} id="navbarResponsive">
             <ul className={`navbar-nav justify-content-center flex-wrap`}>
-              {location.pathname === '/' && (
-                <li className="my-2 text-end">
-                  <a href="#onama" className={`${styles.link} ${styles['link-hover']}`}>O NAMA</a>
-                </li>)}
+              <li className="my-2 text-end">
+                  <a href="#onama" className={` ${getLinkClass("#onama")}`}>O NAMA</a>
+              </li>
               <li className={`my-2 text-end`}>{<Link to="/search-page/1" className={` ${getLinkClass("/search-page/1")}`}>AUKCIJE</Link>} </li>
               <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/create-item" className={` ${getLinkClass("/create-item")}`}>DODAJ PREDMET</Link>} </li>
               <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/my-items" className={` ${getLinkClass("/my-items")}`}>MOJI PREDMETI</Link>} </li>
-              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/" className={` ${getLinkClass("/")}`}>MOJE PONUDE</Link>} </li>
-              <li className={`my-2 text-end`}>{isLoggedIn() && <Link to="/favorite-auctions" className={` ${getLinkClass("/favorite-auctions")}`}>OMILJENO</Link>} </li>
 
               {isLoggedIn() 
                  ?                
@@ -51,7 +50,13 @@ const Navbar = () => {
 
                    <Dropdown.Menu align={'end'}>
                      <Dropdown.Item className={styles['custom-dropdown-item1']}>
-                        <Link to={`/users/${user!.userName}`} className={styles['custom-dropdown-item2']}>MOJ PROFIL</Link>
+                        <Link to={`/users/${user!.userName}`} className={styles['custom-dropdown-item2']}>MOJE AUKCIJE</Link>
+                     </Dropdown.Item>
+                     <Dropdown.Item className={styles['custom-dropdown-item1']}>
+                        <Link to="/" className={styles['custom-dropdown-item2']}>MOJE PONUDE</Link>
+                     </Dropdown.Item>
+                     <Dropdown.Item className={styles['custom-dropdown-item1']}>
+                        <Link to="/favorite-auctions" className={styles['custom-dropdown-item2']}>OMILJENO</Link>
                      </Dropdown.Item>
                      <Dropdown.Divider />
                      <Dropdown.Item onClick={handleLogout} className={styles['custom-dropdown-item1']}>ODJAVI SE</Dropdown.Item>

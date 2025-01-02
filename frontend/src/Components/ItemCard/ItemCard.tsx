@@ -65,29 +65,29 @@ const ItemCard = ({ item }: Props) => {
             </div>
             {isModalOpen && (
                 <div className={`modal d-block`} style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Postavi na aukciju</h5>
-                                <button type="button" className="btn-close" onClick={closeModal}></button>
+                    <div className={`modal-dialog`}>
+                        <div className={`modal-content`}>
+                            <div className={`modal-header`}>
+                                <h5 className={`modal-title text-metal`}>Postavi na aukciju</h5>
+                                <button type="button" className={`btn-close`} onClick={closeModal}></button>
                             </div>
-                            <div className="modal-body">
+                            <div className={`modal-body`}>
                                 <form>
-                                    <div className="mb-3">
-                                        <label htmlFor="title" className="form-label">Naslov</label>
+                                    <div className={`mb-3`}>
+                                        <label htmlFor="title" className={`form-label text-steel-blue`}>Naslov</label>
                                         <input
                                             type="text"
-                                            className="form-control"
+                                            className={`form-control`}
                                             id="title"
                                             value={title}
                                             onChange={(e) => setTitle(e.target.value)}
                                         />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="price" className="form-label">Pocetna cena</label>
+                                        <label htmlFor="price" className={`form-label text-steel-blue`}>Pocetna cena</label>
                                         <input
                                             type="number"
-                                            className="form-control"
+                                            className={`form-control`}
                                             id="price"
                                             value={price}
                                             onChange={(e) => setPrice(e.target.value)}
@@ -96,10 +96,10 @@ const ItemCard = ({ item }: Props) => {
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                                <button type="button" className={`btn btn-sm m-2 text-white text-center rounded py-2 px-2 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`} onClick={closeModal}>
                                     Zatvori
                                 </button>
-                                <button type="button" className="btn btn-primary" onClick={handleSubmit}>
+                                <button type="button" className={`btn btn-sm m-2 text-white text-center rounded py-2 px-2 ${styles.dugme3} ${styles.linija_ispod_dugmeta}`} onClick={handleSubmit}>
                                     Postavi
                                 </button>
                             </div>

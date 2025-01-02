@@ -62,7 +62,7 @@ const StranicaPrijave = () => {
             <button className={`mt-5 rounded-3 bg-blue p-3 mt-2 border-0 text-light ${styles.dugme}`} onClick={handleLogin}>Prijavite Se</button>
             <p className={`text-coral mt-2 mb-6 text-center`}>
               Nemate nalog?&nbsp;
-              <Link className={`text-blue text-decoration-none`} to="/StranicaRegistracije">Registrujte se.</Link>
+              <Link className={`text-steel-blue text-decoration-none`} to="/register">Registrujte se.</Link>
             </p>
         </div>
     </div>

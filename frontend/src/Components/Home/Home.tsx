@@ -44,7 +44,7 @@ const Home = () => {
               Kupujte, prodajte i licitirajte sa lakoćom. Pridružite se već danas!
             </p>
             <Link
-                    to="/auctions"
+                    to="/search-page/1"
                     className={`btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`}
                   >
                     Pregledaj Aukcije
@@ -62,7 +62,7 @@ const Home = () => {
             <h5 className={`mt-3 text-steel-blue`}>Pretražite aukcije</h5>
             <p className={`text-metal`}>Pronađite aukcije koje vas zanimaju brzo i jednostavno.</p>
             <Link
-                    to="/CreateItem"
+                    to="/search-page/1"
                     className={`btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`}
                   >
                     Pretraži Aukcije
@@ -78,7 +78,7 @@ const Home = () => {
             <h5 className={`mt-3 text-steel-blue`}>Dodajte predmet</h5>
             <p className={`text-metal`}>Postavite svoj predmet na aukciju u nekoliko koraka.</p>
             <Link
-                    to="/CreateItem"
+                    to="/create-item"
                     className={`btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`}
                   >
                     Dodaj Predmet
