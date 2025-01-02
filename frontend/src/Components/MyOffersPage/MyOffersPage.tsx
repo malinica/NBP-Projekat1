@@ -40,13 +40,11 @@ const MyOffersPage = () => {
             setAuctions(null);
             return;
         }
-        console.log(user.id);
         
         try {
             const response = await getAuctionsBiddedByUserAPI(user.id);
             setAuctions(response?.data ?? null);
         } catch (error) {
-            console.error("Failed to fetch auctions:", error);
             setAuctions(null);
         }
         
@@ -56,42 +54,45 @@ const MyOffersPage = () => {
       }, []);
     
     return (<>
-    <div className="auctions-list">
-        {auctions && auctions.length > 0 ? (
-          auctions
-          .slice((currentPageNumber - 1) * auctionsPerPage, currentPageNumber * auctionsPerPage)
-          .map((auction) => (
-            <AuctionCard key={auction.id} auction={auction} />
-        ))
-    ) : (
-          <p>Nema aukcija.</p>
-        )}
-      </div>
-        
-      <div className={`d-flex justify-content-end`}>
-          <div className={`m-2 dropdown`}>
-            <button
-              className={`${styles.ivica} rounded px-2 py-2 dropdown-toggle bg-orange text-white text-decoration-none border-none`}
-              type="button"
-              id="dropdownMenuButton1"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Broj objava po stranici: {auctionsPerPage}
-            </button>
-            <ul className={`dropdown-menu`} aria-labelledby="dropdownMenuButton1">
-              {auctionsPerPageArray.map((value) => (
-                <li key={value}>
-                  <a
-                    className={`dropdown-item`}
-                    data-value={value}
-                    onClick={(e) => changePageNumberPerPage(e)}
-                  >
-                    {value}
-                  </a>
-                </li>
-              ))}
-            </ul>
+    <div className={`container`}>
+      <h1 className={`text-center text-steel-blue m-2`}>Aukcije sa mojim ponudama</h1>
+      <div className={`auctions-list`}>
+          {auctions && auctions.length > 0 ? (
+            auctions
+            .slice((currentPageNumber - 1) * auctionsPerPage, currentPageNumber * auctionsPerPage)
+            .map((auction) => (
+              <AuctionCard key={auction.id} auction={auction} />
+          ))
+      ) : (
+            <p className={`text-center text-coral m-2`}>Nema aukcija.</p>
+          )}
+        </div>
+          
+        <div className={`d-flex justify-content-end`}>
+            <div className={`my-2 dropdown`}>
+              <button
+                className={`${styles.ivica} rounded px-2 py-2 dropdown-toggle bg-orange text-white text-decoration-none border-none`}
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Broj objava po stranici: {auctionsPerPage}
+              </button>
+              <ul className={`dropdown-menu`} aria-labelledby="dropdownMenuButton1">
+                {auctionsPerPageArray.map((value) => (
+                  <li key={value}>
+                    <a
+                      className={`dropdown-item`}
+                      data-value={value}
+                      onClick={(e) => changePageNumberPerPage(e)}
+                    >
+                      {value}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -102,7 +103,7 @@ const MyOffersPage = () => {
                   <>
                     <li className={`page-item`}>
                       <a
-                        className={`btn btn-sm mx-2 text-white text-center rounded py-1 px-1 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
+                        className={`btn btn-sm text-white text-center rounded py-1 px-1 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
                         data-value={currentPageNumber - 1}
                         onClick={(e) => {
                           changePageNumber(e);
@@ -119,7 +120,7 @@ const MyOffersPage = () => {
                   <>
                     <li className={`page-item`}>
                       <a
-                        className={`btn btn-sm mx-2 text-white text-center rounded py-1 px-1 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
+                        className={`btn btn-sm text-white text-center rounded py-1 px-1 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
                         data-value={currentPageNumber + 1}
                         onClick={(e) => {
                           changePageNumber(e);

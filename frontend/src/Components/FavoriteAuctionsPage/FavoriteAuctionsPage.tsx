@@ -35,7 +35,7 @@ const FavoriteAuctionsPage = (props: Props) => {
   }
 
   return <div className={`container`}>
-    <h1 className={`text-center text-steel-blue m-3`}>Omiljene aukcije</h1>
+    <h1 className={`text-center text-steel-blue m-2`}>Omiljene aukcije</h1>
     {isLoading ? (
       <p className={`text-center text-muted`}>Ucitavanje omiljenih aukcija...</p>
     ) : auctions && auctions.length > 0 ? (
@@ -48,7 +48,7 @@ const FavoriteAuctionsPage = (props: Props) => {
 
       </div>
     ) : (
-      <p className={`text-center text-coral`}>Nemate omiljenih aukcija.</p>
+      <p className={`text-center text-coral m-2`}>Nemate omiljenih aukcija.</p>
     )}
   </div>;
 };

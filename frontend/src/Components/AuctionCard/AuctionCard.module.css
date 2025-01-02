@@ -13,3 +13,15 @@
 .linija_ispod_dugmeta{
     text-decoration: none;
 }
+
+.dugme2 {
+    background-color: #293241;
+    transition: 0.4s;
+    padding: 4px 8px; 
+    font-size: 14px; 
+    line-height: 1.2; 
+}
+
+.dugme2:hover {
+    background-color: #EE6C4D;
+}

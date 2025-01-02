@@ -6,6 +6,8 @@ import { createAuctionAPI } from "../../Services/AuctionService";
 import toast from "react-hot-toast";
 import { useAuth } from "../../Context/useAuth";
 import { useState } from 'react';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 type Props = {
     item: Item;
@@ -15,6 +17,7 @@ const ItemCard = ({ item }: Props) => {
         const [isModalOpen, setModalOpen] = useState(false);
         const [title, setTitle] = useState("");
         const [price, setPrice] = useState("");
+        const [dueDate, setDueDate] = useState<Date | null>(null);
     
         const {user} = useAuth();
     
@@ -32,7 +35,7 @@ const ItemCard = ({ item }: Props) => {
                 currentPrice: parseFloat(price),
                 status: 0,
                 postedOnDate: new Date().toISOString(),
-                dueTo: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString(),
+                dueTo: dueDate?.toISOString(),                
                 itemId: item.id
             };
       
@@ -53,16 +56,18 @@ const ItemCard = ({ item }: Props) => {
             <div className={`row bg-baby-blue rounded-3 py-3 m-2`}>
                 <img
                     src={`${import.meta.env.VITE_API_URL}/${item?.pictures[0]}`}
-                    className={`img-fluid`}
+                    className={`img-fluid ${styles.slika} px-2`}
                     alt="Prva slika"
                 />
                 <p className={`text-steel-blue`}>{item?.name}
                     <span className={`badge bg-coral mx-2`}>{item?.category}</span>
                 </p>
-                <Link to={`/items/${item.id}`} className={`btn btn-sm w-50 m-2 text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`} >Detaljnije o predmetu</Link>
-                {item.author.id == user?.id && <button onClick={openModal} className={`btn btn-sm w-50 mx-2 text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta} ms-auto`}>
-                    Postavi na aukciju
-                </button>}
+                <div className={`d-flex w-100`}>
+                    <Link to={`/items/${item.id}`} className={`btn btn-sm w-50 m-2 text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`} >Detaljnije o predmetu</Link>
+                    {item.author.id == user?.id && <button onClick={openModal} className={`btn btn-sm w-50 m-2 text-white text-center rounded py-2 px-2 ${styles.dugme4} ${styles.linija_ispod_dugmeta}`}>
+                        Postavi na aukciju
+                    </button>}
+                </div>
             </div>
             {isModalOpen && (
                 <div className={`modal d-block`} style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
@@ -92,6 +97,16 @@ const ItemCard = ({ item }: Props) => {
                                             id="price"
                                             value={price}
                                             onChange={(e) => setPrice(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="dueDate" className={`form-label text-steel-blue`}>Datum završetka aukcije</label>
+                                        <DatePicker
+                                            selected={dueDate}
+                                            onChange={(date) => setDueDate(date)}
+                                            dateFormat="yyyy-MM-dd"
+                                            className="form-control"
+                                            minDate={new Date()} 
                                         />
                                     </div>
                                 </form>

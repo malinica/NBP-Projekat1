@@ -38,20 +38,18 @@ export const PageMyItems = (props: Props) => {
     }, [isLoggedIn]);
 
     if (!isLoggedIn) {
-        return <p className="text-center text-danger">Trebate da se ulogujuete da bi ste videli iteme.</p>;
+        return <p className={`text-center text-danger`}>Trebate da se ulogujuete da bi ste videli iteme.</p>;
     }
-
-   
 
     return (
         <div className={`container ${styles.pageMyItems} mb-4`}>
-          <h3 className="text-center">Moji predmeti</h3>
+          <h1 className={`text-center text-steel-blue m-2`}>Moji predmeti</h1>
           {isLoading ? (
-            <p className="text-center text-muted">Ucitavanje predmeta...</p>
+            <p className={`text-center text-muted`}>Ucitavanje predmeta...</p>
           ) : items && items.length > 0 ? (
-            <div className="row">
+            <div className={`row`}>
               {items.map((item) => (
-                <div key={item.id} className="col-12 cursor-pointer">
+                <div key={item.id} className={`col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4 cursor-pointer`}>
                   <ItemCard item={item} />
                   <div className={`d-flex justify-content-end`}>
                   </div>
@@ -60,7 +58,7 @@ export const PageMyItems = (props: Props) => {
 
             </div>
           ) : (
-            <p className="text-center text-muted">Nemate predmete za prikaz.</p>
+            <p className={`text-center text-coral m-2`}>Nemate predmete za prikaz.</p>
           )}
         </div>
       );

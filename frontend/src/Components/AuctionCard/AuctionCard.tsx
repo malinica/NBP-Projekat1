@@ -78,9 +78,9 @@ const AuctionCard = ({auction, onRemoveFavoriteAuction}: Props) => {
           
           {!isLoading && (canAddToFavorite 
           ? 
-          <button className='btn bg-success' onClick={handleAddToFavorites}>Dodaj u omiljene</button> 
+          <button className={`btn btn-lg mx-2 text-white text-center rounded py-2 px-2 ${styles.dugme2} ${styles.dugme_ispod_linije}`} onClick={handleAddToFavorites}>Dodaj u omiljene</button> 
           : 
-          <button className={`btn btn-danger`} onClick={handleRemoveFavoriteAuction}>Ukloni iz omiljenih</button>
+          <button className={`btn btn-lg mx-2 text-white text-center rounded py-2 px-2 ${styles.dugme2} ${styles.dugme_ispod_linije}`} onClick={handleRemoveFavoriteAuction}>Ukloni iz omiljenih</button>
           )}
 
         </div>

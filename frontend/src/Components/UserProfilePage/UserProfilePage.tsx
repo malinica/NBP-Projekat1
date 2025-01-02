@@ -28,7 +28,7 @@ const UserProfilePage = (props: Props) => {
 
   return (
     <div className={`container`}>
-    <h3 className={`text-center text-steel-blue m-3`}>Aukcije koje je korisnik <strong>{username}</strong> kreirao</h3>
+    <h1 className={`text-center text-steel-blue m-2`}>Aukcije koje je korisnik <strong>{username}</strong> kreirao</h1>
     {isLoading ? (
       <p className={`text-center text-muted`}>Ucitavanje aukcija...</p>
     ) : auctions && auctions.length > 0 ? (
@@ -40,7 +40,7 @@ const UserProfilePage = (props: Props) => {
         ))}
       </div>
     ) : (
-      <p className={`text-center text-coral`}>Korisnik nema kreiranih aukcija.</p>
+      <p className={`text-center text-coral m-2`}>Korisnik nema kreiranih aukcija.</p>
     )}
   </div>
   );

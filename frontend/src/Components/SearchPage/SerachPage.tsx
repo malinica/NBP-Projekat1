@@ -187,7 +187,7 @@ return (
           <AuctionCard key={auction.id} auction={auction} />
         ))
       ) : (
-        <p>Nema aukcija.</p>
+        <p className={`text-center text-coral m-2`}>Nema aukcija.</p>
       )}
     </div>
   )}
@@ -195,7 +195,7 @@ return (
 
 
         <div className={`d-flex justify-content-end`}>
-          <div className={`m-2 dropdown`}>
+          <div className={`my-2 dropdown`}>
             <button
               className={`${styles.ivica} rounded px-2 py-2 dropdown-toggle bg-orange text-white text-decoration-none border-none`}
               type="button"
@@ -228,7 +228,7 @@ return (
                   <>
                     <li className={`page-item`}>
                       <a
-                        className={`btn btn-sm mx-2 text-white text-center rounded py-1 px-1 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
+                        className={`btn btn-sm text-white text-center rounded py-1 px-1 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
                         data-value={currentPageNumber - 1}
                         onClick={(e) => {
                           changePageNumber(e);
@@ -247,7 +247,7 @@ return (
                   <>
                     <li className={`page-item`}>
                       <a
-                        className={`btn btn-sm mx-2 text-white text-center rounded py-1 px-1 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
+                        className={`btn btn-sm text-white text-center rounded py-1 px-1 ${styles.dugme2} ${styles.linija_ispod_dugmeta}`}
                         data-value={currentPageNumber + 1}
                         onClick={(e) => {
                           changePageNumber(e);

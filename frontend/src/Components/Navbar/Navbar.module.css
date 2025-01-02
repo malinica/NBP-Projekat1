@@ -74,7 +74,7 @@
 }
 
 .custom-dropdown-item {
-    background-color: #fff!important;
+    background-color: transparent !important; 
     color:#EE6C4D !important;
 }
 
@@ -86,7 +86,7 @@
 }
 
 .custom-dropdown-item1 {
-    background-color: #fff!important;
+    background-color: transparent !important; 
     color:#98C1D9 !important;
 }
 
@@ -98,7 +98,7 @@
 }
 
 .custom-dropdown-item2 {
-    background-color: #fff!important;
+    background-color: transparent !important; 
     color:#EE6C4D !important;
     text-decoration: none;
 }

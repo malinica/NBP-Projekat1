@@ -35,18 +35,6 @@ export const getAuctions = async (fromPosition: number, N: number): Promise<Arra
     }
 };
 
-export const GetAuctionCounter = async (): Promise<number | null> => {
-
-    try {
-        const response = await axios.get<number>(`${baseApiRoute}/GetAuctionCounter`);
-        return response.data;
-    }
-    catch (error) {
-        console.log(error)
-        return null;
-    }
-};
-
 export const subscribeToAuctionAPI = async (auctionId: string): Promise<string | null> => {
 
     try {
