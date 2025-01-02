@@ -52,8 +52,9 @@ namespace DataLayer.Services
             // azurira se i trenutna cena aukcije
             bool auctionPriceUpdated = auctionService.UpdateCurrentPrice(offer.AuctionId, offer.Price);
             
-            redis.AddItemToSet("AuctionsBidedByUser:"+offer.UserId+":", "auction:"+offer.AuctionId);
-            bool auctionBidExists = redis.SetContainsItem("AuctionsBidedByUser:"+offer.UserId+":", "auction:"+offer.AuctionId);
+            redis.AddItemToSet("AuctionsBidedByUser:"+offer.UserId+":",offer.AuctionId);
+
+            bool auctionBidExists = redis.SetContainsItem("AuctionsBidedByUser:"+offer.UserId+":",offer.AuctionId);
 
 
             return itemAdded && offerCreated && auctionPriceUpdated && auctionBidExists;

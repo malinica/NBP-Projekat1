@@ -106,30 +106,6 @@ namespace DataLayer.Services
             return auctions;
         }
 
-
-        public List<Auction> GetAuctionsBidedByUser(string username)
-        {
-            var sortedEntries = redis.GetAllItemsFromSet("AuctionsBidedByUser:" + username + ":");
-
-            List<Auction> auctions = new List<Auction>();
-
-            foreach (var auctionKey in sortedEntries)
-            {
-                Console.WriteLine($"Found {auctionKey} auctions in sortedAuctions:");
-
-                var auctionData = redis.Get<String>(auctionKey);
-
-                if (auctionData != null)
-                {
-
-                    var auction = JsonConvert.DeserializeObject<Auction>(auctionData);
-                    auctions.Add(auction);
-                }
-
-            }
-            return auctions;
-        }
-
         public void AddAuctionToFavorite(string userId, string auctionId)
         {
             string key = $"user:{userId}:favoriteAuctions";
@@ -218,5 +194,22 @@ namespace DataLayer.Services
             }
             return false;
         }
-    }
+
+        //AuctionsBidedByUser
+
+        public async Task<List<AuctionResultDTO>> GetAuctionsBidedByUser(string userID)
+        {
+            string key = $"AuctionsBidedByUser:{userID}:";
+            var auctionsIds = redis.GetAllItemsFromSet(key);
+            List<AuctionResultDTO> auctions = new List<AuctionResultDTO>();
+            foreach (var auctionId in auctionsIds)
+            {
+                
+                var auction = await GetFullAuction(auctionId);
+                if (auction != null)
+                    auctions.Add(auction);
+            }
+            return auctions.OrderByDescending(a => a.DueTo).ToList(); 
+        }
+    }   
 }

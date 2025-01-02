@@ -150,3 +150,13 @@ export const createAuctionAPI = async (username: string, auctionData: any) => {
         toast.error(error.response.data);
     }
 }
+
+export const getAuctionsBiddedByUserAPI = async (username:string) => {
+    try {
+        const response = await axios.get<Auction[]>(`${baseApiRoute}/GetAuctionsBiddederedByUser/${username}`);
+        return response;
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}

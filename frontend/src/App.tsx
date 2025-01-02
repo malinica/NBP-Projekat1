@@ -6,7 +6,7 @@ import StranicaRegistracije from "./Components/StranicaRegistracije/StranicaRegi
 import SearchPage from "./Components/SearchPage/SerachPage";
 import StranicaPrijave from "./Components/StranicaPrijave/StranicaPrijave";
 import PageMyItems from "./Components/PageMyItems/PageMyItems";
-
+import MyOffersPage from "./Components/MyOffersPage/MyOffersPage";
 import Footer from './Components/Footer/Footer';
 import { Toaster } from 'react-hot-toast';
 import Home from "./Components/Home/Home";
@@ -33,6 +33,7 @@ function App() {
                 <Route path="/register" element={<StranicaRegistracije />} />
                 <Route path="/login" element={<StranicaPrijave />} />
                 <Route path="/search-page/:id" element={<SearchPage />} />
+                <Route path="/myoffers-page/:id" element={<MyOffersPage />} />
                 <Route path="/auctions/:id" element={<ProtectedRoute><AuctionPage /></ProtectedRoute>} />
                 <Route path="/my-items" element={<ProtectedRoute><PageMyItems /></ProtectedRoute>} />
                 <Route path="/favorite-auctions" element={<ProtectedRoute><FavoriteAuctionsPage/></ProtectedRoute>} />

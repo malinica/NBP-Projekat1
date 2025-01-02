@@ -53,7 +53,7 @@ const Navbar = () => {
                         <Link to={`/users/${user!.userName}`} className={styles['custom-dropdown-item2']}>MOJE AUKCIJE</Link>
                      </Dropdown.Item>
                      <Dropdown.Item className={styles['custom-dropdown-item1']}>
-                        <Link to="/" className={styles['custom-dropdown-item2']}>MOJE PONUDE</Link>
+                        <Link to='/myoffers-page/1' className={styles['custom-dropdown-item2']}>MOJE PONUDE</Link>
                      </Dropdown.Item>
                      <Dropdown.Item className={styles['custom-dropdown-item1']}>
                         <Link to="/favorite-auctions" className={styles['custom-dropdown-item2']}>OMILJENO</Link>

@@ -112,22 +112,6 @@ namespace backend.Controllers
             }
         }
 
-
-        [HttpGet("GetAuctionsBidedByUser/{username}")]
-        public ActionResult<Auction[]> GetAuctionsBidedByUser(string username)
-        {
-            try
-            {
-                var auctions = auctionService.GetAuctionsBidedByUser(username);
-
-                return Ok(auctions);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpPost("SubscribeToAuction/{auctionId}")]
         public ActionResult<string> SubscribeToAuction(string auctionId)
         {
@@ -226,6 +210,20 @@ namespace backend.Controllers
             {
                 var createdAuctions = await auctionService.GetAuctionsCreatedByUser(username);
                 return Ok(createdAuctions);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+                [HttpGet("GetAuctionsBiddederedByUser/{username}")]
+         public async Task<ActionResult<List<AuctionResultDTO>>> GetAuctionsBiddederedByUser(string username)
+        {
+            try
+            {
+                var result = await auctionService.GetAuctionsBidedByUser(username);
+                return Ok(result);
             }
             catch (Exception ex)
             {
