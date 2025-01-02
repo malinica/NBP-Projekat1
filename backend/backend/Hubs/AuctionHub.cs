@@ -32,6 +32,7 @@ namespace backend.Hubs
                 offerService.Create(offerDTO);
                 List<OfferResultDTO> topOffers = await offerService.GetOffersForAuction(offerDTO.AuctionId, 10);
                 offerService.PublishNewOffers(offerDTO.AuctionId, topOffers);
+                await Clients.Groups(offerDTO.AuctionId).UpdateAuctionCurrentPrice(offerDTO.Price);
                 await Clients.Groups(offerDTO.AuctionId).ReceiveMessage("Kreirana je nova ponuda.", true);
             } catch(Exception ex) {
                 await Clients.Caller.ReceiveMessage(ex.Message, false);

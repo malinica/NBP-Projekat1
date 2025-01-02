@@ -221,5 +221,15 @@ namespace DataLayer.Services
             }
             return auctions.OrderByDescending(a => a.DueTo).ToList(); 
         }
+
+        public bool CanBidToAuction(string username, string auctionId)
+        {
+            string key = $"user:{username}:createdAuctions";
+            if (redis.Sets[key].Contains(auctionId))
+            {
+                return false;
+            }
+            return true;
+        }
     }   
 }

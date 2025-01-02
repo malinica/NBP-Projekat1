@@ -199,23 +199,23 @@ namespace backend.Controllers
         //GetAuctionsFromFilter
         [HttpGet("GetAuctionsFromFilter")]
         //[Authorize] // ne treba authorize ako je ona stranica pretrage dostupna i neulogovanom korisniku
-       public async Task<ActionResult<List<AuctionResultDTO>>> GetAuctionsFromFilter(
-    [FromQuery] string? itemName = null,
-    [FromQuery] ItemCategory[]? categories = null,
-    [FromQuery] int? minprice = null,
-    [FromQuery] int? maxprice = null)
-{
-    try
-    {
-        categories ??= Array.Empty<ItemCategory>();
-        var result = await auctionService.GetAuctionsFromFilter(itemName, categories, minprice, maxprice);
-        return Ok(result);
-    }
-    catch (Exception ex)
-    {
-        return BadRequest(new { message = ex.Message, stackTrace = ex.StackTrace });
-    }
-}
+        public async Task<ActionResult<List<AuctionResultDTO>>> GetAuctionsFromFilter(
+        [FromQuery] string? itemName = null,
+        [FromQuery] ItemCategory[]? categories = null,
+        [FromQuery] int? minprice = null,
+        [FromQuery] int? maxprice = null)
+        {
+            try
+            {
+                categories ??= Array.Empty<ItemCategory>();
+                var result = await auctionService.GetAuctionsFromFilter(itemName, categories, minprice, maxprice);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message, stackTrace = ex.StackTrace });
+            }
+        }
 
 
         [HttpGet("GetAuctionsCreatedBy/{username}")]
@@ -233,12 +233,28 @@ namespace backend.Controllers
             }
         }
 
-                [HttpGet("GetAuctionsBiddederedByUser/{username}")]
-         public async Task<ActionResult<List<AuctionResultDTO>>> GetAuctionsBiddederedByUser(string username)
+        [HttpGet("GetAuctionsBiddederedByUser/{username}")]
+        public async Task<ActionResult<List<AuctionResultDTO>>> GetAuctionsBiddederedByUser(string username)
         {
             try
             {
                 var result = await auctionService.GetAuctionsBidedByUser(username);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("CanBid/{auctionId}")]
+        [Authorize]
+        public async Task<ActionResult<bool>> CanBid([FromRoute] string auctionId)
+        {
+            try
+            {
+                var user = await userService.GetCurrentUser(User);
+                var result = auctionService.CanBidToAuction(user?.UserName ?? "", auctionId);
                 return Ok(result);
             }
             catch (Exception ex)

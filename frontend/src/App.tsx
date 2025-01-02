@@ -12,7 +12,7 @@ import { Toaster } from 'react-hot-toast';
 import Home from "./Components/Home/Home";
 import CreateItem from "./Components/CreateItem/CreateItem";
 import DisplayItem from "./Components/DisplayItem/DisplayItem";
-import AuctionPage from "./Components/Auction/AuctionPage";
+import AuctionPage from "./Components/AuctionPage/AuctionPage";
 import FavoriteAuctionsPage from "./Components/FavoriteAuctionsPage/FavoriteAuctionsPage";
 import UserProfilePage from "./Components/UserProfilePage/UserProfilePage";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";

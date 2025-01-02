@@ -170,3 +170,13 @@ export const getAuctionsBiddedByUserAPI = async (username:string) => {
         return undefined;
     }
 }
+
+export const canBidToAuctionAPI = async (auctionId: string) => {
+    try {
+        const response = await axios.get<boolean>(`${baseApiRoute}/CanBid/${auctionId}`);
+        return response;
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}

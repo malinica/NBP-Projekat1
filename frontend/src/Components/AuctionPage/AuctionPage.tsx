@@ -6,7 +6,7 @@ import { getOffersAPI } from '../../Services/OfferService'
 import AuctionBidForm from '../AuctionBidForm/AuctionBidForm'
 import toast from 'react-hot-toast'
 import { useAuth } from '../../Context/useAuth'
-import { getAuctionWithItemAPI, subscribeToAuctionAPI } from '../../Services/AuctionService'
+import { canBidToAuctionAPI, getAuctionWithItemAPI, subscribeToAuctionAPI } from '../../Services/AuctionService'
 import AuctionCard from '../AuctionCard/AuctionCard'
 import { Auction } from '../../Interfaces/Auction/Auction'
 import styles from "./AuctionPage.module.css";
@@ -21,6 +21,7 @@ const AuctionPage = (props: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [showAuctionCard, setShowAuctionCard] = useState<boolean>(true);
+  const [canBid, setCanBid] = useState<boolean>(false);
 
   const {user, token} = useAuth();
 
@@ -55,6 +56,15 @@ const AuctionPage = (props: Props) => {
       setOffers(offers);
     });
 
+    newConnection.on("UpdateAuctionCurrentPrice", price => {
+      setAuction((prevAuction) => {
+        if (prevAuction) {
+          return { ...prevAuction, currentPrice: price };
+        }
+        return prevAuction;
+      });
+    });
+
     newConnection.on("ReceiveMessage", (message, isSuccess) => {
       if(isSuccess) {
         toast.success(message);
@@ -73,6 +83,13 @@ const AuctionPage = (props: Props) => {
       if(auctionResponse && auctionResponse.status == 200) {
         setAuction(auctionResponse.data);
       }
+
+      const canBidResponse = await canBidToAuctionAPI(id!);
+      if(canBidResponse && canBidResponse.status == 200) {
+        console.log(canBidResponse.data);
+        setCanBid(canBidResponse.data);
+      }
+
       const offersResponse = await getOffersAPI(id!, 10);
       if(offersResponse && offersResponse.status == 200) {
         setOffers(offersResponse.data);
@@ -103,14 +120,8 @@ const AuctionPage = (props: Props) => {
         auctionId: id,
         userId: user?.id
       });
-      setAuction((prevAuction) => {
-        if (prevAuction) {
-          return { ...prevAuction, currentPrice: bid };
-        }
-        return prevAuction;
-      });
     } catch (error) {
-    console.error("Došlo je do greške pri slanju ponude:", error);
+      console.error("Došlo je do greške pri slanju ponude:", error);
     }
   }
 
@@ -129,7 +140,7 @@ const AuctionPage = (props: Props) => {
         >
           {showAuctionCard ? "Sakrij Aukciju" : "Prikaži Aukciju"}
         </button>
-        <AuctionBidForm onSubmitBid={submitBid}></AuctionBidForm>
+        {canBid && <AuctionBidForm onSubmitBid={submitBid}></AuctionBidForm>}
 
         <br />
         <div className={`table-responsive`}>

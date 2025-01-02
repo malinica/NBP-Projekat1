@@ -10,5 +10,6 @@ namespace backend.Interfaces
     {
         Task ReceiveMessage(string message, bool isSuccess);
         Task ReceiveOffers(List<OfferResultDTO> offers);
+        Task UpdateAuctionCurrentPrice(int price);
     }
 }
