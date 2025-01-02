@@ -45,8 +45,9 @@ export const PageMyItems = (props: Props) => {
 
     return (
         <div className={`container ${styles.pageMyItems} mb-4`}>
+          <h3 className="text-center">Moji predmeti</h3>
           {isLoading ? (
-            <p className="text-center text-muted">Ucitavanje itema...</p>
+            <p className="text-center text-muted">Ucitavanje predmeta...</p>
           ) : items && items.length > 0 ? (
             <div className="row">
               {items.map((item) => (
@@ -59,7 +60,7 @@ export const PageMyItems = (props: Props) => {
 
             </div>
           ) : (
-            <p className="text-center text-muted">Nemate iteme za prikaz.</p>
+            <p className="text-center text-muted">Nemate predmete za prikaz.</p>
           )}
         </div>
       );

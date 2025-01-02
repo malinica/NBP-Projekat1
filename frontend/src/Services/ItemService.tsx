@@ -37,6 +37,6 @@ export const getItemsForUserAPI = async (username: string) => {
         return response;
     }
     catch(error:any) {
-        toast.error(error.response.data);
+        console.error(error.response.data);
     }
 }

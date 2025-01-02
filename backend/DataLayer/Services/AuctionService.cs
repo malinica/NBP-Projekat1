@@ -113,7 +113,7 @@ namespace DataLayer.Services
             {
                 return;
             }
-            redis.AddItemToList(key, auctionId);
+            redis.PrependItemToList(key, auctionId);
         }
 
         public bool CanAddAuctionToFavorite(string userId, string auctionId)
@@ -143,7 +143,7 @@ namespace DataLayer.Services
                 if (auction != null)
                     auctions.Add(auction);
             }
-    return auctions.OrderByDescending(a => a.DueTo).ToList(); 
+            return auctions; 
         }
 
         public async Task<List<AuctionResultDTO>> GetAuctionsFromFilter(string? itemName, ItemCategory[] categories, int? pricemin,int? pricemax)

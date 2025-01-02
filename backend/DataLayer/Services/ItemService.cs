@@ -78,28 +78,25 @@ namespace DataLayer.Services
 
         public async Task<List<ItemResultDTO>> GetItemsByUser(string username) 
         {
-        var user = await context.Users.FirstOrDefaultAsync(u => u.UserName == username);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.UserName == username);
 
-        if (user == null)
-            throw new Exception("Korisnik nije pronađen.");
+            if (user == null)
+                throw new Exception("Korisnik nije pronađen.");
 
-        var items = await context.Items
-                                .Where(i => i.Author.Id == user.Id)
-                                .ToListAsync();
+            var items = await context.Items
+                                    .Where(i => i.Author.Id == user.Id)
+                                    .ToListAsync();
 
-        if (items == null || items.Count == 0)
-            throw new Exception("Korisnik nema dostupnih predmeta.");
+            List<ItemResultDTO> itemResults = items.Select(item => new ItemResultDTO
+            {
+                ID = item.ID,
+                Name = item.Name,
+                Description = item.Description,
+                Category = item.Category,
+                Pictures = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>()
+            }).ToList();
 
-        List<ItemResultDTO> itemResults = items.Select(item => new ItemResultDTO
-        {
-            ID = item.ID,
-            Name = item.Name,
-            Description = item.Description,
-            Category = item.Category,
-            Pictures = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>()
-        }).ToList();
-
-        return itemResults;
+            return itemResults;
         }
 
 
