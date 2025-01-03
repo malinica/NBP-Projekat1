@@ -137,10 +137,11 @@ namespace DataLayer.Services
             redis.RemoveItemFromList(key, auctionId);
         }
 
-        public async Task<List<AuctionResultDTO>> GetFavoriteAuctions(string userId)
+        public async Task<PaginatedResponseDTO<AuctionResultDTO>> GetFavoriteAuctions(string userId, int page = 1, int pageSize = 10)
         {
             string key = $"user:{userId}:favoriteAuctions";
-            var auctionsIds = redis.GetAllItemsFromList(key);
+
+            var auctionsIds = redis.GetRangeFromList(key, (page - 1) * pageSize, page * pageSize - 1);
             List<AuctionResultDTO> auctions = new List<AuctionResultDTO>();
             foreach (var auctionId in auctionsIds)
             {
@@ -148,10 +149,14 @@ namespace DataLayer.Services
                 if (auction != null)
                     auctions.Add(auction);
             }
-            return auctions; 
+            return new PaginatedResponseDTO<AuctionResultDTO>
+            {
+                Data = auctions,
+                TotalLength = redis.GetListCount(key)
+            }; 
         }
 
-        public async Task<List<AuctionResultDTO>> GetAuctionsFromFilter(string? itemName, ItemCategory[] categories, int? pricemin,int? pricemax)
+        public async Task<List<AuctionResultDTO>> GetAuctionsFromFilter(string? itemName, ItemCategory[] categories, int? pricemin, int? pricemax)
         {
             if (string.IsNullOrEmpty(itemName))
             {

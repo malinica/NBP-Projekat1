@@ -86,7 +86,6 @@ const AuctionPage = (props: Props) => {
 
       const canBidResponse = await canBidToAuctionAPI(id!);
       if(canBidResponse && canBidResponse.status == 200) {
-        console.log(canBidResponse.data);
         setCanBid(canBidResponse.data);
       }
 
@@ -135,14 +134,16 @@ const AuctionPage = (props: Props) => {
           {showAuctionCard && auction && <AuctionCard auction={auction} />} {}
         </div>
         <button
-          className={`btn btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.dugme_ispod_linije}`}
-          onClick={() => setShowAuctionCard(!showAuctionCard)} 
-        >
+          className={`btn btn-lg text-white text-center rounded p-2 mb-2 ${styles.dugme1} ${styles.dugme_ispod_linije}`}
+          onClick={() => setShowAuctionCard(!showAuctionCard)} >
           {showAuctionCard ? "Sakrij Aukciju" : "Prikaži Aukciju"}
         </button>
+
         {canBid && <AuctionBidForm onSubmitBid={submitBid}></AuctionBidForm>}
 
         <br />
+        {
+        (offers && offers.length > 0) ?
         <div className={`table-responsive mt-2`}>
           <table className={`table table-striped rounded`}>
             <thead className={`table-primary`}>
@@ -166,6 +167,9 @@ const AuctionPage = (props: Props) => {
             </tbody>
           </table>
         </div>
+        :
+        <p className={`text-center text-coral mt-3`}>Nema ponuda za ovu aukciju.</p>
+        }
         </>}
     </div>
   )

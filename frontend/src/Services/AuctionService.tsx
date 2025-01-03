@@ -2,6 +2,7 @@ import axios from "axios";
 import { Auction } from "../Interfaces/Auction/Auction";
 import toast from "react-hot-toast";
 import { ItemCategory } from "../Enums/ItemCategory";
+import { PaginatedResponseDTO } from "../Interfaces/PaginatedResponseDTO";
 
 const baseApiRoute = "http://localhost:5257/api/Auction";
 
@@ -78,9 +79,12 @@ export const removeFavoriteAuctionAPI = async (auctionId: string) => {
     }
 }
 
-export const getFavoriteAuctionsAPI = async () => {
+export const getFavoriteAuctionsAPI = async (page?: number, pageSize?: number) => {
     try {
-        const response = await axios.get<Auction[]>(`${baseApiRoute}/GetFavoriteAuctions`);
+        const response = await axios.get<PaginatedResponseDTO<Auction>>
+        (
+            `${baseApiRoute}/GetFavoriteAuctions?page=${page ?? 1}&pageSize=${pageSize ?? 10}`
+        );
         return response;
     } catch (error) {
         console.error(error);

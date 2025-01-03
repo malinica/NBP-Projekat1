@@ -56,7 +56,7 @@ const ItemCard = ({ item }: Props) => {
             <div className={`row bg-baby-blue rounded-3 py-3 m-2`}>
                 <img
                     src={`${import.meta.env.VITE_API_URL}/${item?.pictures[0]}`}
-                    className={`img-fluid ${styles.slika} px-2`}
+                    className={`img-fluid ${styles.slika} px-2 mb-2`}
                     alt="Prva slika"
                 />
                 <p className={`text-steel-blue`}>{item?.name}
@@ -100,10 +100,10 @@ const ItemCard = ({ item }: Props) => {
                                         />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="dueDate" className={`form-label text-steel-blue`}>Datum završetka aukcije</label>
+                                        <label htmlFor="dueDate" className={`form-label text-steel-blue me-2`}>Datum završetka aukcije</label>
                                         <DatePicker
                                             selected={dueDate}
-                                            onChange={(date) => setDueDate(date)}
+                                            onChange={(date:any) => setDueDate(date)}
                                             dateFormat="yyyy-MM-dd"
                                             className="form-control"
                                             minDate={new Date()} 

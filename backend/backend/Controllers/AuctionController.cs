@@ -182,12 +182,14 @@ namespace backend.Controllers
 
         [HttpGet("GetFavoriteAuctions")]
         [Authorize]
-        public async Task<ActionResult<List<AuctionResultDTO>>> GetFavoriteAuctions()
+        public async Task<ActionResult<PaginatedResponseDTO<AuctionResultDTO>>> GetFavoriteAuctions(
+            [FromQuery] int? page = null, 
+            [FromQuery] int? pageSize = null)
         {
             try
             {
                 var user = await userService.GetCurrentUser(User);
-                var favoriteAuctions = await auctionService.GetFavoriteAuctions(user?.Id ?? "");
+                var favoriteAuctions = await auctionService.GetFavoriteAuctions(user?.Id ?? "", page ?? 1, pageSize ?? 10);
                 return Ok(favoriteAuctions);
             }
             catch (Exception ex)
@@ -196,9 +198,7 @@ namespace backend.Controllers
             }
         }
 
-        //GetAuctionsFromFilter
         [HttpGet("GetAuctionsFromFilter")]
-        //[Authorize] // ne treba authorize ako je ona stranica pretrage dostupna i neulogovanom korisniku
         public async Task<ActionResult<List<AuctionResultDTO>>> GetAuctionsFromFilter(
         [FromQuery] string? itemName = null,
         [FromQuery] ItemCategory[]? categories = null,
