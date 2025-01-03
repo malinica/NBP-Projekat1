@@ -104,13 +104,13 @@ namespace DataLayer.Services
             }
         }
 
-        public async Task<List<ItemResultDTO>> GetItemsByUser(string username) 
+        public async Task<PaginatedResponseDTO<ItemResultDTO>> GetItemsByUser(string username, int page = 1, int pageSize = 10) 
         {
-            var cacheKey = $"cache:user:{username}:items";
+            var cacheKey = $"cache:user:{username}:items:page:{page}:pageSize:{pageSize}";
             var cachedData = redis.Get<string>(cacheKey);
             if (cachedData != null)
             {
-                return JsonConvert.DeserializeObject<List<ItemResultDTO>>(cachedData)!;
+                return JsonConvert.DeserializeObject<PaginatedResponseDTO<ItemResultDTO>>(cachedData)!;
             }
             else {
                 var user = await context.Users.FirstOrDefaultAsync(u => u.UserName == username);
@@ -122,6 +122,8 @@ namespace DataLayer.Services
                                         .Include(i => i.Author)
                                         .Include(i => i.AuctionWinner)
                                         .Where(i => i.Author!.Id == user.Id)
+                                        .Skip((page - 1) * pageSize)
+                                        .Take(pageSize)
                                         .ToListAsync();
 
                 List<ItemResultDTO> itemResults = items.Select(item => new ItemResultDTO
@@ -147,9 +149,14 @@ namespace DataLayer.Services
                     } : null
                 }).ToList();
 
-                redis.Set(cacheKey, JsonConvert.SerializeObject(itemResults), TimeSpan.FromSeconds(30));
+                var result = new PaginatedResponseDTO<ItemResultDTO> {
+                    Data = itemResults,
+                    TotalLength = await context.Items.CountAsync(i => i.Author!.Id == user.Id)
+                };
 
-                return itemResults;
+                redis.Set(cacheKey, JsonConvert.SerializeObject(result), TimeSpan.FromSeconds(30));
+
+                return result;
             }
         }
 

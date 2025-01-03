@@ -49,10 +49,14 @@ namespace backend.Controllers
             }
         }
 
-         [HttpGet("GetItemsFromUser/{username}")]
-        public async Task<ActionResult<ItemResultDTO>> GetItemsFromUser(string username) {
+        [HttpGet("GetItemsFromUser/{username}")]
+        public async Task<ActionResult<PaginatedResponseDTO<ItemResultDTO>>> GetItemsFromUser(
+            string username,
+            [FromQuery] int? page = null, 
+            [FromQuery] int? pageSize = null
+        ) {
             try {
-                var items = await itemService.GetItemsByUser(username);
+                var items = await itemService.GetItemsByUser(username, page ?? 1, pageSize ?? 10);
                 return Ok(items);
             }
             catch (Exception ex) 
