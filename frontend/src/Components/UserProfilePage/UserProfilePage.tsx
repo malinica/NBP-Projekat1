@@ -57,7 +57,10 @@ const UserProfilePage = (props: Props) => {
       ) : (
         <p className={`text-center text-coral m-4`}>Korisnik nema kreiranih aukcija.</p>
       )}
-      {totalAuctionsCount > 0 && <Pagination totalLength={totalAuctionsCount} onPaginateChange={handlePaginateChange}/>}
+      {totalAuctionsCount > 0 && 
+      <div className="my-4">
+        <Pagination totalLength={totalAuctionsCount} onPaginateChange={handlePaginateChange}/>
+      </div>}
       </>}
     </div>
   );
