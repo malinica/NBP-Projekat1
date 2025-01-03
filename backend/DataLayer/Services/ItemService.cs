@@ -195,5 +195,20 @@ namespace DataLayer.Services
             return items;
         }
 
+        public async Task<bool> SetAuctionWinner(int itemId, string userId) {
+            var item = await context.Items.FindAsync(itemId);
+            if (item == null)
+                throw new Exception("Predmet nije pronađen.");
+
+            var user = await context.Users.FindAsync(userId);
+            if (user == null)
+                throw new Exception("Korisnik nije pronađen.");
+
+            item.AuctionWinner = user;
+            await context.SaveChangesAsync();
+
+            return true;
+        }
+
     }
 }

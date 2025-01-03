@@ -266,5 +266,27 @@ namespace DataLayer.Services
             }
             return true;
         }
+
+        public async Task ProcessExpiredAuctions() {
+            string key = "sortedAuctions";
+            var expiredAuctionsIds = redis.GetRangeFromSortedSetByLowestScore(key, 0, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            foreach (var auctionId in expiredAuctionsIds)
+            {
+                string sortedSetKey = $"auction:{auctionId}:users";
+                string? userIdWithHighestOffer = redis.GetRangeWithScoresFromSortedSetDesc(sortedSetKey, 0, 0)
+                                                      .FirstOrDefault().Key;
+                if (userIdWithHighestOffer != null)
+                {
+                    var auction = Get(auctionId);
+                    if (auction != null)
+                    {
+                        var itemId = auction.ItemId;
+                        await itemService.SetAuctionWinner(itemId, userIdWithHighestOffer);
+                    }
+                }
+
+                //ovde treba dodatna obrada nad podacima u redisu
+            }
+        }
     }   
 }

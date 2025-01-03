@@ -29,6 +29,9 @@ namespace DataLayer.Services
             if(auction == null)
                 throw new Exception("Aukcija ne postoji.");
 
+            if(auction.DueTo < DateTime.Now)
+                throw new Exception("Neuspešno kreiranje ponude. Aukcija je završena.");
+
             if(offer.Price <= auction.StartingPrice)
                 throw new Exception("Ponuda mora biti veća od početne cene na aukciji.");
 
