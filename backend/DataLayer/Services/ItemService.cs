@@ -13,6 +13,8 @@ namespace DataLayer.Services
     public class ItemService
     {
         private readonly ProjectContext context;
+        private readonly RedisClient redis = new RedisClient(Config.SingleHost);
+
 
         public ItemService(ProjectContext context)
         {
@@ -58,77 +60,97 @@ namespace DataLayer.Services
         
         public async Task<ItemResultDTO> GetItem(int id) 
         {
-            var item = await context.Items
-                                    .Include(i => i.Author)
-                                    .Include(i => i.AuctionWinner)
-                                    .Where(i => i.ID == id)
-                                    .FirstOrDefaultAsync();
+            var cacheKey = $"cache:item:{id}";
 
-            if (item == null)
-                throw new Exception("Nije pronadjen željeni predmet.");
+            var cachedData = redis.Get<string>(cacheKey);
+            if (cachedData != null)
+            {
+                return JsonConvert.DeserializeObject<ItemResultDTO>(cachedData)!;
+            }
+            else {
+                var item = await context.Items
+                                        .Include(i => i.Author)
+                                        .Include(i => i.AuctionWinner)
+                                        .Where(i => i.ID == id)
+                                        .FirstOrDefaultAsync();
 
-            List<string> picturesPaths = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>();
-            ItemResultDTO itemResult = new ItemResultDTO {
-                ID = item.ID,
-                Name = item.Name,
-                Description = item.Description,
-                Category = item.Category,
-                Pictures = picturesPaths,
-                Author = new User {
-                    Id = item.Author!.Id,
-                    UserName = item.Author!.UserName,
-                    Email = item.Author!.Email,
-                    Role = item.Author!.Role
-                },
-                AuctionWinner = item.AuctionWinner != null ? new User {
-                    Id = item.AuctionWinner.Id,
-                    UserName = item.AuctionWinner.UserName,
-                    Email = item.AuctionWinner.Email,
-                    Role = item.AuctionWinner.Role
-                } : null
-            };
-            
-            
-            return itemResult;
+                if (item == null)
+                    throw new Exception("Nije pronadjen željeni predmet.");
+
+                List<string> picturesPaths = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>();
+                ItemResultDTO itemResult = new ItemResultDTO {
+                    ID = item.ID,
+                    Name = item.Name,
+                    Description = item.Description,
+                    Category = item.Category,
+                    Pictures = picturesPaths,
+                    Author = new User {
+                        Id = item.Author!.Id,
+                        UserName = item.Author!.UserName,
+                        Email = item.Author!.Email,
+                        Role = item.Author!.Role
+                    },
+                    AuctionWinner = item.AuctionWinner != null ? new User {
+                        Id = item.AuctionWinner.Id,
+                        UserName = item.AuctionWinner.UserName,
+                        Email = item.AuctionWinner.Email,
+                        Role = item.AuctionWinner.Role
+                    } : null
+                };
+                
+                redis.Set(cacheKey, JsonConvert.SerializeObject(itemResult), TimeSpan.FromSeconds(30));
+                
+                return itemResult;
+            }
         }
 
         public async Task<List<ItemResultDTO>> GetItemsByUser(string username) 
         {
-            var user = await context.Users.FirstOrDefaultAsync(u => u.UserName == username);
-
-            if (user == null)
-                throw new Exception("Korisnik nije pronađen.");
-
-            var items = await context.Items
-                                    .Include(i => i.Author)
-                                    .Include(i => i.AuctionWinner)
-                                    .Where(i => i.Author!.Id == user.Id)
-                                    .ToListAsync();
-
-            List<ItemResultDTO> itemResults = items.Select(item => new ItemResultDTO
+            var cacheKey = $"cache:user:{username}:items";
+            var cachedData = redis.Get<string>(cacheKey);
+            if (cachedData != null)
             {
-                ID = item.ID,
-                Name = item.Name,
-                Description = item.Description,
-                Category = item.Category,
-                Pictures = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>(),
-                Author = new User
-                {
-                    Id = item.Author!.Id,
-                    UserName = item.Author!.UserName,
-                    Email = item.Author!.Email,
-                    Role = item.Author!.Role
-                },
-                AuctionWinner = item.AuctionWinner != null ? new User
-                {
-                    Id = item.AuctionWinner.Id,
-                    UserName = item.AuctionWinner.UserName,
-                    Email = item.AuctionWinner.Email,
-                    Role = item.AuctionWinner.Role
-                } : null
-            }).ToList();
+                return JsonConvert.DeserializeObject<List<ItemResultDTO>>(cachedData)!;
+            }
+            else {
+                var user = await context.Users.FirstOrDefaultAsync(u => u.UserName == username);
 
-            return itemResults;
+                if (user == null)
+                    throw new Exception("Korisnik nije pronađen.");
+
+                var items = await context.Items
+                                        .Include(i => i.Author)
+                                        .Include(i => i.AuctionWinner)
+                                        .Where(i => i.Author!.Id == user.Id)
+                                        .ToListAsync();
+
+                List<ItemResultDTO> itemResults = items.Select(item => new ItemResultDTO
+                {
+                    ID = item.ID,
+                    Name = item.Name,
+                    Description = item.Description,
+                    Category = item.Category,
+                    Pictures = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>(),
+                    Author = new User
+                    {
+                        Id = item.Author!.Id,
+                        UserName = item.Author!.UserName,
+                        Email = item.Author!.Email,
+                        Role = item.Author!.Role
+                    },
+                    AuctionWinner = item.AuctionWinner != null ? new User
+                    {
+                        Id = item.AuctionWinner.Id,
+                        UserName = item.AuctionWinner.UserName,
+                        Email = item.AuctionWinner.Email,
+                        Role = item.AuctionWinner.Role
+                    } : null
+                }).ToList();
+
+                redis.Set(cacheKey, JsonConvert.SerializeObject(itemResults), TimeSpan.FromSeconds(30));
+
+                return itemResults;
+            }
         }
 
 

@@ -139,21 +139,34 @@ namespace DataLayer.Services
 
         public async Task<PaginatedResponseDTO<AuctionResultDTO>> GetFavoriteAuctions(string userId, int page = 1, int pageSize = 10)
         {
-            string key = $"user:{userId}:favoriteAuctions";
-
-            var auctionsIds = redis.GetRangeFromList(key, (page - 1) * pageSize, page * pageSize - 1);
-            List<AuctionResultDTO> auctions = new List<AuctionResultDTO>();
-            foreach (var auctionId in auctionsIds)
+            string cacheKey = $"cache:user:{userId}:favoriteAuctions:page:{page}:pageSize:{pageSize}";
+            var cachedData = redis.Get<string>(cacheKey);
+            if (cachedData != null)
             {
-                var auction = await GetFullAuction(auctionId);
-                if (auction != null)
-                    auctions.Add(auction);
+                return JsonConvert.DeserializeObject<PaginatedResponseDTO<AuctionResultDTO>>(cachedData)!;
             }
-            return new PaginatedResponseDTO<AuctionResultDTO>
-            {
-                Data = auctions,
-                TotalLength = redis.GetListCount(key)
-            }; 
+            else {
+                string key = $"user:{userId}:favoriteAuctions";
+
+                var auctionsIds = redis.GetRangeFromList(key, (page - 1) * pageSize, page * pageSize - 1);
+                List<AuctionResultDTO> auctions = new List<AuctionResultDTO>();
+                foreach (var auctionId in auctionsIds)
+                {
+                    var auction = await GetFullAuction(auctionId);
+                    if (auction != null)
+                        auctions.Add(auction);
+                }
+
+                var result = new PaginatedResponseDTO<AuctionResultDTO>
+                {
+                    Data = auctions,
+                    TotalLength = redis.GetListCount(key)
+                }; 
+
+                redis.Set(cacheKey, JsonConvert.SerializeObject(result), TimeSpan.FromSeconds(30));
+
+                return result;
+            }
         }
 
         public async Task<List<AuctionResultDTO>> GetAuctionsFromFilter(string? itemName, ItemCategory[] categories, int? pricemin, int? pricemax)
@@ -191,16 +204,25 @@ namespace DataLayer.Services
 
         public async Task<List<AuctionResultDTO>> GetAuctionsCreatedByUser(string username)
         {
-            string key = $"user:{username}:createdAuctions";
-            var auctionsIds = redis.GetAllItemsFromSet(key);
-            List<AuctionResultDTO> auctions = new List<AuctionResultDTO>();
-            foreach (var auctionId in auctionsIds)
+            string cacheKey = $"cache:username:{username}:createdAuctions";
+            var cachedData = redis.Get<string>(cacheKey);
+            if (cachedData != null)
             {
-                var auction = await GetFullAuction(auctionId);
-                if (auction != null)
-                    auctions.Add(auction);
+                return JsonConvert.DeserializeObject<List<AuctionResultDTO>>(cachedData)!;
             }
-            return auctions;
+            else {
+                string key = $"user:{username}:createdAuctions";
+                var auctionsIds = redis.GetAllItemsFromSet(key);
+                List<AuctionResultDTO> auctions = new List<AuctionResultDTO>();
+                foreach (var auctionId in auctionsIds)
+                {
+                    var auction = await GetFullAuction(auctionId);
+                    if (auction != null)
+                        auctions.Add(auction);
+                }
+                redis.Set(cacheKey, JsonConvert.SerializeObject(auctions), TimeSpan.FromSeconds(30));
+                return auctions;
+            }
         }
 
         public bool UpdateCurrentPrice(string auctionId, int price)
@@ -214,8 +236,6 @@ namespace DataLayer.Services
             }
             return false;
         }
-
-        //AuctionsBidedByUser
 
         public async Task<List<AuctionResultDTO>> GetAuctionsBidedByUser(string userID)
         {

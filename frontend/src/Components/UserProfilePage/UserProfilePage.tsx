@@ -16,7 +16,6 @@ const UserProfilePage = (props: Props) => {
     const response = await getAuctionsCreatedByUserAPI(username!);
 
     if (response && response.status == 200) {
-        console.log(response.data);
       setAuctions(response.data);
     }
     setIsLoading(false);
