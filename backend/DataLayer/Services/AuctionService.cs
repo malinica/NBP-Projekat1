@@ -46,7 +46,7 @@ namespace DataLayer.Services
                 double auctionEndTime = new DateTimeOffset(auction.DueTo).ToUnixTimeSeconds();
                 redis.AddItemToSortedSet("sortedAuctions:", i.ID, auctionEndTime);//za prikupljanje aukcija na stranici aukcija
                 redis.Set("AuctionIDForItemID:" + auction.ItemId, i.ID);
-                redis.AddItemToSet("user:" + username + ":createdAuctions", i.ID);
+                redis.AddItemToSortedSet("user:" + username + ":createdAuctions", i.ID, 0);
                 
                 return i.ID;
             }
@@ -202,17 +202,17 @@ namespace DataLayer.Services
             return auctionList;
         }
 
-        public async Task<List<AuctionResultDTO>> GetAuctionsCreatedByUser(string username)
+        public async Task<PaginatedResponseDTO<AuctionResultDTO>> GetAuctionsCreatedByUser(string username, int page = 1, int pageSize = 10)
         {
-            string cacheKey = $"cache:username:{username}:createdAuctions";
+            string cacheKey = $"cache:username:{username}:createdAuctions:page:{page}:pageSize:{pageSize}";
             var cachedData = redis.Get<string>(cacheKey);
             if (cachedData != null)
             {
-                return JsonConvert.DeserializeObject<List<AuctionResultDTO>>(cachedData)!;
+                return JsonConvert.DeserializeObject<PaginatedResponseDTO<AuctionResultDTO>>(cachedData)!;
             }
             else {
                 string key = $"user:{username}:createdAuctions";
-                var auctionsIds = redis.GetAllItemsFromSet(key);
+                var auctionsIds = redis.GetRangeFromSortedSet(key, (page - 1) * pageSize, page * pageSize - 1);
                 List<AuctionResultDTO> auctions = new List<AuctionResultDTO>();
                 foreach (var auctionId in auctionsIds)
                 {
@@ -220,8 +220,13 @@ namespace DataLayer.Services
                     if (auction != null)
                         auctions.Add(auction);
                 }
-                redis.Set(cacheKey, JsonConvert.SerializeObject(auctions), TimeSpan.FromSeconds(30));
-                return auctions;
+                var result = new PaginatedResponseDTO<AuctionResultDTO> {
+                    Data = auctions,
+                    TotalLength = redis.GetSortedSetCount(key)
+                };
+
+                redis.Set(cacheKey, JsonConvert.SerializeObject(result), TimeSpan.FromSeconds(30));
+                return result;
             }
         }
 
@@ -255,7 +260,7 @@ namespace DataLayer.Services
         public bool CanBidToAuction(string username, string auctionId)
         {
             string key = $"user:{username}:createdAuctions";
-            if (redis.Sets[key].Contains(auctionId))
+            if (redis.SortedSets[key].Contains(auctionId))
             {
                 return false;
             }

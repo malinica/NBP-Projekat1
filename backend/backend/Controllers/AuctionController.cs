@@ -220,11 +220,15 @@ namespace backend.Controllers
 
         [HttpGet("GetAuctionsCreatedBy/{username}")]
         [Authorize]
-        public async Task<ActionResult<List<AuctionResultDTO>>> GetAuctionsCreatedByUser(string username)
+        public async Task<ActionResult<PaginatedResponseDTO<AuctionResultDTO>>> GetAuctionsCreatedByUser
+        (
+            string username, 
+            [FromQuery] int? page = null, 
+            [FromQuery] int? pageSize = null)
         {
             try
             {
-                var createdAuctions = await auctionService.GetAuctionsCreatedByUser(username);
+                var createdAuctions = await auctionService.GetAuctionsCreatedByUser(username, page ?? 1, pageSize ?? 10);
                 return Ok(createdAuctions);
             }
             catch (Exception ex)

@@ -127,9 +127,9 @@ export const getAuctionsFromFilter = async (
 }
 
 
-export const getAuctionsCreatedByUserAPI = async (username:string) => {
+export const getAuctionsCreatedByUserAPI = async (username:string, page?: number, pageSize?: number) => {
     try {
-        const response = await axios.get<Auction[]>(`${baseApiRoute}/GetAuctionsCreatedBy/${username}`);
+        const response = await axios.get<PaginatedResponseDTO<Auction>>(`${baseApiRoute}/GetAuctionsCreatedBy/${username}?page=${page ?? 1}&pageSize=${pageSize ?? 10}`);
         return response;
     } catch (error) {
         console.error(error);

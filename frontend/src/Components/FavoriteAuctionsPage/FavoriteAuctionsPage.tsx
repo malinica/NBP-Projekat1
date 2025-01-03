@@ -9,7 +9,7 @@ type Props = {};
 const FavoriteAuctionsPage = (props: Props) => {
 
   const [auctions, setAuctions] = useState<Auction[] | undefined>(undefined);
-  const [totalAuctionsCount, setTotalAuctionsCount] = useState<number>(20);
+  const [totalAuctionsCount, setTotalAuctionsCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   
   useEffect(() => {
