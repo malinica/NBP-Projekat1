@@ -257,6 +257,21 @@ namespace DataLayer.Services
 
             if (itemDTO.Pictures != null && itemDTO.Pictures.Any())
             {
+                if (!string.IsNullOrEmpty(item.Pictures))
+                {
+                    var existingPictures = JsonConvert.DeserializeObject<List<string>>(item.Pictures);
+                    var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
+                    foreach (var existingPicture in existingPictures)
+                    {
+                        var filePath = Path.Combine(wwwrootPath, existingPicture);
+                        if (File.Exists(filePath))
+                        {
+                             File.Delete(filePath);
+                        }
+                    }
+                }
+
                 List<string> newPicturesPaths = new List<string>();
                 foreach (var picture in itemDTO.Pictures)
                 {

@@ -1,11 +1,3 @@
-export const truncateText = (text: string, maxLength: number): string => {
-  if (text.length > maxLength) {
-    return text.substring(0, maxLength) + "...";
-  }
-  return text;
-};
-
-
 export const wrapText = (text: string, maxLength: number): string => {
   let words = text.split(' ');
   let lines = [];

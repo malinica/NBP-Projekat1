@@ -41,3 +41,30 @@ export const getItemsForUserAPI = async (username: string, page?: number, pageSi
         console.error(error.response.data);
     }
 }
+
+export const deleteAPI = async (itemId : number) => {
+    try {
+        const response = await axios.delete<Item>(baseApiRoute + `/${itemId}`);
+
+        return response;
+    }
+    catch(error:any) {
+        toast.error(error.response.data);
+    }
+}
+
+export const updateAPI = async (itemId : number, updateItemDto: FormData) => {
+    try {
+        const response = await axios.put(baseApiRoute + `/update/${itemId}`, updateItemDto, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        return response.data;
+    } 
+    catch (error: any) {
+        toast.error(error.response?.data || "Došlo je do greške prilikom ažuriranja.");
+        throw error; 
+    }
+
+}
