@@ -210,5 +210,42 @@ namespace DataLayer.Services
             return true;
         }
 
+        public async Task<bool> DeleteItem(int itemId, string userId)
+        {
+            var item = await context.Items.Include(i => i.Author).FirstOrDefaultAsync(i => i.ID == itemId);
+            if (item == null)
+            {
+                throw new Exception("Predmet nije pronađen.");
+            }
+
+            Console.WriteLine($"Korisnik ID za brisanje: {userId}");
+            Console.WriteLine($"ID autora predmeta: {item.Author?.Id}");
+
+            if (item.Author?.Id != userId)
+            {
+                throw new UnauthorizedAccessException("Nemate dozvolu za brisanje ovog predmeta.");
+            }
+
+            var picturesPaths = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>();
+            foreach (var picturePath in picturesPaths)
+            {
+                var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", picturePath);
+                if (File.Exists(fullPath))
+                {
+                    File.Delete(fullPath);
+                }
+            }
+
+            context.Items.Remove(item);
+            await context.SaveChangesAsync();
+
+            var cacheKey = $"cache:item:{itemId}";
+            redis.Remove(cacheKey);
+
+            return true;
+        }
+
+
+
     }
 }

@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { Item } from '../../Interfaces/Item/Item';
 import styles from "./CreateItem.module.css";
+import "react-toastify/dist/ReactToastify.css";
 
 type Props = {}
 

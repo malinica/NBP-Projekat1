@@ -28,6 +28,11 @@ const ItemCard = ({ item }: Props) => {
       
         const handleSubmit = async () => {
             const username = user?.userName;
+
+            if (!title || !price || !dueDate) {
+                toast.error("Molimo popunite sva obavezna polja!");
+                return;
+            }
       
             const auctionData = {
                 title,
@@ -48,6 +53,7 @@ const ItemCard = ({ item }: Props) => {
                 }
             } catch (error) {
                 console.error("Greska prilikom kreiranja aukcije:", error);
+                toast.error("Došlo je do greške prilikom kreiranja aukcije. Pokušajte ponovo.");
             }
         };
 

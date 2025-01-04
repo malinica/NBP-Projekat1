@@ -64,6 +64,27 @@ namespace backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
+                var user = await userService.GetCurrentUser(User);
+
+                var isDeleted = await itemService.DeleteItem(id, user?.Id ?? "");
+                if (isDeleted)
+                {
+                    return NoContent(); 
+                }
+                return BadRequest("Neuspešno brisanje predmeta.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         
     }
 }
