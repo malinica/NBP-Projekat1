@@ -218,9 +218,6 @@ namespace DataLayer.Services
                 throw new Exception("Predmet nije pronađen.");
             }
 
-            Console.WriteLine($"Korisnik ID za brisanje: {userId}");
-            Console.WriteLine($"ID autora predmeta: {item.Author?.Id}");
-
             if (item.Author?.Id != userId)
             {
                 throw new UnauthorizedAccessException("Nemate dozvolu za brisanje ovog predmeta.");
@@ -243,6 +240,43 @@ namespace DataLayer.Services
             redis.Remove(cacheKey);
 
             return true;
+        }
+
+        public async Task<ItemResultDTO> Update(int itemId, UpdateItemDTO itemDTO, string authorId)
+        {
+            var item = await context.Items.Include(i => i.Author).FirstOrDefaultAsync(i => i.ID == itemId);
+            if (item == null)
+                throw new Exception("Predmet nije pronađen.");
+
+            if (item.Author?.Id != authorId)
+                throw new UnauthorizedAccessException("Nemate dozvolu za izmenu ovog predmeta.");
+
+            item.Name = itemDTO.Name;
+            item.Description = itemDTO.Description;
+            item.Category = itemDTO.Category;
+
+            if (itemDTO.Pictures != null && itemDTO.Pictures.Any())
+            {
+                List<string> newPicturesPaths = new List<string>();
+                foreach (var picture in itemDTO.Pictures)
+                {
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(picture.FileName);
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                    var filePath = Path.Combine(path, fileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await picture.CopyToAsync(stream);
+                    }
+                    newPicturesPaths.Add(fileName);
+                }
+
+                item.Pictures = JsonConvert.SerializeObject(newPicturesPaths);
+            }
+
+            await context.SaveChangesAsync();
+
+            var result = await GetItem(item.ID);
+            return result;
         }
 
 

@@ -66,6 +66,7 @@ namespace backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult> Delete(int id)
         {
             try
@@ -75,7 +76,7 @@ namespace backend.Controllers
                 var isDeleted = await itemService.DeleteItem(id, user?.Id ?? "");
                 if (isDeleted)
                 {
-                    return NoContent(); 
+                    return Ok("Uspešno brisanje."); 
                 }
                 return BadRequest("Neuspešno brisanje predmeta.");
             }
@@ -84,6 +85,24 @@ namespace backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("update/{id}")]
+        [Authorize]
+        public async Task<ActionResult<ItemResultDTO>> Update(int id, [FromForm] UpdateItemDTO itemDTO)
+        {
+            try
+            {
+                var user = await userService.GetCurrentUser(User);
+                var updatedItem = await itemService.Update(id, itemDTO, user?.Id ?? "");
+
+                return Ok(updatedItem);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         
     }
