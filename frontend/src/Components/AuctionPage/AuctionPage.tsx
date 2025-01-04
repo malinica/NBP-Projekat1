@@ -10,6 +10,7 @@ import { canBidToAuctionAPI, getAuctionWithItemAPI, subscribeToAuctionAPI } from
 import AuctionCard from '../AuctionCard/AuctionCard'
 import { Auction } from '../../Interfaces/Auction/Auction'
 import styles from "./AuctionPage.module.css";
+import { AuctionStatus } from '../../Enums/AuctionStatus'
 
 type Props = {}
 
@@ -126,53 +127,64 @@ const AuctionPage = (props: Props) => {
 
   return (
     <div className={`container`}>
-        {isLoading ? 
+      {isLoading ? (
         <p className={`text-center text-coral`}>Učitavanje aukcije...</p>
-        :
+      ) : (
         <>
-        <div className={`my-4`}>
-          {showAuctionCard && auction && <AuctionCard auction={auction} />} {}
-        </div>
-        <button
-          className={`btn btn-lg text-white text-center rounded p-2 mb-2 ${styles.dugme1} ${styles.dugme_ispod_linije}`}
-          onClick={() => setShowAuctionCard(!showAuctionCard)} >
-          {showAuctionCard ? "Sakrij Aukciju" : "Prikaži Aukciju"}
-        </button>
+          <div className={`my-4`}>
+            {showAuctionCard && auction && <AuctionCard auction={auction} />} {}
+          </div>
+          <button
+            className={`btn btn-lg text-white text-center rounded p-2 mb-2 ${styles.dugme1} ${styles.dugme_ispod_linije}`}
+            onClick={() => setShowAuctionCard(!showAuctionCard)}
+          >
+            {showAuctionCard ? "Sakrij Aukciju" : "Prikaži Aukciju"}
+          </button>
 
-        {canBid && <AuctionBidForm onSubmitBid={submitBid}></AuctionBidForm>}
+          {auction?.status == AuctionStatus.Closed ? (
+            <h4 className={`text-center text-coral mt-3`}>
+              Aukcija je završena.
+            </h4>
+          ) : (
+            canBid && <AuctionBidForm onSubmitBid={submitBid}></AuctionBidForm>
+          )}
 
-        <br />
-        {
-        (offers && offers.length > 0) ?
-        <div className={`table-responsive mt-2`}>
-          <table className={`table table-striped rounded`}>
-            <thead className={`table-primary`}>
-              <tr>
-                <th className={``}>Rang</th>
-                <th className={``}>Korisničko ime</th>
-                <th className={``}>Iznos ponude</th>
-                <th className={``}>Vreme ponude</th>
-              </tr>
-            </thead>
-            <tbody>
-              {offers?.map((offer, i) => (
-                <tr key={offer.id}>
-                  <td className={`text-muted`}>{i+1}.</td>
-                  <td className={`text-muted`}>{offer.user.userName}</td>
-                  <td className={`text-muted`}>{offer.price}</td>
-                  <td className={`text-muted`}> {new Date(offer.offeredAt).toLocaleString("sr")}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        :
-        <p className={`text-center text-coral mt-3`}>Nema ponuda za ovu aukciju.</p>
-        }
-        </>}
+          <br />
+          {offers && offers.length > 0 ? (
+            <div className={`table-responsive mt-2`}>
+              <table className={`table table-striped rounded`}>
+                <thead className={`table-primary`}>
+                  <tr>
+                    <th className={``}>Rang</th>
+                    <th className={``}>Korisničko ime</th>
+                    <th className={``}>Iznos ponude</th>
+                    <th className={``}>Vreme ponude</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {offers?.map((offer, i) => (
+                    <tr key={offer.id}>
+                      <td className={`text-muted`}>{i + 1}.</td>
+                      <td className={`text-muted`}>{offer.user.userName}</td>
+                      <td className={`text-muted`}>{offer.price}</td>
+                      <td className={`text-muted`}>
+                        {" "}
+                        {new Date(offer.offeredAt).toLocaleString("sr")}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className={`text-center text-coral mt-3`}>
+              Nema ponuda za ovu aukciju.
+            </p>
+          )}
+        </>
+      )}
     </div>
-  )
+  );
 }
 
 export default AuctionPage

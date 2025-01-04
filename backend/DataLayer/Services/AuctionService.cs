@@ -257,35 +257,63 @@ namespace DataLayer.Services
             return auctions.OrderByDescending(a => a.DueTo).ToList(); 
         }
 
-        public bool CanBidToAuction(string username, string auctionId)
+        public async Task<bool> CanBidToAuction(string username, string auctionId)
         {
             string key = $"user:{username}:createdAuctions";
+            //ako je autor aukcije, ne moze da licitira
             if (redis.SortedSets[key].Contains(auctionId))
             {
                 return false;
             }
+
+            // provera da item nije vec osvojen na nekoj aukciji
+            var auction = Get(auctionId);
+            if (auction != null)
+            {
+                var item = await itemService.GetItem(auction.ItemId);
+                if (item != null && item.AuctionWinner != null)
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
 
         public async Task ProcessExpiredAuctions() {
-            string key = "sortedAuctions";
-            var expiredAuctionsIds = redis.GetRangeFromSortedSetByLowestScore(key, 0, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            string key = "sortedAuctions:";
+            string lastCheckKey = "lastCheck";
+            var lastCheck = redis.Get<long?>(lastCheckKey);
+
+            redis.Set(lastCheckKey, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString());
+
+            var expiredAuctionsIds = redis.GetRangeFromSortedSetByLowestScore(
+                                    key, 
+                                    lastCheck ?? 0, 
+                                    DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+
             foreach (var auctionId in expiredAuctionsIds)
             {
                 string sortedSetKey = $"auction:{auctionId}:users";
                 string? userIdWithHighestOffer = redis.GetRangeWithScoresFromSortedSetDesc(sortedSetKey, 0, 0)
                                                       .FirstOrDefault().Key;
-                if (userIdWithHighestOffer != null)
+                
+                var auction = Get(auctionId);
+                
+                if (userIdWithHighestOffer != null && auction != null)
                 {
-                    var auction = Get(auctionId);
-                    if (auction != null)
-                    {
-                        var itemId = auction.ItemId;
-                        await itemService.SetAuctionWinner(itemId, userIdWithHighestOffer);
-                    }
+                    var itemId = auction.ItemId;
+                    await itemService.SetAuctionWinner(itemId, userIdWithHighestOffer);
                 }
 
-                //ovde treba dodatna obrada nad podacima u redisu
+                if(auction != null) {
+                    auction.Status = AuctionStatus.Closed;
+                    redis.Set("auction:" + auctionId, JsonConvert.SerializeObject(auction));
+                }
+
+                // ovde treba dodatna obrada nad podacima u redisu
+                // mozda da se pozove metoda koja brise aukciju i sve vezano za nju
+
             }
         }
     }   

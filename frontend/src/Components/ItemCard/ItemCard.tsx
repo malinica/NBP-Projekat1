@@ -62,6 +62,8 @@ const ItemCard = ({ item }: Props) => {
                 <p className={`text-steel-blue`}>{item?.name}
                     <span className={`badge bg-coral mx-2`}>{item?.category}</span>
                 </p>
+                <p>Autor: <Link to={`/users/${item.author.userName}`}>{item.author.userName}</Link></p>
+                {item.auctionWinner && <p>Pobednik aukcije: <Link to={`/users/${item.auctionWinner.userName}`}>{item.auctionWinner.userName}</Link></p>}
                 <div className={`d-flex w-100`}>
                     <Link to={`/items/${item.id}`} className={`btn btn-sm w-50 m-2 text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`} >Detaljnije o predmetu</Link>
                     {item.author.id == user?.id && <button onClick={openModal} className={`btn btn-sm w-50 m-2 text-white text-center rounded py-2 px-2 ${styles.dugme4} ${styles.linija_ispod_dugmeta}`}>

@@ -258,7 +258,7 @@ namespace backend.Controllers
             try
             {
                 var user = await userService.GetCurrentUser(User);
-                var result = auctionService.CanBidToAuction(user?.UserName ?? "", auctionId);
+                var result = await auctionService.CanBidToAuction(user?.UserName ?? "", auctionId);
                 return Ok(result);
             }
             catch (Exception ex)

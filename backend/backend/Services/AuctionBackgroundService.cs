@@ -24,7 +24,7 @@ namespace backend.Services
                         var auctionService = scope.ServiceProvider.GetRequiredService<AuctionService>();
                         await auctionService.ProcessExpiredAuctions();
                     }
-                    await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
+                    await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
                 }
                 catch (Exception ex)
                 {

@@ -29,7 +29,7 @@ namespace DataLayer.Services
             if(auction == null)
                 throw new Exception("Aukcija ne postoji.");
 
-            if(auction.DueTo < DateTime.Now)
+            if(auction.DueTo < DateTime.UtcNow)
                 throw new Exception("Neuspešno kreiranje ponude. Aukcija je završena.");
 
             if(offer.Price <= auction.StartingPrice)
@@ -46,7 +46,7 @@ namespace DataLayer.Services
             Offer o = new Offer{
                 ID = Guid.NewGuid().ToString(),
                 Price = offer.Price,
-                OfferedAt = DateTime.Now,
+                OfferedAt = DateTime.UtcNow,
                 UserId = offer.UserId
             };
             string offerSerialized = JsonConvert.SerializeObject(o);
