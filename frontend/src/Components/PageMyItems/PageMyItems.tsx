@@ -14,15 +14,16 @@ export const PageMyItems = (props: Props) => {
     const [items, setItems] = useState<Array<Item> | null>(null);
     const [totalItemsCount, setTotalItemsCount] = useState<number>(0);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [filter, setFilter] = useState<string>("my");
 
     useEffect(() => {
       loadItems(1, 10);
-    }, []);
+    }, [filter]);
 
     const loadItems = async (page: number, pageSize: number) => {
         if (!user) return;
         try {
-            const response = await getItemsForUserAPI(user.userName, page, pageSize);
+            const response = await getItemsForUserAPI(user.userName, filter, page, pageSize);
             if (response && response.status === 200) {
                 setItems(response.data.data);
                 setTotalItemsCount(response.data.totalLength);
@@ -41,6 +42,18 @@ export const PageMyItems = (props: Props) => {
     return (
         <div className={`container ${styles.pageMyItems} mb-4`}>
           <h1 className={`text-center text-steel-blue my-5`}>Moji predmeti</h1>
+          
+          <div className="mb-3">
+            <select
+              className="form-select"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            >
+              <option value="my">Moji predmeti</option>
+              <option value="won">Osvojeni predmeti</option>
+            </select>
+          </div>
+
           {isLoading ? 
           (
             <p className={`text-center text-muted`}>Ucitavanje predmeta...</p>

@@ -21,13 +21,15 @@ namespace DataLayer.Services
             this.context = context;
         }
 
-        public async Task<ItemResultDTO> Create(CreateItemDTO itemDTO, string authorId) {
+        public async Task<ItemResultDTO> Create(CreateItemDTO itemDTO, string authorId)
+        {
             var author = await context.Users.FindAsync(authorId);
-            if (author == null) 
+            if (author == null)
                 throw new Exception("Ne postoji korisnik sa zadatim ID-jem.");
-            
+
             List<string> picturesPaths = new List<string>();
-            foreach(var picture in itemDTO.Pictures) {
+            foreach (var picture in itemDTO.Pictures)
+            {
 
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(picture.FileName);
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
@@ -42,7 +44,8 @@ namespace DataLayer.Services
 
             var pictures = JsonConvert.SerializeObject(picturesPaths);
 
-            Item item = new Item {
+            Item item = new Item
+            {
                 Name = itemDTO.Name,
                 Description = itemDTO.Description,
                 Category = itemDTO.Category,
@@ -57,8 +60,8 @@ namespace DataLayer.Services
             var result = await GetItem(item.ID);
             return result;
         }
-        
-        public async Task<ItemResultDTO> GetItem(int id) 
+
+        public async Task<ItemResultDTO> GetItem(int id)
         {
             var cacheKey = $"cache:item:{id}";
 
@@ -67,7 +70,8 @@ namespace DataLayer.Services
             {
                 return JsonConvert.DeserializeObject<ItemResultDTO>(cachedData)!;
             }
-            else {
+            else
+            {
                 var item = await context.Items
                                         .Include(i => i.Author)
                                         .Include(i => i.AuctionWinner)
@@ -78,53 +82,71 @@ namespace DataLayer.Services
                     throw new Exception("Nije pronadjen željeni predmet.");
 
                 List<string> picturesPaths = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>();
-                ItemResultDTO itemResult = new ItemResultDTO {
+                ItemResultDTO itemResult = new ItemResultDTO
+                {
                     ID = item.ID,
                     Name = item.Name,
                     Description = item.Description,
                     Category = item.Category,
                     Pictures = picturesPaths,
-                    Author = new User {
+                    Author = new User
+                    {
                         Id = item.Author!.Id,
                         UserName = item.Author!.UserName,
                         Email = item.Author!.Email,
                         Role = item.Author!.Role
                     },
-                    AuctionWinner = item.AuctionWinner != null ? new User {
+                    AuctionWinner = item.AuctionWinner != null ? new User
+                    {
                         Id = item.AuctionWinner.Id,
                         UserName = item.AuctionWinner.UserName,
                         Email = item.AuctionWinner.Email,
                         Role = item.AuctionWinner.Role
                     } : null
                 };
-                
+
                 redis.Set(cacheKey, JsonConvert.SerializeObject(itemResult), TimeSpan.FromSeconds(30));
-                
+
                 return itemResult;
             }
         }
 
-        public async Task<PaginatedResponseDTO<ItemResultDTO>> GetItemsByUser(string username, int page = 1, int pageSize = 10) 
+        public async Task<PaginatedResponseDTO<ItemResultDTO>> GetItemsByUser(string username, string? type, int page = 1, int pageSize = 10)
         {
-            var cacheKey = $"cache:user:{username}:items:page:{page}:pageSize:{pageSize}";
+            var cacheKey = $"cache:user:{username}:items:page:{page}:pageSize:{pageSize}:type:{type}";
             var cachedData = redis.Get<string>(cacheKey);
             if (cachedData != null)
             {
                 return JsonConvert.DeserializeObject<PaginatedResponseDTO<ItemResultDTO>>(cachedData)!;
             }
-            else {
+            else
+            {
                 var user = await context.Users.FirstOrDefaultAsync(u => u.UserName == username);
 
                 if (user == null)
                     throw new Exception("Korisnik nije pronađen.");
 
-                var items = await context.Items
+                IQueryable<Item> query = context.Items
                                         .Include(i => i.Author)
-                                        .Include(i => i.AuctionWinner)
-                                        .Where(i => i.Author!.Id == user.Id)
-                                        .Skip((page - 1) * pageSize)
-                                        .Take(pageSize)
-                                        .ToListAsync();
+                                        .Include(i => i.AuctionWinner);
+
+                if (type == "my")
+                {
+                    query = query.Where(i => i.Author!.Id == user.Id);
+                }
+                else if (type == "won")
+                {
+                    query = query.Where(i => i.AuctionWinner != null && i.AuctionWinner.Id == user.Id);
+                }
+                else
+                {
+                    throw new Exception("Nepoznat tip predmeta.");
+                }
+
+                var items = await query
+                                    .Skip((page - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToListAsync();
 
                 List<ItemResultDTO> itemResults = items.Select(item => new ItemResultDTO
                 {
@@ -149,7 +171,8 @@ namespace DataLayer.Services
                     } : null
                 }).ToList();
 
-                var result = new PaginatedResponseDTO<ItemResultDTO> {
+                var result = new PaginatedResponseDTO<ItemResultDTO>
+                {
                     Data = itemResults,
                     TotalLength = await context.Items.CountAsync(i => i.Author!.Id == user.Id)
                 };
@@ -167,12 +190,12 @@ namespace DataLayer.Services
                 .Include(i => i.Author)
                 .Include(i => i.AuctionWinner)
                 .Where(item => item.Name.ToLower().Contains(name.ToLower()) &&
-                            ((categories.Length==0) || categories.Contains(item.Category)))
+                            ((categories.Length == 0) || categories.Contains(item.Category)))
                 .Select(item => new ItemResultDTO
                 {
                     ID = item.ID,
                     Name = item.Name,
-                    Description=item.Description,
+                    Description = item.Description,
                     Category = item.Category,
                     Pictures = JsonConvert.DeserializeObject<List<string>>(item.Pictures) ?? new List<string>(),
                     Author = new User
@@ -195,7 +218,8 @@ namespace DataLayer.Services
             return items;
         }
 
-        public async Task<bool> SetAuctionWinner(int itemId, string userId) {
+        public async Task<bool> SetAuctionWinner(int itemId, string userId)
+        {
             var item = await context.Items.FindAsync(itemId);
             if (item == null)
                 throw new Exception("Predmet nije pronađen.");
@@ -267,7 +291,7 @@ namespace DataLayer.Services
                         var filePath = Path.Combine(wwwrootPath, existingPicture);
                         if (File.Exists(filePath))
                         {
-                             File.Delete(filePath);
+                            File.Delete(filePath);
                         }
                     }
                 }

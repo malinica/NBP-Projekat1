@@ -31,9 +31,9 @@ export const getItemAPI = async (itemId: number) => {
     }
 }
 
-export const getItemsForUserAPI = async (username: string, page?: number, pageSize?: number) => {
+export const getItemsForUserAPI = async (username: string, type: string,  page?: number, pageSize?: number) => {
     try {
-        const response = await axios.get<PaginatedResponseDTO<Item>>(baseApiRoute + `/GetItemsFromUser/${username}?page=${page ?? 1}&pageSize=${pageSize ?? 10}`);
+        const response = await axios.get<PaginatedResponseDTO<Item>>(baseApiRoute + `/GetItemsFromUser/${username}?type=${type}&page=${page ?? 1}&pageSize=${pageSize ?? 10}`);
 
         return response;
     }
