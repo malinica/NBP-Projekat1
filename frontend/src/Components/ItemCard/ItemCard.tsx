@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { useAuth } from "../../Context/useAuth";
 import { useState } from 'react';
 import DatePicker from "react-datepicker";
+import { wrapText2 } from '../../Helpers/stringHelpers.ts';
+import "react-datepicker/dist/react-datepicker.css";
 
 type Props = {
     item: Item;
@@ -64,14 +66,14 @@ const ItemCard = ({ item }: Props) => {
                     className={`img-fluid ${styles.slika} px-2 mb-2`}
                     alt="Prva slika"
                 />
-                <p className={`text-steel-blue`}>{item?.name}
+                <p className={`text-steel-blue`}>{wrapText2(item?.name, 20)}
                     <span className={`badge bg-coral mx-2`}>{item?.category}</span>
                 </p>
-                <p>Autor: <Link to={`/users/${item.author.userName}`}>{item.author.userName}</Link></p>
-                {item.auctionWinner && <p>Pobednik aukcije: <Link to={`/users/${item.auctionWinner.userName}`}>{item.auctionWinner.userName}</Link></p>}
+                <p className={`text-steel-blue`}>Autor: <Link to={`/users/${item.author.userName}`} className={`text-coral`}>{item.author.userName}</Link></p>
+                {item.auctionWinner && <p className={`text-steel-blue`}>Pobednik aukcije: <Link to={`/users/${item.auctionWinner.userName}`} className={`text-coral`}>{item.auctionWinner.userName}</Link></p>}
                 <div className={`d-flex w-100`}>
-                    <Link to={`/items/${item.id}`} className={`btn btn-sm w-50 m-2 text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`} >Detaljnije o predmetu</Link>
-                    {item.author.id == user?.id && <button onClick={openModal} className={`btn btn-sm w-50 m-2 text-white text-center rounded py-2 px-2 ${styles.dugme4} ${styles.linija_ispod_dugmeta}`}>
+                    <Link to={`/items/${item.id}`} className={`btn btn-sm w-50 my-2 me-1 text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`} >Detaljnije o predmetu</Link>
+                    {item.author.id == user?.id && <button onClick={openModal} className={`btn btn-sm w-50 my-2 text-white text-center rounded py-2 px-2 ${styles.dugme4} ${styles.linija_ispod_dugmeta}`}>
                         Postavi na aukciju
                     </button>}
                 </div>
