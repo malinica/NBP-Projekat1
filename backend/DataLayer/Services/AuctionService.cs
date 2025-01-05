@@ -35,19 +35,20 @@ namespace DataLayer.Services
                 CurrentPrice = auction.CurrentPrice,
                 Status = auction.Status,
                 PostedOnDate = auction.PostedOnDate,
-                DueTo = auction.DueTo,
+//                DueTo = auction.DueTo,
+                DueTo = DateTime.Now.AddMinutes(3),
                 ItemId = auction.ItemId
             };
             string keyEdited = $"auction:" + i.ID;
-            bool status = redis.Set(keyEdited, JsonConvert.SerializeObject(i));
-            if (status)
+            bool status1 = redis.Set(keyEdited, JsonConvert.SerializeObject(i));
+            if (status1)
             {
-                redis.IncrementItemInSortedSet("auctionLeaderboard", username, 1);//za najaktivnije korisnike
+                redis.IncrementItemInSortedSet("auctionLeaderboard:", username, 1);//za najaktivnije korisnike
                 double auctionEndTime = new DateTimeOffset(auction.DueTo).ToUnixTimeSeconds();
-                redis.AddItemToSortedSet("sortedAuctions:", i.ID, auctionEndTime);//za prikupljanje aukcija na stranici aukcija
-                redis.Set("AuctionIDForItemID:" + auction.ItemId, i.ID);
-                redis.AddItemToSortedSet("user:" + username + ":createdAuctions", i.ID, 0);
-                
+                var status2 =redis.AddItemToSortedSet("sortedAuctions:", i.ID, auctionEndTime);//za prikupljanje aukcija na stranici aukcija
+                var status3=redis.Set("AuctionIDForItemID:" + auction.ItemId, i.ID);// za pretragu aukcija po filterima jer se krece iz relacione baze Item pa treba veza do aukcije u redis
+                var status4=redis.AddItemToSortedSet("user:" + username + ":createdAuctions", i.ID, 0);
+                var status5=redis.Set("AuthorForAuction:"+i.ID,username);//za brisanje itema iz set-a linije iznad
                 return i.ID;
             }
 
@@ -92,7 +93,7 @@ namespace DataLayer.Services
 
         public Dictionary<string, double> LeaderboardMostPlacedAuctions()
         {
-            var allEntries = redis.GetRangeWithScoresFromSortedSetDesc("auctionLeaderboard", 0, 9);
+            var allEntries = redis.GetRangeWithScoresFromSortedSetDesc("auctionLeaderboard:", 0, 9);
 
             return new Dictionary<string, double>(allEntries);
         }
@@ -119,6 +120,7 @@ namespace DataLayer.Services
                 return;
             }
             redis.PrependItemToList(key, auctionId);
+            redis.AddItemToSet("UsersWhoFavorisedAuction:"+auctionId+":",userId);
         }
 
         public bool CanAddAuctionToFavorite(string userId, string auctionId)
@@ -135,6 +137,8 @@ namespace DataLayer.Services
         {
             string key = $"user:{userId}:favoriteAuctions";
             redis.RemoveItemFromList(key, auctionId);
+            redis.RemoveItemFromSet("UsersWhoFavorisedAuction:"+auctionId+":",userId);
+
         }
 
         public async Task<PaginatedResponseDTO<AuctionResultDTO>> GetFavoriteAuctions(string userId, int page = 1, int pageSize = 10)
@@ -314,6 +318,24 @@ namespace DataLayer.Services
                 // ovde treba dodatna obrada nad podacima u redisu
                 // mozda da se pozove metoda koja brise aukciju i sve vezano za nju
 
+
+            if (auction!=null)
+                {
+                    redis.RemoveItemFromSortedSet("sortedAuctions:",auctionId);
+                    redis.Remove("AuctionIDForItemID:"+auction.ItemId);
+                    var author=redis.Get("AuthorForAuction:"+auctionId);
+                    redis.Remove("AuthorForAuction:"+auctionId);
+                    redis.RemoveItemFromSortedSet("user:"+author+":createdAuctions",auctionId);
+                    var usersFav=redis.GetAllItemsFromSet("UsersWhoFavorisedAuction:"+auctionId+":");
+                    foreach (var u in usersFav)
+                    RemoveAuctionFromFavorite(u,auctionId);
+                    var users = redis.GetAllItemsFromSet("UsersWhoBidOnAuction:"+auctionId+":");
+                    foreach( var u in users)
+                    {
+                        redis.RemoveItemFromSet("AuctionsBidedByUser:"+u+":",auctionId);
+                    }
+                    redis.Remove("auction:"+auctionId);
+                }
             }
         }
     }   
