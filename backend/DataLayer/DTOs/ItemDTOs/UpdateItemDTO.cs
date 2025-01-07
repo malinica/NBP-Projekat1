@@ -5,9 +5,9 @@ namespace DataLayer.DTOs.ItemDTOs
 {
     public class UpdateItemDTO
     {
-        public required string Name { get; set; }
-        public required string Description { get; set;}
-        public required ItemCategory Category {get; set;}
-        public required List<IFormFile> Pictures {get;set;}
+        public string? Name { get; set; }
+        public string? Description { get; set;}
+        public ItemCategory? Category {get; set;}
+        public List<IFormFile>? Pictures {get;set;}
     }
 }

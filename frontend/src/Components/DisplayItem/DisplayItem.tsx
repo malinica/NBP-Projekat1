@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getItemAPI, deleteAPI, updateAPI } from "../../Services/ItemService";
+import { getItemAPI, deleteItemAPI, updateItemAPI } from "../../Services/ItemService";
 import { Item } from "../../Interfaces/Item/Item";
 import { wrapText } from '../../Helpers/stringHelpers.ts';
 import toast from "react-hot-toast";
 import styles from "./DisplayItem.module.css";
+import { ItemCategory } from "../../Enums/ItemCategory.ts";
 
 type Props = {};
 
@@ -17,30 +18,35 @@ const DisplayItem = (props: Props) => {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [updatedName, setUpdatedName] = useState<string>("");
   const [updatedDescription, setUpdatedDescription] = useState<string>("");
-  const [newPictures, setNewPictures] = useState<FileList | null>(null);
+  const [updatedCategory, setUpdatedCategory] = useState<ItemCategory>(ItemCategory.Electronics);
+  const [updatedPictures, setUpdatedPictures] = useState<FileList | null>(null);
   
   const loadItem = async () => {
     const response = await getItemAPI(Number(id));
 
     if(response && response.status == 200) {
-        console.log(response);
         setItem(response.data);
         setUpdatedName(response.data.name);
         setUpdatedDescription(response.data.description);
+        setUpdatedCategory(response.data.category);
     }
     setIsLoading(false);
   };
 
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setUpdatedCategory(e.target.value as ItemCategory);
+  };
+
   const handlePicturesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setNewPictures(e.target.files);
+      setUpdatedPictures(e.target.files);
     }
   };
 
   const handleDelete = async () => {
     try {
       if (window.confirm("Da li ste sigurni da želite da obrišete predmet?")) {
-        const response = await deleteAPI(Number(id));
+        const response = await deleteItemAPI(Number(id));
         if (response && response.status === 200) {
           toast.success("Predmet je uspešno obrisan!");
           navigate("/my-items"); 
@@ -56,18 +62,19 @@ const DisplayItem = (props: Props) => {
       const formData = new FormData();
       formData.append("name", updatedName);
       formData.append("description", updatedDescription);
+      formData.append("category", updatedCategory);
 
-      if (newPictures) {
-        Array.from(newPictures).forEach((file) => {
+      if (updatedPictures) {
+        Array.from(updatedPictures).forEach((file) => {
           formData.append("pictures", file);
         });
       }
 
-      const response = await updateAPI(Number(id), formData);
-      if (response) {
+      const response = await updateItemAPI(Number(id), formData);
+      if (response && response.status == 200) {
         toast.success("Predmet uspešno ažuriran!");
-        setEditMode(false); 
-        loadItem(); 
+        setEditMode(false);
+        setItem(response.data);
       }
     } catch (error) {
       toast.error("Neuspešno ažuriranje predmeta. Pokušajte ponovo.");
@@ -113,7 +120,7 @@ const DisplayItem = (props: Props) => {
                     <div className={`d-flex flex-column align-items-start`}>
                         <p className={`text-steel-blue mb-3`}>{item?.name}</p>
                         <p className={`text-muted mb-2`}>
-                            {wrapText(item!.description || "", 50)}
+                            {wrapText(item?.description || "", 50)}
                         </p>
                         <p className={`badge bg-coral`}>{item?.category}</p>
                         <button
@@ -146,6 +153,21 @@ const DisplayItem = (props: Props) => {
                         value={updatedDescription}
                         onChange={(e) => setUpdatedDescription(e.target.value)}
                         ></textarea>
+                    </div>
+                    <div>
+                      <label className={`form-label text-steel-blue`}>Kategorija:</label>
+                      <select
+                        className={`form-select ${styles.fields} mb-3`}
+                        value={updatedCategory}
+                        onChange={handleCategoryChange}
+                        required
+                      >
+                        {Object.values(ItemCategory).map((category) => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div className={`mb-3`}>
                         <label className={`form-label text-steel-blue`}>Slike:</label>

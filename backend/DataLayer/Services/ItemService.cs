@@ -174,7 +174,9 @@ namespace DataLayer.Services
                 var result = new PaginatedResponseDTO<ItemResultDTO>
                 {
                     Data = itemResults,
-                    TotalLength = await context.Items.CountAsync(i => i.Author!.Id == user.Id)
+                    TotalLength = type == "my" ?
+                                 await context.Items.CountAsync(i => i.Author!.Id == user.Id) :
+                                 await context.Items.CountAsync(i => i.AuctionWinner != null && i.AuctionWinner.Id == user.Id)
                 };
 
                 redis.Set(cacheKey, JsonConvert.SerializeObject(result), TimeSpan.FromSeconds(30));
@@ -275,9 +277,14 @@ namespace DataLayer.Services
             if (item.Author?.Id != authorId)
                 throw new UnauthorizedAccessException("Nemate dozvolu za izmenu ovog predmeta.");
 
-            item.Name = itemDTO.Name;
-            item.Description = itemDTO.Description;
-            item.Category = itemDTO.Category;
+            if(itemDTO.Name != null)
+                item.Name = itemDTO.Name;   
+            
+            if(itemDTO.Description != null)
+                item.Description = itemDTO.Description;
+
+            if(itemDTO.Category != null)
+                item.Category = (ItemCategory)itemDTO.Category;
 
             if (itemDTO.Pictures != null && itemDTO.Pictures.Any())
             {
@@ -286,7 +293,7 @@ namespace DataLayer.Services
                     var existingPictures = JsonConvert.DeserializeObject<List<string>>(item.Pictures);
                     var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
 
-                    foreach (var existingPicture in existingPictures)
+                    foreach (var existingPicture in existingPictures!)
                     {
                         var filePath = Path.Combine(wwwrootPath, existingPicture);
                         if (File.Exists(filePath))
@@ -314,11 +321,11 @@ namespace DataLayer.Services
 
             await context.SaveChangesAsync();
 
+            var cacheKey = $"cache:item:{itemId}";
+            redis.Remove(cacheKey);
+
             var result = await GetItem(item.ID);
             return result;
         }
-
-
-
     }
 }
