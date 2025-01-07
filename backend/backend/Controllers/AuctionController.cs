@@ -266,5 +266,25 @@ namespace backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete("{auctionId}")]
+        [Authorize]
+        public IActionResult DeleteAuction([FromRoute] string auctionId)
+        {
+            try
+            {
+                var isSuccessful = auctionService.DeleteAuction(auctionId);
+
+                if (isSuccessful)
+                {
+                    return Ok("Aukcija uspešno obrisana.");
+                }
+                return BadRequest("Neuspešno brisanje aukcije.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

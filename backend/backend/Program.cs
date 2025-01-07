@@ -48,7 +48,6 @@ builder.Services.AddProblemDetails();
 builder.Services.AddDbContext<ProjectContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("NBPProjekat1CS")));
 
 builder.Services.AddScoped<TokenService, TokenService>();
-builder.Services.AddScoped<TestService, TestService>();
 builder.Services.AddScoped<UserService, UserService>();
 builder.Services.AddScoped<ItemService, ItemService>();
 builder.Services.AddScoped<AuctionService, AuctionService>();

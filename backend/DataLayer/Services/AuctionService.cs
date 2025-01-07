@@ -20,36 +20,36 @@ namespace DataLayer.Services
             this.itemService = itemService;
         }
 
-        public string Set(CreateAuctionDTO auction, string username)
+        public string Set(CreateAuctionDTO auctionDto, string username)
         {
-            var existingAuctionId = redis.Get<string>("AuctionIDForItemID:" + auction.ItemId);
+            var existingAuctionId = redis.Get<string>("AuctionIDForItemID:" + auctionDto.ItemId);
             
             if(!string.IsNullOrEmpty(existingAuctionId))
                 throw new Exception("Predmet se može postaviti na aukciju samo jednom.");
 
-            Auction i = new Auction()
+            Auction auction = new Auction()
             {
                 ID = Guid.NewGuid().ToString(),
-                Title = auction.Title,
-                StartingPrice = auction.StartingPrice,
-                CurrentPrice = auction.CurrentPrice,
-                Status = auction.Status,
-                PostedOnDate = auction.PostedOnDate,
-//                DueTo = auction.DueTo,
-                DueTo = DateTime.Now.AddMinutes(3),
-                ItemId = auction.ItemId
+                Title = auctionDto.Title,
+                StartingPrice = auctionDto.StartingPrice,
+                CurrentPrice = auctionDto.CurrentPrice,
+                Status = auctionDto.Status,
+                PostedOnDate = auctionDto.PostedOnDate,
+                DueTo = auctionDto.DueTo,
+                // DueTo = DateTime.UtcNow.AddMinutes(3),
+                ItemId = auctionDto.ItemId
             };
-            string keyEdited = $"auction:" + i.ID;
-            bool status1 = redis.Set(keyEdited, JsonConvert.SerializeObject(i));
+            string keyEdited = $"auction:" + auction.ID;
+            bool status1 = redis.Set(keyEdited, JsonConvert.SerializeObject(auction));
             if (status1)
             {
                 redis.IncrementItemInSortedSet("auctionLeaderboard:", username, 1);//za najaktivnije korisnike
-                double auctionEndTime = new DateTimeOffset(auction.DueTo).ToUnixTimeSeconds();
-                var status2 =redis.AddItemToSortedSet("sortedAuctions:", i.ID, auctionEndTime);//za prikupljanje aukcija na stranici aukcija
-                var status3=redis.Set("AuctionIDForItemID:" + auction.ItemId, i.ID);// za pretragu aukcija po filterima jer se krece iz relacione baze Item pa treba veza do aukcije u redis
-                var status4=redis.AddItemToSortedSet("user:" + username + ":createdAuctions", i.ID, 0);
-                var status5=redis.Set("AuthorForAuction:"+i.ID,username);//za brisanje itema iz set-a linije iznad
-                return i.ID;
+                double auctionEndTime = new DateTimeOffset(auctionDto.DueTo).ToUnixTimeSeconds();
+                var status2 =redis.AddItemToSortedSet("sortedAuctions:", auction.ID, auctionEndTime);//za prikupljanje aukcija na stranici aukcija
+                var status3=redis.Set("AuctionIDForItemID:" + auctionDto.ItemId, auction.ID);// za pretragu aukcija po filterima jer se krece iz relacione baze Item pa treba veza do aukcije u redis
+                var status4=redis.AddItemToSortedSet("user:" + username + ":createdAuctions", auction.ID, 0);
+                var status5=redis.Set("AuthorForAuction:"+auction.ID,username);//za brisanje itema iz set-a linije iznad
+                return auction.ID;
             }
 
             throw new Exception("Neuspešno kreiranje aukcije.");
@@ -175,35 +175,47 @@ namespace DataLayer.Services
 
         public async Task<List<AuctionResultDTO>> GetAuctionsFromFilter(string? itemName, ItemCategory[] categories, int? pricemin, int? pricemax)
         {
-            if (string.IsNullOrEmpty(itemName))
+            string cacheKey = $"cache:auctionsFiltered:itemName:{itemName}:"+
+                                                      $"categories:{JsonConvert.SerializeObject(categories)}:"+
+                                                      $"pricemin:{pricemin}"+
+                                                      $"pricemax:{pricemax}";
+
+            var cachedData = redis.Get<string>(cacheKey);
+            if (cachedData != null)
             {
-                itemName = "";
+                return JsonConvert.DeserializeObject<List<AuctionResultDTO>>(cachedData)!;
             }
-
-            if (categories == null || categories.Length == 0)
-            {
-                categories = new ItemCategory[] { };
-            }
-
-            var items = await itemService.GetItemsByFilter(itemName, categories);
-            var auctionList = new List<AuctionResultDTO>();
-
-            if (items != null)
-            {
-                foreach (var x in items)
+            else {
+                if (string.IsNullOrEmpty(itemName))
                 {
-                    var auctionID = redis.Get<string>("AuctionIDForItemID:" + x.ID);
-                     var auction = await GetFullAuction(auctionID);
-
-            if (auction != null && 
-            (pricemin == null || auction.CurrentPrice >= pricemin) &&
-            (pricemax == null || auction.CurrentPrice <= pricemax))
-                         auctionList.Add(auction);
-        
+                    itemName = "";
                 }
-            }
 
-            return auctionList;
+                if (categories == null || categories.Length == 0)
+                {
+                    categories = new ItemCategory[] { };
+                }
+
+                var items = await itemService.GetItemsByFilter(itemName, categories);
+                var auctionList = new List<AuctionResultDTO>();
+
+                if (items != null)
+                {
+                    foreach (var x in items)
+                    {
+                        var auctionID = redis.Get<string>("AuctionIDForItemID:" + x.ID);
+                        var auction = await GetFullAuction(auctionID);
+
+                if (auction != null && 
+                (pricemin == null || auction.CurrentPrice >= pricemin) &&
+                (pricemax == null || auction.CurrentPrice <= pricemax))
+                            auctionList.Add(auction);
+            
+                    }
+                }
+                redis.Set(cacheKey, JsonConvert.SerializeObject(auctionList), TimeSpan.FromSeconds(30));
+                return auctionList;
+            }
         }
 
         public async Task<PaginatedResponseDTO<AuctionResultDTO>> GetAuctionsCreatedByUser(string username, int page = 1, int pageSize = 10)
@@ -293,7 +305,7 @@ namespace DataLayer.Services
 
             var expiredAuctionsIds = redis.GetRangeFromSortedSetByLowestScore(
                                     key, 
-                                    lastCheck ?? 0, 
+                                    0, 
                                     DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
             foreach (var auctionId in expiredAuctionsIds)
@@ -310,33 +322,38 @@ namespace DataLayer.Services
                     await itemService.SetAuctionWinner(itemId, userIdWithHighestOffer);
                 }
 
-                if(auction != null) {
-                    auction.Status = AuctionStatus.Closed;
-                    redis.Set("auction:" + auctionId, JsonConvert.SerializeObject(auction));
-                }
-
-                // ovde treba dodatna obrada nad podacima u redisu
-                // mozda da se pozove metoda koja brise aukciju i sve vezano za nju
-
-
-            if (auction!=null)
-                {
-                    redis.RemoveItemFromSortedSet("sortedAuctions:",auctionId);
-                    redis.Remove("AuctionIDForItemID:"+auction.ItemId);
-                    var author=redis.Get("AuthorForAuction:"+auctionId);
-                    redis.Remove("AuthorForAuction:"+auctionId);
-                    redis.RemoveItemFromSortedSet("user:"+author+":createdAuctions",auctionId);
-                    var usersFav=redis.GetAllItemsFromSet("UsersWhoFavorisedAuction:"+auctionId+":");
-                    foreach (var u in usersFav)
-                    RemoveAuctionFromFavorite(u,auctionId);
-                    var users = redis.GetAllItemsFromSet("UsersWhoBidOnAuction:"+auctionId+":");
-                    foreach( var u in users)
-                    {
-                        redis.RemoveItemFromSet("AuctionsBidedByUser:"+u+":",auctionId);
-                    }
-                    redis.Remove("auction:"+auctionId);
-                }
+                // auction.Status = AuctionStatus.Closed;
+                // redis.Set("auction:" + auctionId, JsonConvert.SerializeObject(auction));
+                DeleteAuction(auctionId);
             }
+        }
+
+        public bool DeleteAuction(string auctionId)
+        {
+            var auction = Get(auctionId);
+            if (auction != null)
+            {
+                redis.RemoveItemFromSortedSet("sortedAuctions:", auctionId);
+                redis.Remove("AuctionIDForItemID:" + auction.ItemId);
+                var authorUsername = redis.Get<string>("AuthorForAuction:" + auctionId);
+                redis.Remove("AuthorForAuction:" + auctionId);
+                redis.RemoveItemFromSortedSet("user:" + authorUsername + ":createdAuctions", auctionId);
+
+                var usersFavIds = redis.GetAllItemsFromSet("UsersWhoFavorisedAuction:" + auctionId + ":");
+                foreach (var userId in usersFavIds)
+                    RemoveAuctionFromFavorite(userId, auctionId);
+
+                var usersIds = redis.GetAllItemsFromSortedSet($"auction:{auctionId}:users");
+                foreach (var userId in usersIds)
+                {
+                    redis.RemoveItemFromSet("AuctionsBidedByUser:" + userId + ":", auctionId);
+                    redis.Remove($"auction:{auctionId}:user:{userId}");
+                }
+
+                redis.Remove("auction:" + auctionId);
+                return true;
+            }
+            return false;
         }
     }   
 }

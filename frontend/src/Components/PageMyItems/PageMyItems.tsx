@@ -64,7 +64,7 @@ export const PageMyItems = (props: Props) => {
             <div className={`row `}>
               {items.map((item) => (
                 <div key={item.id} className={`col-xxl-3 col-xl-3 col-lg-6 col-md-6 col-sm-12 mb-4`}>
-                  <ItemCard item={item} />
+                  <ItemCard item={item} showAddToAuctionButton={true}/>
                   <div className={`d-flex justify-content-end`}>
                   </div>
                 </div>

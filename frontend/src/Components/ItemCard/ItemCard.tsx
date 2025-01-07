@@ -12,9 +12,10 @@ import "react-datepicker/dist/react-datepicker.css";
 
 type Props = {
     item: Item;
+    showAddToAuctionButton: boolean;
 };
 
-const ItemCard = ({ item }: Props) => {
+const ItemCard = ({ item, showAddToAuctionButton }: Props) => {
         const [isModalOpen, setModalOpen] = useState(false);
         const [title, setTitle] = useState("");
         const [price, setPrice] = useState("");
@@ -73,7 +74,7 @@ const ItemCard = ({ item }: Props) => {
                 {item.auctionWinner && <p className={`text-steel-blue`}>Pobednik aukcije: <Link to={`/users/${item.auctionWinner.userName}`} className={`text-coral`}>{item.auctionWinner.userName}</Link></p>}
                 <div className={`d-flex w-100`}>
                     <Link to={`/items/${item.id}`} className={`btn btn-sm w-50 my-2 me-1 text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`} >Detaljnije o predmetu</Link>
-                    {item.author.id == user?.id && <button onClick={openModal} className={`btn btn-sm w-50 my-2 text-white text-center rounded py-2 px-2 ${styles.dugme4} ${styles.linija_ispod_dugmeta}`}>
+                    {showAddToAuctionButton && item.author.id == user?.id && <button onClick={openModal} className={`btn btn-sm w-50 my-2 text-white text-center rounded py-2 px-2 ${styles.dugme4} ${styles.linija_ispod_dugmeta}`}>
                         Postavi na aukciju
                     </button>}
                 </div>

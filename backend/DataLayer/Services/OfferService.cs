@@ -58,13 +58,13 @@ namespace DataLayer.Services
             // za stranicu moje ponude, cuvaju se id aukcijia koje je bidovao odredjeni korisnik
             redis.AddItemToSet("AuctionsBidedByUser:"+offer.UserId+":",offer.AuctionId);
             //inverzno cuvanje radi kasnijeg brisanja pri isteku aukcija
-            redis.AddItemToSet("UsersWhoBidOnAuction:"+offer.AuctionId+":",offer.UserId);
+            // redis.AddItemToSet("UsersWhoBidOnAuction:"+offer.AuctionId+":",offer.UserId);
 
             bool auctionBidExists = redis.SetContainsItem("AuctionsBidedByUser:"+offer.UserId+":",offer.AuctionId);
-            bool usersExists = redis.SetContainsItem("UsersWhoBidOnAuction:"+offer.AuctionId+":",offer.UserId);
+            // bool usersExists = redis.SetContainsItem("UsersWhoBidOnAuction:"+offer.AuctionId+":",offer.UserId);
 
 
-            return itemAdded && offerCreated && auctionPriceUpdated && auctionBidExists && usersExists;
+            return itemAdded && offerCreated && auctionPriceUpdated && auctionBidExists;// && usersExists;
         }
 
         public async Task<List<OfferResultDTO>> GetOffersForAuction(string auctionId, int count)

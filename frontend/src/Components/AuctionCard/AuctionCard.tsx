@@ -85,7 +85,7 @@ const AuctionCard = ({auction, onRemoveFavoriteAuction}: Props) => {
 
         </div>
         <div className={`col-xxl-6 col-xl-6 col-lg-6 col-md-7 col-sm-12`}>
-          <ItemCard item={auction.item}/>
+          <ItemCard item={auction.item} showAddToAuctionButton={false}/>
         </div>
       </div>
     </div>

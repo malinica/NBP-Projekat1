@@ -172,3 +172,14 @@ export const canBidToAuctionAPI = async (auctionId: string) => {
         return undefined;
     }
 }
+
+
+export const deleteAuctionAPI = async (auctionId: string) => {
+    try {
+        const response = await axios.delete<string>(`${baseApiRoute}/${auctionId}`);
+        return response;
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}
