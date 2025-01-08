@@ -44,7 +44,7 @@ namespace DataLayer.Services
             if (status1)
             {
                 redis.IncrementItemInSortedSet("auctionLeaderboard:", username, 1);//za najaktivnije korisnike
-                double auctionEndTime = new DateTimeOffset(auctionDto.DueTo).ToUnixTimeSeconds();
+                double auctionEndTime = new DateTimeOffset(auction.DueTo).ToUnixTimeSeconds();
                 var status2 =redis.AddItemToSortedSet("sortedAuctions:", auction.ID, auctionEndTime);//za prikupljanje aukcija na stranici aukcija
                 var status3=redis.Set("AuctionIDForItemID:" + auctionDto.ItemId, auction.ID);// za pretragu aukcija po filterima jer se krece iz relacione baze Item pa treba veza do aukcije u redis
                 var status4=redis.AddItemToSortedSet("user:" + username + ":createdAuctions", auction.ID, 0);
@@ -305,7 +305,7 @@ namespace DataLayer.Services
 
             var expiredAuctionsIds = redis.GetRangeFromSortedSetByLowestScore(
                                     key, 
-                                    0, 
+                                    lastCheck ?? 0, 
                                     DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
             foreach (var auctionId in expiredAuctionsIds)

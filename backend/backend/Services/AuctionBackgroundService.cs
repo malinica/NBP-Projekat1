@@ -23,7 +23,6 @@ namespace backend.Services
                     {
                         var auctionService = scope.ServiceProvider.GetRequiredService<AuctionService>();
                         await auctionService.ProcessExpiredAuctions();
-                        Console.WriteLine("Izvrseno");
                     }
                     await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
                 }
