@@ -165,7 +165,7 @@ const AuctionPage = (props: Props) => {
               </button>
 
               {user?.id == auction.item.author.id &&
-                <button className={`btn btn-danger m-2`} 
+                <button className={`btn btn-lg text-white text-center rounded p-2 mb-2 mx-2 ${styles.dugme2} ${styles.dugme_ispod_linije}`} 
                         onClick={handleDeleteAuction}>Obriši</button>
               }
 

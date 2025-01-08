@@ -140,13 +140,13 @@ const AuctionCard = ({auction, onRemoveFavoriteAuction}: Props) => {
                 </div>
             </form>
             <button
-                className={`btn btn-sm my-2 text-center rounded py-2 px-2 ${styles.dugme3} ${styles.linija_ispod_dugmeta}`}
+                className={`btn btn-sm my-2 text-center text-white rounded py-2 px-2 ${styles.dugme3} ${styles.linija_ispod_dugmeta}`}
                 onClick={handleUpdate}
             >
                 Sačuvaj
             </button>
             <button
-                className={`btn btn-sm mx-1 my-2 text-center rounded py-2 px-2 ${styles.dugme4} ${styles.linija_ispod_dugmeta}`}
+                className={`btn btn-sm mx-1 my-2 text-center text-white rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`}
                 onClick={() => setEditMode(false)}
             >
                 Otkaži
@@ -169,7 +169,7 @@ const AuctionCard = ({auction, onRemoveFavoriteAuction}: Props) => {
             )}
 
             {user?.id == auction.item.author.id &&
-            <button className={`btn btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme2} ${styles.dugme_ispod_linije}`} onClick={() => setEditMode(true)}>Izmeni</button>}
+            <button className={`btn btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme3} ${styles.dugme_ispod_linije}`} onClick={() => setEditMode(true)}>Izmeni</button>}
           </>)
           }
         </div>
