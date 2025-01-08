@@ -355,5 +355,26 @@ namespace DataLayer.Services
             }
             return false;
         }
+
+        public async Task<AuctionResultDTO?> Update(string auctionId, UpdateAuctionDTO auctionDTO)
+        {
+            Auction? auction = Get(auctionId);
+
+            if(auction != null) {
+                auction.Title = auctionDTO.Title;
+                auction.StartingPrice = auctionDTO.StartingPrice;
+                auction.DueTo = auctionDTO.DueTo;
+                string keyEdited = $"auction:" + auctionId;
+                bool status1 = redis.Set(keyEdited, JsonConvert.SerializeObject(auction));
+                if (status1)
+                {
+                    double auctionEndTime = new DateTimeOffset(auctionDTO.DueTo).ToUnixTimeSeconds();
+                    redis.AddItemToSortedSet("sortedAuctions:", auctionId, auctionEndTime);//za prikupljanje aukcija na stranici aukcija
+                    return await GetFullAuction(auctionId);
+                }
+            }
+
+            return null;
+        }
     }   
 }

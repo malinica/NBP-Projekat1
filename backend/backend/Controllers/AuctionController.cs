@@ -286,5 +286,24 @@ namespace backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("update/{id}")]
+        [Authorize]
+        public async Task<ActionResult<AuctionResultDTO>> Update(string id, [FromBody] UpdateAuctionDTO auctionDTO)
+        {
+            try
+            {
+                var updatedItem = await auctionService.Update(id, auctionDTO);
+
+                if(updatedItem == null)
+                    return BadRequest("Neuspešno ažuriranje aukcije.");
+
+                return Ok(updatedItem);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

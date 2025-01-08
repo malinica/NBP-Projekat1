@@ -3,6 +3,7 @@ import { Auction } from "../Interfaces/Auction/Auction";
 import toast from "react-hot-toast";
 import { ItemCategory } from "../Enums/ItemCategory";
 import { PaginatedResponseDTO } from "../Interfaces/PaginatedResponseDTO";
+import { UpdateAuctionDTO } from "../Interfaces/Auction/UpdateAuctionDTO";
 
 const baseApiRoute = "http://localhost:5257/api/Auction";
 
@@ -182,4 +183,17 @@ export const deleteAuctionAPI = async (auctionId: string) => {
         console.error(error);
         return undefined;
     }
+}
+
+
+export const updateAuctionAPI = async (auctionId : string, updateAuctionDto: UpdateAuctionDTO) => {
+    try {
+        const response = await axios.put<Auction>(baseApiRoute + `/update/${auctionId}`, updateAuctionDto);
+        return response;
+    } 
+    catch (error: any) {
+        console.error(error);
+        return undefined;
+    }
+
 }

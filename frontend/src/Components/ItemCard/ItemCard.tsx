@@ -116,7 +116,7 @@ const ItemCard = ({ item, showAddToAuctionButton }: Props) => {
                                             onChange={(date:any) => setDueDate(date)}
                                             dateFormat="yyyy-MM-dd"
                                             className="form-control"
-                                            minDate={new Date()} 
+                                            minDate={new Date(new Date().setDate(new Date().getDate() + 1))} 
                                         />
                                     </div>
                                 </form>

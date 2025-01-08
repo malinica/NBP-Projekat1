@@ -66,5 +66,4 @@ export const updateItemAPI = async (itemId : number, updateItemDto: FormData) =>
         toast.error(error.response?.data || "Došlo je do greške prilikom ažuriranja.");
         throw error; 
     }
-
 }
