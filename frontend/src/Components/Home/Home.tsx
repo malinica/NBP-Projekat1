@@ -63,7 +63,7 @@ const Home = () => {
             <p className={`text-metal`}>Pronađite aukcije koje vas zanimaju brzo i jednostavno.</p>
             <Link
                     to="/search-page/1"
-                    className={`btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`}
+                    className={`btn-lg text-white text-center rounded py-2 px-2  ${styles.slova} ${styles.dugme1} ${styles.linija_ispod_dugmeta}`}
                   >
                     Pretraži Aukcije
             </Link>
@@ -79,7 +79,7 @@ const Home = () => {
             <p className={`text-metal`}>Postavite svoj predmet na aukciju u nekoliko koraka.</p>
             <Link
                     to="/create-item"
-                    className={`btn-lg text-white text-center rounded py-2 px-2 ${styles.dugme1} ${styles.linija_ispod_dugmeta}`}
+                    className={`btn-lg text-white text-center rounded py-2 px-2 ${styles.slova} ${styles.dugme1} ${styles.linija_ispod_dugmeta}`}
                   >
                     Dodaj Predmet
             </Link>

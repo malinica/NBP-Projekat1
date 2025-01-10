@@ -2,6 +2,26 @@
     width: 90px;
 }
 
+.navbarBrandContainer {
+    display: flex;
+    align-items: center;
+}
+
+.title {
+    font-size: 40px;
+    margin: 0; 
+    text-decoration: none;
+}
+  
+  .proText {
+    color: #4577b7;
+    font-weight: 600;
+}
+  
+  .connectText {
+    color: #EE6C4D; 
+}
+
 .link {
     margin-left: 30px;
     font-weight: 600;

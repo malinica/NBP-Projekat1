@@ -24,9 +24,15 @@ const Navbar = () => {
     <>
       <nav className={`navbar navbar-expand-xl bg-baby-blue`} id="mainNav">
         <div className={`container text-center`}>
-          <Link className={`navbar-brand`} to="/">
-            <img className={`${styles.logo}`} src="src/assets/logo.png" alt="logo" />
-          </Link>
+          <div className={`${styles.navbarBrandContainer}`}>
+            <Link className={`navbar-brand`} to="/">
+              <img className={`${styles.logo}`} src="src/assets/logo.png" alt="logo" />
+            </Link>
+            <Link className={`${styles.title}`} to="/">
+              <span className={`${styles.proText}`}>Infinity</span>
+              <span className={`${styles.connectText}`}>Bid</span>
+            </Link>
+          </div>
           <button className={`navbar-toggler`} type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive">
             <FontAwesomeIcon icon={faBars} />
           </button>
