@@ -38,6 +38,7 @@ export const PageMyItems = (props: Props) => {
     const handlePaginateChange = async (page: number, pageSize: number) => {
       await loadItems(page, pageSize);
     }
+    
 
     return (
         <div className={`container ${styles.pageMyItems} mb-4`}>
